@@ -1,0 +1,71 @@
+{
+  "code": "let nodes = [];\n\nclass Node {\n  constructor() {\n    this.position = createVector(random(width), random(height));\n    this.velocity = p5.Vector.random2D();\n    this.velocity.setMag(random(2, 4));\n    this.acceleration = createVector();\n    this.maxForce = 0.2; // Maximum steering force\n  }\n\n  update() {\n    this.velocity.add(this.acceleration);\n    this.velocity.limit(p.maxSpeed);\n    this.position.add(this.velocity);\n    this.acceleration.mult(0);\n  }\n\n  applyForce(force) {\n    this.acceleration.add(force);\n  }\n\n  flock(allNodes) {\n    let sep = this.separate(allNodes);\n    let ali = this.align(allNodes);\n    let coh = this.cohesion(allNodes);\n\n    sep.mult(2.5);\n    ali.mult(1.0);\n    coh.mult(1.0);\n\n    this.applyForce(sep);\n    this.applyForce(ali);\n    this.applyForce(coh);\n  }\n\n  separate(allNodes) {\n    let desiredSeparation = 25.0;\n    let steer = createVector(0, 0);\n    let count = 0;\n    for (let i = 0; i < allNodes.length; i++) {\n      let other = allNodes[i];\n      let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);\n      if ((d > 0) && (d < desiredSeparation)) {\n        let diff = p5.Vector.sub(this.position, other.position);\n        diff.normalize();\n        diff.div(d);\n        steer.add(diff);\n        count++;\n      }\n    }\n    if (count > 0) {\n      steer.div(count);\n    }\n\n    if (steer.mag() > 0) {\n      steer.normalize();\n      steer.mult(p.maxSpeed);\n      steer.sub(this.velocity);\n      steer.limit(this.maxForce);\n    }\n    return steer;\n  }\n\n  align(allNodes) {\n    let sum = createVector(0, 0);\n    let count = 0;\n    for (let i = 0; i < allNodes.length; i++) {\n      let other = allNodes[i];\n      let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);\n      if ((d > 0) && (d < p.perceptionRadius)) {\n        sum.add(other.velocity);\n        count++;\n      }\n    }\n    if (count > 0) {\n      sum.div(count);\n      sum.normalize();\n      sum.mult(p.maxSpeed);\n      let steer = p5.Vector.sub(sum, this.velocity);\n      steer.limit(this.maxForce);\n      return steer;\n    } else {\n      return createVector(0, 0);\n    }\n  }\n\n  cohesion(allNodes) {\n    let sum = createVector(0, 0);\n    let count = 0;\n    for (let i = 0; i < allNodes.length; i++) {\n      let other = allNodes[i];\n      let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);\n      if ((d > 0) && (d < p.perceptionRadius)) {\n        sum.add(other.position);\n        count++;\n      }\n    }\n    if (count > 0) {\n      sum.div(count);\n      return this.seek(sum);\n    } else {\n      return createVector(0, 0);\n    }\n  }\n\n  seek(target) {\n    let desired = p5.Vector.sub(target, this.position);\n    desired.normalize();\n    desired.mult(p.maxSpeed);\n    let steer = p5.Vector.sub(desired, this.velocity);\n    steer.limit(this.maxForce);\n    return steer;\n  }\n\n  edges() {\n    if (this.position.x > width) this.position.x = 0;\n    if (this.position.x < 0) this.position.x = width;\n    if (this.position.y > height) this.position.y = 0;\n    if (this.position.y < 0) this.position.y = height;\n  }\n\n  display() {\n    fill(p.hue, p.saturation, 100);\n    noStroke();\n    ellipse(this.position.x, this.position.y, 4, 4);\n  }\n}\n\nfunction initializeNodes() {\n    nodes = [];\n    for (let i = 0; i < p.nodeCount; i++) {\n        nodes.push(new Node());\n    }\n}\n\nfunction setup() {\n  createCanvas(windowWidth, windowHeight);\n  colorMode(HSB, 360, 100, 100, 100);\n  initializeNodes();\n}\n\nfunction draw() {\n    if (nodes.length !== p.nodeCount) {\n        initializeNodes();\n    }\n    \n    background(0, p.backgroundFade);\n\n    for (let i = 0; i < nodes.length; i++) {\n        for (let j = i + 1; j < nodes.length; j++) {\n            let n1 = nodes[i];\n            let n2 = nodes[j];\n            let d = dist(n1.position.x, n1.position.y, n2.position.x, n2.position.y);\n            \n            if (d < p.connectionRadius) {\n                let alpha = map(d, 0, p.connectionRadius, 60, 0);\n                stroke(p.hue, p.saturation, p.brightness, alpha);\n                strokeWeight(map(d, 0, p.connectionRadius, 1.5, 0));\n                line(n1.position.x, n1.position.y, n2.position.x, n2.position.y);\n            }\n        }\n    }\n\n    for (let i = 0; i < nodes.length; i++) {\n        let n = nodes[i];\n        n.flock(nodes);\n        n.update();\n        n.edges();\n        n.display();\n    }\n}\n\nfunction mousePressed() {\n  const mousePos = createVector(mouseX, mouseY);\n  for (const node of nodes) {\n    const force = p5.Vector.sub(node.position, mousePos);\n    const distanceSq = (node.position.x - mousePos.x)**2 + (node.position.y - mousePos.y)**2;\n    if (distanceSq > 1) { // Avoid extreme forces if a node is exactly at the mouse position\n      const constrainedDistSq = constrain(distanceSq, 2500, 50000);\n      const strength = p.explosionPower / constrainedDistSq;\n      force.setMag(strength);\n      node.applyForce(force);\n    }\n  }\n}\n\nfunction windowResized() {\n  resizeCanvas(windowWidth, windowHeight);\n}\n",
+  "info": {
+    "name": "Synaptic Mesh",
+    "description": "A decentralized network of light pulses into existence, its nodes communicating through ephemeral connections. This living grid visualizes the flow of information across a vast, dark expanse."
+  },
+  "parameters": [
+    {
+      "name": "nodeCount",
+      "label": "Node Count",
+      "min": 50,
+      "max": 300,
+      "step": 1,
+      "defaultValue": 150,
+      "description": "The total number of nodes in the network."
+    },
+    {
+      "name": "explosionPower",
+      "label": "Explosion Power",
+      "min": 100,
+      "max": 5000,
+      "step": 50,
+      "defaultValue": 2000,
+      "description": "The strength of the repulsive force from a mouse click, breaking bonds."
+    },
+    {
+      "name": "connectionRadius",
+      "label": "Connection Radius",
+      "min": 50,
+      "max": 200,
+      "step": 1,
+      "defaultValue": 100,
+      "description": "The maximum distance at which nodes form a visible bond."
+    },
+    {
+      "name": "perceptionRadius",
+      "label": "Perception Radius",
+      "min": 20,
+      "max": 150,
+      "step": 1,
+      "defaultValue": 50,
+      "description": "The range within which nodes are influenced by their neighbors' flocking behavior."
+    },
+    {
+      "name": "maxSpeed",
+      "label": "Max Speed",
+      "min": 1,
+      "max": 10,
+      "step": 0.1,
+      "defaultValue": 4,
+      "description": "The maximum speed a node can travel."
+    },
+    {
+      "name": "backgroundFade",
+      "label": "Background Fade",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "defaultValue": 10,
+      "description": "The amount of fade applied to the background, creating motion trails."
+    }
+  ],
+  "parameterValues": {
+    "nodeCount": 150,
+    "explosionPower": 4400,
+    "connectionRadius": 100,
+    "perceptionRadius": 51,
+    "maxSpeed": 3.5999999999999996,
+    "backgroundFade": 10
+  }
+}

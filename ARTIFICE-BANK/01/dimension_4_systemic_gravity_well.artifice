@@ -1,0 +1,61 @@
+{
+  "code": "let particles = [];\nlet centerPoint;\n\nclass Particle {\n  constructor(x, y) {\n    this.pos = createVector(x, y);\n    // Give particles a slight initial push to start motion\n    this.vel = createVector(random(-1, 1), random(-1, 1)).mult(random(0.5, 2));\n    this.acc = createVector(0, 0);\n    // Material You inspired purple/pink glow\n    this.color = color(random(200, 255), 100, random(150, 255));\n  }\n\n  applyForce(force) {\n    this.acc.add(force);\n  }\n\n  update() {\n    this.vel.add(this.acc);\n    this.vel.mult(p.dampingFactor); // Apply damping\n    this.pos.add(this.vel);\n    this.acc.mult(0); // Reset acceleration\n  }\n\n  calculateGravity() {\n    let center = centerPoint; // Use the dynamic center\n    let force = p5.Vector.sub(center, this.pos);\n    \n    // Constrain distance to prevent explosive forces near center\n    let distanceSq = constrain(force.magSq(), 100, 100000);\n    \n    // Gravity strength scaling based on inverse square law\n    let strength = p.attractionStrength * 5000 / distanceSq; \n    \n    force.normalize();\n    force.mult(strength);\n    this.applyForce(force);\n  }\n\n  display() {\n    stroke(this.color);\n    strokeWeight(1.5);\n    point(this.pos.x, this.pos.y);\n  }\n}\n\nfunction initializeParticles() {\n  particles = [];\n  // Initialize particles spread across the canvas\n  for (let i = 0; i < floor(p.numParticles); i++) {\n    let x = random(width);\n    let y = random(height);\n    particles.push(new Particle(x, y));\n  }\n}\n\nfunction setup() {\n  createCanvas(windowWidth, windowHeight);\n  colorMode(RGB, 255, 255, 255, 255);\n  frameRate(60);\n  \n  // Initial center point setup (will be overwritten in draw)\n  centerPoint = createVector(width / 2, height / 2);\n}\n\nfunction draw() {\n  // Check if particle count parameter has changed and reinitialize if necessary\n  if (particles.length !== floor(p.numParticles)) {\n    initializeParticles();\n  }\n\n  // Dark background fade for trail effect (Dark Mode by Design)\n  background(0, p.trailAlpha);\n\n  // --- Update Dynamic Center (Simulating orbital uncertainty/drift) ---\n  let t = frameCount * p.coreWanderSpeed;\n  // Limit center movement to the central half of the screen for stability\n  let cx = map(noise(t, 0), 0, 1, width * 0.25, width * 0.75);\n  let cy = map(noise(0, t), 0, 1, height * 0.25, height * 0.75);\n  centerPoint.set(cx, cy);\n\n  // --- Draw Core Visualization ---\n  noFill();\n  stroke(255, 150, 255, 100);\n  strokeWeight(2);\n  let pulse = sin(frameCount * 0.1) * 5 + 15; // Subtle pulsing effect\n  ellipse(centerPoint.x, centerPoint.y, pulse, pulse);\n\n  // --- Particle Simulation Loop ---\n  for (let particle of particles) {\n    particle.calculateGravity();\n    particle.update();\n    particle.display();\n    \n    // Boundary check: If particle leaves a large safety margin, reposition it slightly closer to the center to prevent loss\n    if (particle.pos.x < -100 || particle.pos.x > width + 100 || \n        particle.pos.y < -100 || particle.pos.y > height + 100) {\n        \n        particle.pos.set(centerPoint.x + random(-50, 50), centerPoint.y + random(-50, 50));\n        particle.vel.mult(0.1); \n    }\n  }\n}\n\nfunction windowResized() {\n  resizeCanvas(windowWidth, windowHeight);\n  initializeParticles(); // Redraw particles to fit new dimensions\n}",
+  "info": {
+    "name": "Systemic Gravity Well",
+    "description": "A swarm of luminous, data-like particles is drawn into a central, pulsating core, tracing elegant, elliptical paths that visualize the hidden forces of attraction and systemic flow."
+  },
+  "parameters": [
+    {
+      "name": "numParticles",
+      "label": "Particle Density",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "defaultValue": 250,
+      "description": "The total number of luminous particles in the simulated system."
+    },
+    {
+      "name": "attractionStrength",
+      "label": "Gravity Strength",
+      "min": 0.001,
+      "max": 0.05,
+      "step": 0.001,
+      "defaultValue": 0.02,
+      "description": "Controls the magnitude of the force pulling particles toward the central core."
+    },
+    {
+      "name": "dampingFactor",
+      "label": "Orbital Friction",
+      "min": 0.95,
+      "max": 0.999,
+      "step": 0.001,
+      "defaultValue": 0.985,
+      "description": "A factor applied to particle velocity each frame, simulating friction or resistance to stabilize orbits."
+    },
+    {
+      "name": "trailAlpha",
+      "label": "Trail Persistence",
+      "min": 1,
+      "max": 50,
+      "step": 1,
+      "defaultValue": 15,
+      "description": "Controls the opacity of the fading background, determining the length of the visual particle trails."
+    },
+    {
+      "name": "coreWanderSpeed",
+      "label": "Core Wander Speed",
+      "min": 0.001,
+      "max": 0.02,
+      "step": 0.001,
+      "defaultValue": 0.005,
+      "description": "The speed at which the gravitational core drifts around the screen using Perlin noise."
+    }
+  ],
+  "parameterValues": {
+    "numParticles": 260,
+    "attractionStrength": 0.039,
+    "dampingFactor": 0.958,
+    "trailAlpha": 11,
+    "coreWanderSpeed": 0.008
+  }
+}

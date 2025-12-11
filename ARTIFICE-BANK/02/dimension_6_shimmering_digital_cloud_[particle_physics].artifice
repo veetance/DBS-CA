@@ -1,0 +1,72 @@
+{
+  "code": "let particles = [];let maxParticles;function setup() {createCanvas(windowWidth, windowHeight);colorMode(HSB, 360, 100, 100, 1);resetParticles();}function resetParticles() {maxParticles = floor(p.particleCount);if (particles.length > maxParticles) {particles.splice(maxParticles);} else {for (let i = particles.length; i < maxParticles; i++) {particles.push(new Particle());}}}class Particle {constructor() {this.reset();}reset() {this.pos = createVector(random(width), random(height));this.vel = createVector(0, 0);this.acc = createVector(0, 0);this.lifespan = random(100, 300);this.maxLife = this.lifespan;this.d = 0;}update() {let center = createVector(mouseX, mouseY);let dir = p5.Vector.sub(center, this.pos);this.d = dir.mag();let d_clamped = constrain(this.d, 5, 250);let strength = (p.forceStrength * p.forceMode) / (d_clamped * d_clamped);dir.setMag(strength);this.acc.add(dir);if (p.noiseInfluence > 0) {let n = noise(this.pos.x * 0.005, this.pos.y * 0.005, frameCount * 0.005);let angle = map(n, 0, 1, 0, TWO_PI);let noiseForce = p5.Vector.fromAngle(angle);noiseForce.mult(p.noiseInfluence * 0.1);this.acc.add(noiseForce);}this.vel.add(this.acc);this.vel.mult(p.friction);this.pos.add(this.vel);this.acc.mult(0);this.lifespan -= 1;if (this.lifespan < 0) {this.reset();this.pos = createVector(mouseX + random(-50, 50), mouseY + random(-50, 50));}}display() {let alpha = map(this.lifespan, 0, this.maxLife, 0, 1);let b_mod = map(this.d, 5, 400, 1.2, 0.7);let h = p.hue + map(this.lifespan, 0, this.maxLife, -10, 10);h = (h % 360 + 360) % 360;fill(h, p.saturation, p.brightness * b_mod, alpha * 0.9);noStroke();ellipse(this.pos.x, this.pos.y, p.particleSize, p.particleSize);}}function draw() {background(0, 0.05);if (floor(p.particleCount) !== particles.length) {resetParticles();}for (let i = 0; i < particles.length; i++) {particles[i].update();particles[i].display();}if (floor(p.particleCount) !== particles.length) {resetParticles();}}function windowResized() {resizeCanvas(windowWidth, windowHeight);resetParticles();}",
+  "info": {
+    "name": "Shimmering Digital Cloud [particle physics]",
+    "description": "A dense cloud of digital energy particles reacts dynamically to the cursor, either attracting or repelling the shimmering mass with an invisible, central force.",
+    "algorithm": "1. Initialize a variable count of Particle objects, each tracking position, velocity, and a finite lifespan.\\n2. In the draw loop, for each particle, calculate the vector directed toward the mouse cursor, which acts as the force center.\\n3. Apply an inverse-squared force (attractive or repulsive, determined by 'forceMode') and add a chaotic Perlin noise vector ('noiseInfluence').\\n4. Update the particle's movement, applying 'friction' to dampen velocity.\\n5. If the particle's lifespan expires, reset it near the force center.\\n6. Draw the particles as glowing dots, setting color saturation and brightness based on proximity to the force center and opacity based on lifespan."
+  },
+  "parameters": [
+    {
+      "name": "particleCount",
+      "label": "Particle Density",
+      "min": 100,
+      "max": 1500,
+      "step": 50,
+      "defaultValue": 800,
+      "description": "The total number of particles in the shimmering cloud."
+    },
+    {
+      "name": "forceStrength",
+      "label": "Central Force Strength",
+      "min": 0.1,
+      "max": 5,
+      "step": 0.1,
+      "defaultValue": 2,
+      "description": "The magnitude of the attraction or repulsion force exerted by the mouse cursor."
+    },
+    {
+      "name": "forceMode",
+      "label": "Force Mode (Attract/Repel)",
+      "min": -1,
+      "max": 1,
+      "step": 0.1,
+      "defaultValue": 1,
+      "description": "Controls whether the force is repulsive (negative values) or attractive (positive values). 0 is neutral."
+    },
+    {
+      "name": "friction",
+      "label": "Friction (Drag)",
+      "min": 0.9,
+      "max": 0.999,
+      "step": 0.001,
+      "defaultValue": 0.98,
+      "description": "A damping factor applied to velocity. Higher values result in smoother, slower movement."
+    },
+    {
+      "name": "noiseInfluence",
+      "label": "Shimmer Chaos",
+      "min": 0,
+      "max": 1,
+      "step": 0.05,
+      "defaultValue": 0.5,
+      "description": "Increases the influence of Perlin noise on particle movement, adding chaotic 'shimmer' and preventing straight paths."
+    },
+    {
+      "name": "particleSize",
+      "label": "Particle Size",
+      "min": 1,
+      "max": 10,
+      "step": 0.5,
+      "defaultValue": 4,
+      "description": "The base radius of the individual digital energy motes."
+    }
+  ],
+  "parameterValues": {
+    "particleCount": 800,
+    "forceStrength": 2,
+    "forceMode": 1,
+    "friction": 0.98,
+    "noiseInfluence": 0.5,
+    "particleSize": 4
+  }
+}

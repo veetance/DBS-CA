@@ -1,0 +1,83 @@
+[
+  {
+    "id": 1,
+    "title": "Coat of Arms",
+    "role": "Generative Concept Artist | Floating Axe Studios",
+    "desc": "Authored a complete series of Coat of Arms designs using a Generative AI-assisted workflow (ComfyUI, Flux), integrating AI outputs with manual refinement for dynamic in-game assets.",
+    "link": "https://drive.google.com/drive/folders/1oXxTbJ6j782qIp6fJu-TvyAX_3Go-Vos?usp=drive_link",
+    "type": "image",
+    "category": "generative_art"
+  },
+  {
+    "id": 2,
+    "title": "Gate of Golgotha",
+    "role": "UI/UX Designer | Floating Axe Studios",
+    "desc": "Legacy UI/UX created in Figma. Developed comprehensive design systems and visual assets contributing to the overall art direction.",
+    "link": "https://www.figma.com/design/YbLszQ27r4xjVvErvRkGZe/Gate-Of-Golgotha-Ui-old?node-id=1307-661&t=hZrTrY9EyB9MB0Nv-1",
+    "type": "image",
+    "category": "platform_games"
+  },
+  {
+    "id": 3,
+    "title": "UI-UX Prototypes",
+    "role": "Interaction Designer",
+    "desc": "Animated high-fidelity prototypes demonstrating complex interaction flows and micro-animations for game interfaces.",
+    "link": "https://drive.google.com/file/d/10nTXx8G8j28cCRpBvlcGLix-z2xtBIjm/view?usp=sharing",
+    "type": "video",
+    "category": "ui_ux"
+  },
+  {
+    "id": 4,
+    "title": "Veras AI",
+    "role": "Lead Brand Designer",
+    "desc": "Lead brand designer responsible for UI/UX and web interfaces, developing a strong foundation in visual design principles.",
+    "link": "https://github.com/veetance/verasAI",
+    "type": "image",
+    "category": "ui_ux"
+  },
+  {
+    "id": 5,
+    "title": "Logo Design",
+    "role": "Logo Designer",
+    "desc": "Concept logo designs and brand mockups completed in 3 days. Delivered 5 distinct logo concepts and brand mockups for RIVOS.",
+    "link": "https://drive.google.com/drive/folders/1h8Ha50Tjt-F7sJHyzyOTbxe_zaOJdWa0?usp=sharing",
+    "type": "image",
+    "category": "ui_ux"
+  },
+  {
+    "id": 6,
+    "title": "Animation Archive",
+    "role": "Animator",
+    "desc": "A collection of Academic 2D/3D animations and motion graphics exploring digital art and emerging technologies.",
+    "link": "https://drive.google.com/drive/folders/1QCt4P3kNB55WDtC5JBmUubRKv3cv6oUK?usp=sharing",
+    "type": "video",
+    "category": "generative_art"
+  },
+  {
+    "id": 7,
+    "title": "Platform Odyssey",
+    "role": "Game Designer & Developer",
+    "desc": "A 2D platformer game focusing on fluid mechanics and responsive controls, built with Unity and C#.",
+    "link": "#",
+    "type": "video",
+    "category": "platform_games"
+  },
+  {
+    "id": 8,
+    "title": "Neural Landscapes",
+    "role": "Generative AI Artist",
+    "desc": "A series of generative landscapes created using custom Stable Diffusion models and detailed prompt engineering.",
+    "link": "#",
+    "type": "image",
+    "category": "generative_art"
+  },
+  {
+    "id": 9,
+    "title": "HCI Research",
+    "role": "UI/UX Researcher",
+    "desc": "An in-depth study of Human-Computer Interaction patterns, focusing on accessibility and intuitive navigation.",
+    "link": "#",
+    "type": "image",
+    "category": "ui_ux"
+  }
+]

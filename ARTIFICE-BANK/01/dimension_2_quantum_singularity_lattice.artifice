@@ -1,0 +1,61 @@
+{
+  "code": "let nodes = [];let densityCache = 0;function setup() {createCanvas(windowWidth, windowHeight);colorMode(HSB, 360, 100, 100, 100);initializeNodes();}function initializeNodes() {let density = p.gridDensity;if (density === densityCache && nodes.length > 0 && width > 0 && height > 0) {return;}densityCache = density;nodes = [];let cols = floor(width / density);let rows = floor(height / density);let offsetX = (width - cols * density) / 2 + density / 2;let offsetY = (height - rows * density) / 2 + density / 2;for (let i = 0; i <= cols; i++) {for (let j = 0; j <= rows; j++) {let x = i * density + offsetX;let y = j * density + offsetY;nodes.push(createVector(x, y));}}}function draw() {background(0);if (p.gridDensity !== densityCache) {initializeNodes();}let time = frameCount * p.pulseSpeed;let amplitudeX = width * 0.3;let amplitudeY = height * 0.3;let singularityX = width / 2 + cos(time * 0.5) * amplitudeX;let singularityY = height / 2 + sin(time * 0.7) * amplitudeY;let singularity = createVector(singularityX, singularityY);strokeWeight(p.threadThickness);push();translate(width / 2, height / 2);rotate(sin(time * 0.1) * 0.1);translate(-width / 2, -height / 2);for (let i = 0; i < nodes.length; i++) {let nodeA = nodes[i];let distToSingularity = dist(nodeA.x, nodeA.y, singularity.x, singularity.y);let influenceNorm = map(distToSingularity, 0, p.influenceRadius, 1, 0, true);let baseHue = 230 + sin(time * 2 + nodeA.x * 0.005) * 30;let saturation = map(influenceNorm, 0, 1, 40, 95);let brightness = map(influenceNorm, 0, 1, 10, 100);for (let j = i + 1; j < nodes.length; j++) {let nodeB = nodes[j];let d = dist(nodeA.x, nodeA.y, nodeB.x, nodeB.y);if (d < p.threadRange) {let connectionAlpha = map(d, 0, p.threadRange, 100, 0);let finalAlpha = connectionAlpha * influenceNorm * 0.8;stroke(baseHue, saturation, brightness, finalAlpha);line(nodeA.x, nodeA.y, nodeB.x, nodeB.y);}}if (influenceNorm > 0.05) {fill(baseHue, saturation, brightness, 100);noStroke();let nodeSize = map(influenceNorm, 0, 1, 1, 4);ellipse(nodeA.x, nodeA.y, nodeSize, nodeSize);}}pop();noStroke();fill(240, 90, 100, 100);ellipse(singularityX, singularityY, 8, 8);}function windowResized() {resizeCanvas(windowWidth, windowHeight);initializeNodes();}",
+  "info": {
+    "name": "Quantum Singularity Lattice",
+    "description": "A systematic, adaptive network of nodes and threads reacting to a central, pulsing singularity, visualizing energy propagation across a dynamic spatial grid."
+  },
+  "parameters": [
+    {
+      "name": "gridDensity",
+      "label": "Grid Spacing",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "defaultValue": 40,
+      "description": "Controls the pixel spacing between grid nodes. Smaller values increase density."
+    },
+    {
+      "name": "threadRange",
+      "label": "Connectivity Radius",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "defaultValue": 180,
+      "description": "Maximum distance over which nodes will form connecting threads."
+    },
+    {
+      "name": "pulseSpeed",
+      "label": "Singularity Speed",
+      "min": 0.001,
+      "max": 0.05,
+      "step": 0.002,
+      "defaultValue": 0.012,
+      "description": "Determines the speed of the central energy propagator."
+    },
+    {
+      "name": "influenceRadius",
+      "label": "Color Influence Range",
+      "min": 150,
+      "max": 800,
+      "step": 50,
+      "defaultValue": 450,
+      "description": "The distance the central singularity's energy affects the color and brightness of the lattice."
+    },
+    {
+      "name": "threadThickness",
+      "label": "Thread Thickness",
+      "min": 0.2,
+      "max": 3,
+      "step": 0.1,
+      "defaultValue": 1,
+      "description": "Stroke weight of the connecting energy threads."
+    }
+  ],
+  "parameterValues": {
+    "gridDensity": 40,
+    "threadRange": 150,
+    "pulseSpeed": 0.012,
+    "influenceRadius": 450,
+    "threadThickness": 0.5
+  }
+}

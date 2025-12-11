@@ -1,0 +1,52 @@
+{
+  "code": "let txt = \"a cloud of shimmering digital energy\"; let chars; function setup() { createCanvas(windowWidth, windowHeight); colorMode(HSB, 360, 100, 100); textAlign(CENTER, CENTER); chars = txt.split(''); } function draw() { background(0); let baseSize = p.baseFontSize; let influenceRadius = p.mouseInfluenceRadius; let maxRot = radians(p.maxRotation); let nScale = p.noiseScale * 0.001; let stepX = baseSize * 1.5; let stepY = baseSize * 1.5; let index = 0; for (let x = stepX / 2; x < width; x += stepX) { for (let y = stepY / 2; y < height; y += stepY) { let charIndex = index % chars.length; let char = chars[charIndex]; let d = dist(x, y, mouseX, mouseY); let influence = constrain(map(d, 0, influenceRadius, 1, 0), 0, 1); let noiseVal = noise(x * nScale, y * nScale, frameCount * 0.01); let rotation = map(influence, 0, 1, 0, maxRot * (noiseVal * 2 - 1)); let sizeMod = map(noiseVal, 0, 1, 0.5, 1.5); let currentSize = baseSize * sizeMod; let brightMod = map(influence, 0, 1, 0.5, 1); let currentBright = p.brightness * brightMod * map(noiseVal, 0, 1, 0.8, 1.2); let currentHue = (p.hue + frameCount * 0.5 + noiseVal * 30) % 360; push(); translate(x, y); rotate(rotation); textSize(currentSize); fill(currentHue, p.saturation, currentBright); noStroke(); text(char, 0, 0); pop(); index++; } } } function windowResized() { resizeCanvas(windowWidth, windowHeight); }",
+  "info": {
+    "name": "Digital Energy Weave [typographic art]",
+    "description": "A dense cloud of characters shimmers and pulses, drawn from the phrase 'a cloud of shimmering digital energy'. Each character's rotation and size are influenced by a dynamic Perlin noise field and dramatically distorted by the proximity of the mouse cursor, creating ripples of textual disruption.",
+    "algorithm": "1. Define the source text and iterate over a calculated grid spanning the canvas.\n2. At each grid point (x, y), calculate the distance to the mouse (d) and sample a Perlin noise value (noiseVal).\n3. Map the noise value to modulate the character's size for a 'shimmering' effect.\n4. Use the mouse distance (d) to determine an 'influence' factor.\n5. Rotate the character based on the combined influence of the mouse and noise, with rotation peaking near the cursor.\n6. Draw the corresponding character from the source text, cycling through the phrase for each grid position."
+  },
+  "parameters": [
+    {
+      "name": "baseFontSize",
+      "label": "Base Font Size",
+      "min": 5,
+      "max": 60,
+      "step": 1,
+      "defaultValue": 20,
+      "description": "Controls the default size of the text and determines the density of the grid."
+    },
+    {
+      "name": "mouseInfluenceRadius",
+      "label": "Influence Radius",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "defaultValue": 200,
+      "description": "Sets the maximum distance from the mouse where characters are visually affected."
+    },
+    {
+      "name": "maxRotation",
+      "label": "Max Rotation (Deg)",
+      "min": 0,
+      "max": 180,
+      "step": 5,
+      "defaultValue": 90,
+      "description": "The maximum degree of rotation applied to characters closest to the mouse influence."
+    },
+    {
+      "name": "noiseScale",
+      "label": "Noise Detail Scale",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "defaultValue": 15,
+      "description": "Controls the spatial frequency of the Perlin noise, affecting the visual smoothness of the shimmering effect."
+    }
+  ],
+  "parameterValues": {
+    "baseFontSize": 44,
+    "mouseInfluenceRadius": 170,
+    "maxRotation": 180,
+    "noiseScale": 100
+  }
+}

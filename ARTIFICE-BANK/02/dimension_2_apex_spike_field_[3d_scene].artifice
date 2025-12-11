@@ -1,0 +1,62 @@
+{
+  "code": "let t=0;function setup(){createCanvas(windowWidth,windowHeight,WEBGL);colorMode(HSB,360,100,100,1);noStroke()}function draw(){background(0);t+=p.animationSpeed;let camX=map(mouseX,0,width,-PI/4,PI/4);let camY=map(mouseY,0,height,-PI/4,PI/4);camera(0,-600,800,0,0,0,0,1,0);rotateX(p.gridDensity*0.001);rotateX(camY);rotateY(camX+t*0.1);ambientLight(50);directionalLight(p.hue,p.saturation,p.brightness,0.5,1,-1);directionalLight(360-p.hue,50,80,-0.5,-1,1);let density=p.gridDensity;let noiseScale=p.noiseScale;for(let x=0;x<density;x++){for(let z=0;z<density;z++){push();let xPos=map(x,0,density-1,-1000,1000);let zPos=map(z,0,density-1,-1000,1000);let noiseVal=noise(x*noiseScale,z*noiseScale,t);let h=map(noiseVal,0,1,0,p.spikeHeightMultiplier);translate(xPos,-h/2,zPos);let hsb_h=map(noiseVal,0,1,p.hue,(p.hue+60)%360);let hsb_s=map(h,0,p.spikeHeightMultiplier,p.saturation*0.5,p.saturation);let hsb_b=map(h,0,p.spikeHeightMultiplier,p.brightness*0.4,p.brightness);fill(hsb_h,hsb_s,hsb_b,1);box(p.shapeSize,h,p.shapeSize);pop()}}}function windowResized(){resizeCanvas(windowWidth,windowHeight)}",
+  "info": {
+    "name": "Apex Spike Field [3d scene]",
+    "description": "A dark, hostile dimension is visualized through a field of constantly shifting spikes, suggesting the turbulent hunting grounds of a high-speed predator. The terrain undulates violently, mimicking a frenzied, chaotic motion.",
+    "algorithm": "The sketch renders a dynamic 3D grid of boxes (\"venomous spikes\") whose vertical size is continuously modulated by 3D Perlin noise using a time offset, simulating a hostile, agitated environment. The spikes are colored using HSB based on their height, creating a high-contrast palette inspired by a predatory serpent. The user can navigate the scene by rotating the camera using the mouse position."
+  },
+  "parameters": [
+    {
+      "name": "gridDensity",
+      "label": "Grid Density",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "defaultValue": 20,
+      "description": "Controls the number of spikes generated across the terrain (NxN grid)."
+    },
+    {
+      "name": "shapeSize",
+      "label": "Spike Width",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "defaultValue": 15,
+      "description": "Sets the width and depth of the individual box shapes."
+    },
+    {
+      "name": "noiseScale",
+      "label": "Terrain Scale",
+      "min": 0.005,
+      "max": 0.1,
+      "step": 0.001,
+      "defaultValue": 0.02,
+      "description": "Determines the smoothness or roughness of the terrain modulation."
+    },
+    {
+      "name": "animationSpeed",
+      "label": "Frenzy Speed",
+      "min": 0.01,
+      "max": 0.5,
+      "step": 0.01,
+      "defaultValue": 0.15,
+      "description": "Controls how quickly the terrain shifts and undulates over time, reflecting the predator's frenzy."
+    },
+    {
+      "name": "spikeHeightMultiplier",
+      "label": "Apex Height",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "defaultValue": 250,
+      "description": "Sets the maximum possible height for the spikes."
+    }
+  ],
+  "parameterValues": {
+    "gridDensity": 41,
+    "shapeSize": 50,
+    "noiseScale": 0.1,
+    "animationSpeed": 0.01,
+    "spikeHeightMultiplier": 210
+  }
+}

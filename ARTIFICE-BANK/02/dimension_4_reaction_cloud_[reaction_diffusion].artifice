@@ -1,0 +1,72 @@
+{
+  "code": "let A, B, nA, nB;let R = 100;function laplacian(i, j, arr) {  let sum = 0;  let idx = i * R + j;  let C = arr[idx];  sum += (i > 0) ? arr[(i - 1) * R + j] : C;  sum += (i < R - 1) ? arr[(i + 1) * R + j] : C;  sum += (j > 0) ? arr[i * R + (j - 1)] : C;  sum += (j < R - 1) ? arr[i * R + (j + 1)] : C;  return sum - 4 * C;}function initGrids() {  let newR = floor(p.resolution);  if (newR === R && A) return;  R = newR;  let N = R * R;  A = new Array(N).fill(1);  B = new Array(N).fill(0);  nA = new Array(N).fill(1);  nB = new Array(N).fill(0);  let center = floor(R / 2);  let radius = floor(R * 0.05);  for (let i = center - radius; i < center + radius; i++) {    for (let j = center - radius; j < center + radius; j++) {      if (i >= 0 && i < R && j >= 0 && j < R) {        B[i * R + j] = 1;      }    }  }}function setup() {  createCanvas(windowWidth, windowHeight);  colorMode(HSB, 360, 100, 100);  noSmooth();  initGrids();}function draw() {  if (floor(p.resolution) !== R) initGrids();  let dA = p.diffusionA;  let dB = p.diffusionB;  let F = p.feedRate;  let k = p.killRate;  let dT = 1.0;  for (let i = 0; i < R; i++) {    for (let j = 0; j < R; j++) {      let idx = i * R + j;      let a = A[idx];      let b = B[idx];      let lapA = laplacian(i, j, A);      let lapB = laplacian(i, j, B);      let reaction = a * b * b;      let nextAVal = a + (dA * lapA - reaction + F * (1 - a)) * dT;      let nextBVal = b + (dB * lapB + reaction - (F + k) * b) * dT;      nA[idx] = constrain(nextAVal, 0, 1);      nB[idx] = constrain(nextBVal, 0, 1);    }  }  [A, nA] = [nA, A];  [B, nB] = [nB, B];  background(0);  noStroke();  let cellW = width / R;  let cellH = height / R;  for (let i = 0; i < R; i++) {    for (let j = 0; j < R; j++) {      let bConc = B[i * R + j];      if (bConc > 0.01) {          let h = (p.hue + bConc * p.hueShift * 100 + frameCount * 0.1) % 360;          let s = constrain(p.saturation + bConc * 40, 0, 100);          let bright = constrain(p.brightness * bConc * bConc * 150, 0, 100);          fill(h, s, bright);          rect(j * cellW, i * cellH, cellW, cellH);      }    }  }}function windowResized() {  resizeCanvas(windowWidth, windowHeight);  initGrids();}",
+  "info": {
+    "name": "Reaction Cloud [reaction diffusion]",
+    "description": "A self-organizing digital cloud of chemical energy, where two diffusing substances react to form intricate, endlessly morphing patterns of shimmering digital texture.",
+    "algorithm": "1. Initialize two 2D grids (A and B concentrations), setting A=1 everywhere and seeding B=1 in the center.\\n2. In the draw loop, calculate the Laplacian (diffusion term) for both A and B at every cell.\\n3. Apply the Gray-Scott reaction-diffusion formulas to determine the concentrations in the next state grid, using parameterized feed (F), kill (k), and diffusion rates.\\n4. Swap the current and next state grids to advance the simulation.\\n5. Visualize the concentration of B, mapping it to color and brightness to create a dynamic, energetic glow."
+  },
+  "parameters": [
+    {
+      "name": "diffusionA",
+      "label": "Diffusion Rate A (Da)",
+      "min": 0.5,
+      "max": 1,
+      "step": 0.001,
+      "defaultValue": 0.9,
+      "description": "The rate at which chemical A spreads. Higher values generally stabilize the system."
+    },
+    {
+      "name": "diffusionB",
+      "label": "Diffusion Rate B (Db)",
+      "min": 0.1,
+      "max": 0.5,
+      "step": 0.001,
+      "defaultValue": 0.28,
+      "description": "The rate at which chemical B spreads. Must be significantly lower than Da to form patterns."
+    },
+    {
+      "name": "feedRate",
+      "label": "Feed Rate (F)",
+      "min": 0.01,
+      "max": 0.1,
+      "step": 0.0001,
+      "defaultValue": 0.055,
+      "description": "The rate at which chemical A is 'fed' into the system."
+    },
+    {
+      "name": "killRate",
+      "label": "Kill Rate (k)",
+      "min": 0.01,
+      "max": 0.1,
+      "step": 0.0001,
+      "defaultValue": 0.062,
+      "description": "The rate at which chemical B is 'killed' or removed from the system."
+    },
+    {
+      "name": "resolution",
+      "label": "Simulation Resolution",
+      "min": 50,
+      "max": 250,
+      "step": 1,
+      "defaultValue": 150,
+      "description": "The size of the underlying grid. Higher resolution means finer detail but lower performance."
+    },
+    {
+      "name": "hueShift",
+      "label": "Energy Hue Shift",
+      "min": 0,
+      "max": 3.6,
+      "step": 0.01,
+      "defaultValue": 1.5,
+      "description": "Controls how much the concentration of B shifts the base hue, enhancing the 'shimmering' effect."
+    }
+  ],
+  "parameterValues": {
+    "diffusionA": 0.635,
+    "diffusionB": 0.139,
+    "feedRate": 0.0371,
+    "killRate": 0.0878,
+    "resolution": 83,
+    "hueShift": 0.78
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "code": "let t=0;function setup(){createCanvas(windowWidth,windowHeight,WEBGL);colorMode(HSB,360,100,100,1);noStroke();}function draw(){background(0);t+=p.animationSpeed;let mouseXN=map(mouseX,0,width,-PI,PI);let mouseYN=map(mouseY,0,height,-PI/2,PI/2);let R=p.camDistance;let cX=R*sin(mouseXN)*cos(mouseYN);let cY=R*sin(mouseYN);let cZ=R*cos(mouseXN)*cos(mouseYN);camera(cX,cY,cZ,0,0,0,0,1,0);ambientLight(100,10,10);directionalLight(p.hue,100,100,0,-1,-1);let D=floor(p.gridDensity);let S=1500/D;let O=(D*S)/2;for(let x=0;x<D;x++){for(let z=0;z<D;z++){push();let xP=x*S-O;let zP=z*S-O;let nV=noise(xP*p.noiseScale,zP*p.noiseScale,t);let H=map(nV,0,1,-p.heightMultiplier,p.heightMultiplier);translate(xP,H,zP);let h=(p.hue+map(nV,0,1,-30,30))%360;if(h<0)h+=360;let b=map(abs(H),0,p.heightMultiplier,p.brightness*0.5,p.brightness);specularMaterial(h,p.saturation,b);let s=p.shapeSize*(0.5+nV*0.5);box(s,s*0.5+abs(H)*0.1,s);pop();}}}function windowResized(){resizeCanvas(windowWidth,windowHeight);}",
+  "info": {
+    "name": "Digital Ember Cloud [3d scene]",
+    "description": "A dense field of glowing geometric forms pulses and shifts like a massive, shimmering cloud of pure digital energy, driven by deep, recursive Perlin noise.",
+    "algorithm": "The scene is rendered in WEBGL, featuring a grid of 3D boxes centered in space.\\nThe height (Y position) of each box is determined by a 3D Perlin noise lookup, using its X and Z coordinates plus a time offset.\\nCamera rotation is mapped to the mouse position, providing a dynamic view of the animated, glowing structure."
+  },
+  "parameters": [
+    {
+      "name": "gridDensity",
+      "label": "Grid Density",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "defaultValue": 30,
+      "description": "Controls the number of shapes drawn along the X and Z axes."
+    },
+    {
+      "name": "shapeSize",
+      "label": "Base Shape Size",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "defaultValue": 20,
+      "description": "The minimum size of the 3D boxes."
+    },
+    {
+      "name": "heightMultiplier",
+      "label": "Height Amplitude",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "defaultValue": 250,
+      "description": "Determines the maximum vertical displacement of the shapes."
+    },
+    {
+      "name": "noiseScale",
+      "label": "Noise Scale (Detail)",
+      "min": 0.001,
+      "max": 0.1,
+      "step": 0.001,
+      "defaultValue": 0.02,
+      "description": "Controls the smoothness or detail of the Perlin noise field."
+    },
+    {
+      "name": "animationSpeed",
+      "label": "Animation Speed",
+      "min": 0.001,
+      "max": 0.1,
+      "step": 0.001,
+      "defaultValue": 0.015,
+      "description": "Controls how quickly the time offset changes, resulting in wave speed."
+    },
+    {
+      "name": "camDistance",
+      "label": "Camera Distance",
+      "min": 200,
+      "max": 1200,
+      "step": 10,
+      "defaultValue": 800,
+      "description": "Controls how far the camera is positioned from the center of the grid."
+    }
+  ],
+  "parameterValues": {
+    "gridDensity": 50,
+    "shapeSize": 20,
+    "heightMultiplier": 250,
+    "noiseScale": 0.02,
+    "animationSpeed": 0.015,
+    "camDistance": 800
+  }
+}

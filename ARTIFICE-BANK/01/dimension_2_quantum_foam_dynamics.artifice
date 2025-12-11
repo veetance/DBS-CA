@@ -1,0 +1,71 @@
+{
+  "code": "let cols, rows;\n\nfunction setup() {\n  createCanvas(windowWidth, windowHeight);\n  // Set HSB color mode for vibrant cycling colors\n  colorMode(HSB, 360, 100, 100, 100);\n  background(0);\n}\n\nfunction windowResized() {\n  resizeCanvas(windowWidth, windowHeight);\n}\n\nfunction draw() {\n  // Semi-transparent background creates a flowing trail effect\n  background(0, 0, 0, 10); \n  \n  // Calculate grid based on width/height ratio and the quanta density parameter\n  // We map p.numQuanta (100-1000) to a spacing value (10px min spacing)\n  let targetSpacing = map(p.numQuanta, 100, 1000, 50, 10);\n  let spacing = max(10, targetSpacing);\n\n  cols = floor(width / spacing);\n  rows = floor(height / spacing);\n  \n  let timeFactor = frameCount * p.flowSpeed;\n  \n  // Loop through the grid\n  for (let i = 0; i <= cols; i++) {\n    for (let j = 0; j <= rows; j++) {\n      let x = i * spacing;\n      let y = j * spacing;\n      \n      // Calculate Perlin noise in 3D (x, y, time)\n      let noiseVal = noise(\n        x * p.noiseScale,\n        y * p.noiseScale,\n        timeFactor\n      );\n      \n      // Map noise value to angle (0 to TWO_PI * 4 allows for smoother rotation transitions)\n      let angle = map(noiseVal, 0, 1, 0, TWO_PI * 4); \n      \n      // Calculate color based on noise phase and cycling speed\n      let hue = (noiseVal * 360 + frameCount * p.colorCycleSpeed) % 360;\n      let saturation = 90;\n      let brightness = 90;\n      \n      stroke(hue, saturation, brightness, 100);\n      noFill();\n      \n      // Calculate length/amplitude (Jitter)\n      let len = map(noiseVal, 0, 1, 0, p.maxJitter);\n      \n      // Determine dynamic stroke thickness (pulsing slightly based on time and local noise)\n      let weight = p.lineThickness + map(sin(timeFactor * 5 + noiseVal * 10), -1, 1, 0, p.lineThickness * 0.5);\n      strokeWeight(weight);\n      \n      // Draw the line segment oriented by the flow vector\n      push();\n      translate(x, y);\n      rotate(angle);\n      \n      // Draw line segment centered at the origin\n      line(-len / 2, 0, len / 2, 0); \n      \n      pop();\n    }\n  }\n}",
+  "info": {
+    "name": "Quantum Foam Dynamics",
+    "description": "A dense, shimmering field of ephemeral energy, visualizing micro-scale fluctuations where short line segments trace the invisible currents of a four-dimensional Perlin noise field, creating a sense of chaotic, flowing texture."
+  },
+  "parameters": [
+    {
+      "name": "numQuanta",
+      "label": "Quanta Density",
+      "min": 100,
+      "max": 1000,
+      "step": 10,
+      "defaultValue": 300,
+      "description": "Controls the density of the flowing line segments by adjusting grid spacing."
+    },
+    {
+      "name": "noiseScale",
+      "label": "Noise Granularity",
+      "min": 0.0005,
+      "max": 0.05,
+      "step": 0.0005,
+      "defaultValue": 0.01,
+      "description": "Determines the scale of the underlying Perlin noise field, affecting texture detail."
+    },
+    {
+      "name": "flowSpeed",
+      "label": "Current Velocity",
+      "min": 0.0001,
+      "max": 0.01,
+      "step": 0.0001,
+      "defaultValue": 0.005,
+      "description": "Controls how quickly the noise field evolves over time, determining the speed of the flow."
+    },
+    {
+      "name": "maxJitter",
+      "label": "Segment Length",
+      "min": 5,
+      "max": 100,
+      "step": 1,
+      "defaultValue": 40,
+      "description": "Sets the maximum possible length or amplitude of the individual line segments."
+    },
+    {
+      "name": "lineThickness",
+      "label": "Base Thickness",
+      "min": 0.1,
+      "max": 3,
+      "step": 0.1,
+      "defaultValue": 1.5,
+      "description": "Sets the base stroke weight of the quanta, which dynamically pulses around this value."
+    },
+    {
+      "name": "colorCycleSpeed",
+      "label": "Hue Rotation Rate",
+      "min": 0,
+      "max": 3,
+      "step": 0.1,
+      "defaultValue": 1,
+      "description": "Controls the speed at which the colors shift through the HSB spectrum."
+    }
+  ],
+  "parameterValues": {
+    "numQuanta": 850,
+    "noiseScale": 0.0105,
+    "flowSpeed": 0.005,
+    "maxJitter": 45,
+    "lineThickness": 1.5,
+    "colorCycleSpeed": 1
+  }
+}

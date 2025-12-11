@@ -1,0 +1,62 @@
+{
+  "code": "let yStep;let xStep=2;function setup(){createCanvas(windowWidth,windowHeight);colorMode(HSB,360,100,100);}function draw(){background(0);noFill();strokeWeight(p.lineThickness);yStep=p.contourInterval;let t=frameCount*p.flowSpeed;for(let y=0;y<height;y+=yStep){let baseHue=p.hue;let firstN=noise(0*p.noiseScale+t,y*p.noiseScale+t);let nColor=map(firstN,0,1,0,100);let currentHue=(baseHue+map(nColor,0,100,-20,20))%360;stroke(currentHue,p.saturation,map(nColor,0,100,50,p.brightness));beginShape();vertex(0,y);for(let x=0;x<=width;x+=xStep){let n=noise(x*p.noiseScale+t,y*p.noiseScale+t);let disp=map(n,0,1,-p.elevationFactor,p.elevationFactor);vertex(x,y+disp);}vertex(width,y);endShape();}}function windowResized(){resizeCanvas(windowWidth,windowHeight);}",
+  "info": {
+    "name": "River Delta Contours [topographic map]",
+    "description": "A visualization of shifting subterranean liquid flow, rendered as stacked topographic contour lines that oscillate dynamically according to Perlin noise elevation.",
+    "algorithm": "Parallel contour lines are drawn across the screen, separated by the contour interval, using Perlin noise to determine horizontal displacement.\nThe noise function uses the current time and position to create a continuously evolving topographic surface, mapping noise values to vertical elevation factors.\nLine thickness and color hue subtly shift based on the noise value at the line's start, providing a sense of depth and flow."
+  },
+  "parameters": [
+    {
+      "name": "lineThickness",
+      "label": "Line Thickness",
+      "min": 0.5,
+      "max": 100,
+      "step": 0.5,
+      "defaultValue": 2,
+      "description": "Controls the thickness of the contour lines."
+    },
+    {
+      "name": "contourInterval",
+      "label": "Contour Interval",
+      "min": 5,
+      "max": 100,
+      "step": 5,
+      "defaultValue": 20,
+      "description": "Controls the vertical spacing between contour lines (density)."
+    },
+    {
+      "name": "elevationFactor",
+      "label": "Elevation Amplitude",
+      "min": 5,
+      "max": 150,
+      "step": 5,
+      "defaultValue": 50,
+      "description": "Determines the maximum vertical displacement of the contour lines."
+    },
+    {
+      "name": "noiseScale",
+      "label": "Noise Detail",
+      "min": 0.001,
+      "max": 0.05,
+      "step": 0.001,
+      "defaultValue": 0.015,
+      "description": "Adjusts the scale of the Perlin noise, controlling the smoothness and complexity of the terrain."
+    },
+    {
+      "name": "flowSpeed",
+      "label": "Flow Speed",
+      "min": 0,
+      "max": 0.05,
+      "step": 0.001,
+      "defaultValue": 0.01,
+      "description": "Controls the speed at which the topographic flow evolves over time."
+    }
+  ],
+  "parameterValues": {
+    "lineThickness": 100,
+    "contourInterval": 85,
+    "elevationFactor": 150,
+    "noiseScale": 0.002,
+    "flowSpeed": 0.008
+  }
+}

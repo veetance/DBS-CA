@@ -1,0 +1,48 @@
+{
+    "education": [
+        {
+            "institution": "University of Lethbridge",
+            "degree": "BA New Media",
+            "date": "Sept 2018 — Present",
+            "description": "Focused on digital art, animation, and emerging technologies."
+        },
+        {
+            "institution": "LBHS Calgary",
+            "degree": "3ds Max & Animation",
+            "date": "Feb 2014 — 2017",
+            "description": ""
+        }
+    ],
+    "experience": [
+        {
+            "company": "Floating Axe Studios",
+            "role": "Generative Concept Artist (Contract)",
+            "date": "Jan 2025 — Sep 2025",
+            "bullets": [
+                "Authored a complete series of Coat of Arms designs using a Generative AI-assisted workflow.",
+                "Integrated AI outputs with manual refinement for professional-grade assets.",
+                "Created dynamic game icons and in-game assets."
+            ]
+        },
+        {
+            "company": "Floating Axe Studios",
+            "role": "Graphic Designer",
+            "date": "Jan 2022 — Dec 2024",
+            "bullets": [
+                "Designed and created game icons and visual assets.",
+                "Contributed significantly to the overall art direction of titles.",
+                "Collaborated remotely with development teams."
+            ]
+        },
+        {
+            "company": "Veras AI",
+            "role": "Graphic Designer & Web Developer",
+            "date": "Sep 2022 — Sep 2023",
+            "bullets": [
+                "Lead brand designer developing strong foundation in visual principles.",
+                "Designed UI/UX and web interfaces for AI-driven platforms.",
+                "Established core brand guidelines and visual identity."
+            ]
+        }
+    ]
+}

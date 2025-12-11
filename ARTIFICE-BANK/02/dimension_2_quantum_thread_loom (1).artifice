@@ -1,0 +1,61 @@
+{
+  "code": "let particles = [];let noiseScaleFactor = 0.0001;class Particle {  constructor(x, y) {    this.pos = createVector(x, y);    this.vel = p5.Vector.random2D();    this.acc = createVector(0, 0);  }  update() {    let currentNoiseScale = p.fieldOfInfluence * noiseScaleFactor;     let speedFactor = p.particleSpeedFactor;        let n = noise(this.pos.x * currentNoiseScale, this.pos.y * currentNoiseScale, frameCount * 0.005);        let angle = map(n, 0, 1, 0, TWO_PI * 4);     let force = p5.Vector.fromAngle(angle);        force.mult(0.1);    this.acc.add(force);        this.vel.add(this.acc);    this.vel.limit(1.0 * speedFactor);    this.pos.add(this.vel);    this.acc.mult(0);        this.edges();  }  edges() {    if (this.pos.x > width) this.pos.x = 0;    if (this.pos.x < 0) this.pos.x = width;    if (this.pos.y > height) this.pos.y = 0;    if (this.pos.y < 0) this.pos.y = height;  }}function initializeParticles() {  particles = [];  let count = floor(p.numParticles);  for (let i = 0; i < count; i++) {    particles.push(new Particle(random(width), random(height)));  }}function setup() {  createCanvas(windowWidth, windowHeight);  colorMode(HSB, 360, 100, 100, 1);  if (typeof p !== 'undefined') {      initializeParticles();  }}function draw() {  background(0, 0.08);   if (particles.length !== floor(p.numParticles)) {     initializeParticles();     return;  }    let currentHue = p.hue;  let currentSat = p.saturation;  let currentBright = p.brightness;  let maxDist = p.maxConnectionDistance;  let connectionWeight = p.connectionWeight;  for (let i = 0; i < particles.length; i++) {    let p1 = particles[i];    p1.update();        for (let j = i + 1; j < particles.length; j++) {      let p2 = particles[j];            let d = dist(p1.pos.x, p1.pos.y, p2.pos.x, p2.pos.y);            if (d < maxDist) {        let alphaFactor = map(d, 0, maxDist, 1, 0);                let weight = connectionWeight * alphaFactor * alphaFactor;                 let connectionHue = (currentHue + (alphaFactor * 30)) % 360;                 strokeWeight(weight);        stroke(connectionHue, currentSat, currentBright, alphaFactor);        line(p1.pos.x, p1.pos.y, p2.pos.x, p2.pos.y);      }    }  }    noStroke();  fill(currentHue, currentSat, currentBright, 1);  for (let particle of particles) {      ellipse(particle.pos.x, particle.pos.y, 1.5 * connectionWeight * 0.5);  }}function windowResized() {  resizeCanvas(windowWidth, windowHeight);  initializeParticles();}",
+  "info": {
+    "name": "Quantum Thread Loom",
+    "description": "A dynamic network of abstract particles flowing through a Perlin noise field, weaving luminous threads based on their proximity, suggesting the hidden structure of complex, interconnected systems."
+  },
+  "parameters": [
+    {
+      "name": "numParticles",
+      "label": "Particle Density",
+      "min": 10,
+      "max": 200,
+      "step": 1,
+      "defaultValue": 100,
+      "description": "The total number of kinetic points in the system, affecting visual complexity and load."
+    },
+    {
+      "name": "maxConnectionDistance",
+      "label": "Thread Range",
+      "min": 50,
+      "max": 300,
+      "step": 5,
+      "defaultValue": 150,
+      "description": "Maximum distance between particles allowed to form a visible connection thread."
+    },
+    {
+      "name": "particleSpeedFactor",
+      "label": "Flow Velocity",
+      "min": 0.1,
+      "max": 3,
+      "step": 0.1,
+      "defaultValue": 1,
+      "description": "Overall speed at which the particles traverse the hidden flow field."
+    },
+    {
+      "name": "connectionWeight",
+      "label": "Thread Thickness",
+      "min": 0.5,
+      "max": 5,
+      "step": 0.1,
+      "defaultValue": 1.5,
+      "description": "Base thickness of the connecting lines, which fades with distance."
+    },
+    {
+      "name": "fieldOfInfluence",
+      "label": "Noise Granularity",
+      "min": 1,
+      "max": 50,
+      "step": 1,
+      "defaultValue": 10,
+      "description": "Controls the scale and turbulence of the underlying Perlin noise field guiding particle movement."
+    }
+  ],
+  "parameterValues": {
+    "numParticles": 100,
+    "maxConnectionDistance": 150,
+    "particleSpeedFactor": 1,
+    "connectionWeight": 1.5,
+    "fieldOfInfluence": 10
+  }
+}

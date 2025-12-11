@@ -1,0 +1,40 @@
+/* 
+   DBS App Theme - Visual Design Tokens
+   Focus: Colors, Typography, Variables
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Zen+Dots&family=Stack+Sans+Text:wght@200..700&display=swap');
+
+:root {
+    --bg-black: #0a0a0a;
+    --text-white: #ffffff;
+    --text-gray: #888888;
+    --brand-pop: #ad8bff;
+    --brand-pop50: #ae8bff79;
+    /* Electric Purple */
+
+    /* Typography */
+    --font-display: 'Zen Dots', cursive;
+    --font-body: 'Stack Sans Text', sans-serif;
+
+    --text-mega: clamp(4rem, 15vw, 15rem);
+    --text-h1: clamp(2rem, 5vw, 4rem);
+    --text-label: 0.85rem;
+
+    /* Layout Variables */
+    --spacing-page: 4vw;
+    --grid-gap: 2vw;
+
+    /* Animation Tokens */
+    --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Base Reset & Typography */
+body {
+    background-color: var(--bg-black);
+    color: var(--text-white);
+    font-family: var(--font-body);
+    font-size: 16px;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}

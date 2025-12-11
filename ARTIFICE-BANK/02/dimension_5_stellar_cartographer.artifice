@@ -1,0 +1,62 @@
+{
+  "code": "let orbiters = [];\n\nclass Orbiter {\n    constructor(x, y) {\n        this.pos = createVector(x, y);\n        this.vel = createVector(random(-1, 1), random(-1, 1));\n        this.acc = createVector(0, 0);\n        this.trail = [];\n    }\n\n    applyForce(force) {\n        this.acc.add(force);\n    }\n\n    update() {\n        // Apply Damping (Friction)\n        let dampingFactor = map(p.maxSpeedLimit, 10, 150, 0.05, 0.005); // Higher limit means less damping\n        let damping = this.vel.copy().mult(-dampingFactor);\n        this.applyForce(damping);\n\n        // Physics Integration\n        this.vel.add(this.acc);\n        this.vel.limit(p.maxSpeedLimit * 0.1);\n        this.pos.add(this.vel);\n        this.acc.mult(0);\n\n        // Trail Management\n        this.trail.push(this.pos.copy());\n        if (this.trail.length > p.trailLength) {\n            this.trail.shift();\n        }\n    }\n\n    calculateForces(others) {\n        // A. Attraction to Mouse\n        let mousePos = createVector(mouseX, mouseY);\n        let attraction = p5.Vector.sub(mousePos, this.pos);\n        let distance = attraction.mag();\n        \n        // Clamp distance to avoid instability\n        distance = constrain(distance, 10, 500);\n        \n        let strength = (p.attractionStrength / 100.0) * 1000 / (distance * distance);\n        attraction.normalize().mult(strength);\n        this.applyForce(attraction);\n\n        // B. Mutual Repulsion (from others)\n        for (let other of others) {\n            if (other !== this) {\n                let repulsion = p5.Vector.sub(this.pos, other.pos);\n                let d = repulsion.mag();\n                \n                if (d < 50) {\n                    d = constrain(d, 5, 50);\n                    let repulseStrength = (p.springStiffness / 100.0) * 500 / (d * d);\n                    repulsion.normalize().mult(repulseStrength);\n                    this.applyForce(repulsion);\n                }\n            }\n        }\n    }\n\n    display() {\n        if (this.trail.length < 2) return;\n\n        noFill();\n        strokeWeight(2);\n\n        // Draw the trail\n        for (let i = 0; i < this.trail.length - 1; i++) {\n            let alpha = map(i, 0, this.trail.length - 1, 0, 100);\n            let hueOffset = map(i, 0, this.trail.length - 1, 0, 20); // Subtle hue shift\n\n            stroke((p.hue + hueOffset) % 360, p.saturation, p.brightness, alpha);\n            line(this.trail[i].x, this.trail[i].y, this.trail[i+1].x, this.trail[i+1].y);\n        }\n    }\n}\n\nfunction initializeOrbiters() {\n    // Recreate orbiters based on the current parameter\n    orbiters = [];\n    const num = floor(p.numOrbiters);\n    for (let i = 0; i < num; i++) {\n        let x = width / 2 + random(-150, 150);\n        let y = height / 2 + random(-150, 150);\n        orbiters.push(new Orbiter(x, y));\n    }\n}\n\nfunction setup() {\n    createCanvas(windowWidth, windowHeight);\n    colorMode(HSB, 360, 100, 100, 100);\n    initializeOrbiters();\n}\n\nfunction draw() {\n    // Fading background for persistence\n    background(0, 0, 0, 10);\n\n    // Handle dynamic resizing of the orbiter array\n    if (orbiters.length !== floor(p.numOrbiters)) {\n        initializeOrbiters();\n    }\n    \n    for (let i = 0; i < orbiters.length; i++) {\n        orbiters[i].calculateForces(orbiters);\n        orbiters[i].update();\n        orbiters[i].display();\n    }\n    \n    // Draw the central mouse attractor focus point\n    let focusHue = (p.hue + 180) % 360;\n    fill(focusHue, p.saturation, p.brightness, 80);\n    noStroke();\n    ellipse(mouseX, mouseY, 15, 15);\n}\n\nfunction windowResized() {\n    resizeCanvas(windowWidth, windowHeight);\n    initializeOrbiters(); \n}",
+  "info": {
+    "name": "Stellar Cartographer",
+    "description": "A system of orbital agents traces complex, fading paths under the gravitational influence of the user's cursor, creating dynamic, ephemeral constellation maps.",
+    "algorithm": "1. Initialize an array of Orbiter agents with random starting positions and zero velocity, typically near the screen center.\n2. In the main loop, each Orbiter calculates forces acting upon it.\n3. The primary force is strong attraction towards the mouse position, scaled by the 'attractionStrength' parameter.\n4. A secondary force is short-range repulsion from all other Orbiters, preventing them from clustering too closely, controlled by 'springStiffness'.\n5. Velocity is updated based on accumulated forces, and then limited by a global 'maxSpeedLimit' (which also acts as damping).\n6. The agent's current position is added to its internal trail buffer, which is maintained at a length defined by 'trailLength'.\n7. The trail is rendered by drawing a line segment between every point in the buffer, with older points fading out using decreasing alpha values to create a persistent, luminous trace."
+  },
+  "parameters": [
+    {
+      "name": "numOrbiters",
+      "label": "Number of Agents",
+      "min": 5,
+      "max": 40,
+      "step": 1,
+      "defaultValue": 20,
+      "description": "Determines the number of gravitational agents tracing paths."
+    },
+    {
+      "name": "attractionStrength",
+      "label": "Mouse Gravity",
+      "min": 10,
+      "max": 200,
+      "step": 5,
+      "defaultValue": 120,
+      "description": "Controls how strongly the agents are pulled towards the cursor."
+    },
+    {
+      "name": "springStiffness",
+      "label": "Agent Repulsion",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "defaultValue": 40,
+      "description": "Controls the strength of the short-range force that keeps agents from colliding."
+    },
+    {
+      "name": "trailLength",
+      "label": "Trail Persistence",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "defaultValue": 250,
+      "description": "Sets the maximum number of points stored, controlling the length of the glowing trails."
+    },
+    {
+      "name": "maxSpeedLimit",
+      "label": "Velocity Limit",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "defaultValue": 80,
+      "description": "Caps the speed of the agents and influences the overall damping/friction in the system."
+    }
+  ],
+  "parameterValues": {
+    "numOrbiters": 20,
+    "attractionStrength": 120,
+    "springStiffness": 40,
+    "trailLength": 250,
+    "maxSpeedLimit": 80
+  }
+}

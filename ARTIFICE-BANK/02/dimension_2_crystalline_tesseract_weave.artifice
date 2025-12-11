@@ -1,0 +1,71 @@
+{
+  "code": "let particles = [];class Node {  constructor(x, y) {    this.pos = createVector(x, y);    this.vel = p5.Vector.random2D().mult(random(0.5, 1.5));    this.acc = createVector(0, 0);  }  update() {    let noiseVal = noise(this.pos.x * p.noiseInfluenceScale, this.pos.y * p.noiseInfluenceScale, frameCount * p.timeSpeed);    let angle = map(noiseVal, 0, 1, 0, TWO_PI * 4);    let noiseForce = p5.Vector.fromAngle(angle).mult(0.1);    this.acc.add(noiseForce);    let center = createVector(width / 2, height / 2);    let dirToCenter = p5.Vector.sub(center, this.pos);    dirToCenter.setMag(0.005);    this.acc.add(dirToCenter);    this.vel.add(this.acc);    this.vel.limit(3);    this.pos.add(this.vel);    this.acc.mult(0);    if (this.pos.x < 0) this.pos.x = width;    if (this.pos.x > width) this.pos.x = 0;    if (this.pos.y < 0) this.pos.y = height;    if (this.pos.y > height) this.pos.y = 0;  }  applyRepulsion(others) {    let steering = createVector(0, 0);    for (let other of others) {      if (other !== this) {        let d = p5.Vector.dist(this.pos, other.pos);        let threshold = 120;        if (d > 0 && d < threshold) {          let diff = p5.Vector.sub(this.pos, other.pos);          diff.normalize();          let strength = map(d, 0, threshold, p.repulsionStrength * 2, 0);          diff.mult(strength);          steering.add(diff);        }      }    }    this.acc.add(steering);  }  display() {    noStroke();    fill(p.hue, p.saturation, p.brightness, 0.7);    ellipse(this.pos.x, this.pos.y, 2, 2);  }}function initializeParticles() {  particles = [];  let count = Math.floor(p.nodeCount);  for (let i = 0; i < count; i++) {    particles.push(new Node(random(width), random(height)));  }}function setup() {  createCanvas(windowWidth, windowHeight);  colorMode(HSB, 360, 100, 100, 1);  initializeParticles();}function drawConnections() {  let count = particles.length;  stroke(p.hue, p.saturation, p.brightness, p.lineAlpha);  noFill();  for (let i = 0; i < count; i++) {    if (!particles[i]) continue;    for (let j = i + 1; j < count; j++) {      if (!particles[j]) continue;      let d = p5.Vector.dist(particles[i].pos, particles[j].pos);      if (d < p.maxConnectionDist) {        let lineWeight = map(d, 0, p.maxConnectionDist, 1.5, 0.1);        strokeWeight(lineWeight);        line(particles[i].pos.x, particles[i].pos.y, particles[j].pos.x, particles[j].pos.y);      }    }  }}function draw() {  if (particles.length !== Math.floor(p.nodeCount)) {    initializeParticles();  }  background(0, 0, 0, 0.1);  for (let i = 0; i < particles.length; i++) {    particles[i].applyRepulsion(particles);  }  drawConnections();  for (let i = 0; i < particles.length; i++) {    particles[i].update();    particles[i].display();  }}function windowResized() {  resizeCanvas(windowWidth, windowHeight);  initializeParticles();}",
+  "info": {
+    "name": "Crystalline Tesseract Weave",
+    "description": "A dynamic network simulation where self-aware nodes navigate a subtle flow field, repelling each other to maintain systemic spacing while connecting via luminous threads to form transient, high-dimensional lattice structures."
+  },
+  "parameters": [
+    {
+      "name": "nodeCount",
+      "label": "Node Count",
+      "min": 5,
+      "max": 100,
+      "step": 1,
+      "defaultValue": 50,
+      "description": "The total number of particles (nodes) in the system."
+    },
+    {
+      "name": "maxConnectionDist",
+      "label": "Max Link Distance",
+      "min": 50,
+      "max": 300,
+      "step": 5,
+      "defaultValue": 150,
+      "description": "The maximum spatial separation for two nodes to form a visible connection (link)."
+    },
+    {
+      "name": "repulsionStrength",
+      "label": "Repulsion Strength",
+      "min": 0.1,
+      "max": 5,
+      "step": 0.1,
+      "defaultValue": 1.5,
+      "description": "The intensity with which nodes push away from nearby neighbors, influencing network density."
+    },
+    {
+      "name": "noiseInfluenceScale",
+      "label": "Noise Turbulence",
+      "min": 0.001,
+      "max": 0.02,
+      "step": 0.001,
+      "defaultValue": 0.005,
+      "description": "Controls the smoothness of the underlying Perlin flow field that guides particle movement."
+    },
+    {
+      "name": "timeSpeed",
+      "label": "Time Evolution Speed",
+      "min": 0.005,
+      "max": 0.1,
+      "step": 0.005,
+      "defaultValue": 0.015,
+      "description": "Adjusts the rate at which the flow field evolves over time."
+    },
+    {
+      "name": "lineAlpha",
+      "label": "Link Transparency",
+      "min": 0.05,
+      "max": 0.5,
+      "step": 0.01,
+      "defaultValue": 0.25,
+      "description": "Sets the transparency level of the connecting threads."
+    }
+  ],
+  "parameterValues": {
+    "nodeCount": 18,
+    "maxConnectionDist": 150,
+    "repulsionStrength": 1.5,
+    "noiseInfluenceScale": 0.014,
+    "timeSpeed": 0.03,
+    "lineAlpha": 0.25
+  }
+}

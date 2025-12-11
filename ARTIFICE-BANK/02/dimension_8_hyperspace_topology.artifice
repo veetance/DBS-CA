@@ -1,0 +1,71 @@
+{
+  "code": "let cols, rows;function setup() {  createCanvas(windowWidth, windowHeight, WEBGL);  colorMode(HSB, 360, 100, 100);}function draw() {  background(0);  const density = floor(p.gridDensity);  cols = density;  rows = density;    const timeOffset = frameCount * p.warpSpeed;  const amp = p.zAmplitude;  const nScale = p.noiseScale;  noiseDetail(4, p.noiseFalloff);   const effectiveWidth = 1000;  const effectiveHeight = 1000;  const cellWidth = effectiveWidth / cols;  const cellHeight = effectiveHeight / rows;    camera(0, 0, 500 + sin(frameCount * 0.01) * 50, 0, 0, 0, 0, 1, 0);  rotateX(PI / 3.5);   rotateZ(frameCount * 0.0005);  translate(-effectiveWidth / 2, -effectiveHeight / 2);   stroke(p.hue, p.saturation, p.brightness);  strokeWeight(p.lineThickness);  noFill();  for (let i = 0; i < cols - 1; i++) {    beginShape(TRIANGLE_STRIP);    for (let j = 0; j < rows; j++) {            let noiseX1 = i * nScale * 5;      let noiseY1 = j * nScale * 5;            let noiseVal1 = noise(noiseX1, noiseY1, timeOffset);      let z1 = map(noiseVal1, 0, 1, -amp, amp);            vertex(i * cellWidth, j * cellHeight, z1);      let noiseX2 = (i + 1) * nScale * 5;      let noiseY2 = j * nScale * 5;      let noiseVal2 = noise(noiseX2, noiseY2, timeOffset);      let z2 = map(noiseVal2, 0, 1, -amp, amp);            vertex((i + 1) * cellWidth, j * cellHeight, z2);    }    endShape();  }}function windowResized() {  resizeCanvas(windowWidth, windowHeight);}",
+  "info": {
+    "name": "Hyperspace Topology",
+    "description": "A futuristic, clean wireframe rendering of a flowing, non-Euclidean surface, representing the abstract warping of space-time controlled by complex fractal noise."
+  },
+  "parameters": [
+    {
+      "name": "gridDensity",
+      "label": "Grid Detail",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "defaultValue": 50,
+      "description": "Controls the number of vertices in the 3D mesh. Higher values increase complexity."
+    },
+    {
+      "name": "zAmplitude",
+      "label": "Warp Intensity",
+      "min": 10,
+      "max": 500,
+      "step": 10,
+      "defaultValue": 250,
+      "description": "Defines the maximum vertical displacement (Z-axis warp) of the topology."
+    },
+    {
+      "name": "warpSpeed",
+      "label": "Flow Speed",
+      "min": 0.0001,
+      "max": 0.01,
+      "step": 0.0001,
+      "defaultValue": 0.002,
+      "description": "Rate at which the noise field evolves, determining the flow speed of the surface."
+    },
+    {
+      "name": "lineThickness",
+      "label": "Line Weight",
+      "min": 0.5,
+      "max": 5,
+      "step": 0.1,
+      "defaultValue": 1.5,
+      "description": "Thickness of the wireframe lines."
+    },
+    {
+      "name": "noiseScale",
+      "label": "Noise Granularity",
+      "min": 0.001,
+      "max": 0.05,
+      "step": 0.001,
+      "defaultValue": 0.01,
+      "description": "Determines the spatial frequency of the Perlin noise, affecting wave size."
+    },
+    {
+      "name": "noiseFalloff",
+      "label": "Fractal Falloff",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.05,
+      "defaultValue": 0.5,
+      "description": "Controls the influence of higher frequency octaves in the fractal noise computation."
+    }
+  ],
+  "parameterValues": {
+    "gridDensity": 20,
+    "zAmplitude": 100,
+    "warpSpeed": 0.0034,
+    "lineThickness": 1.5,
+    "noiseScale": 0.025,
+    "noiseFalloff": 0.6
+  }
+}

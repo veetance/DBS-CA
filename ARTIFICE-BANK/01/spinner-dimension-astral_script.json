@@ -1,0 +1,553 @@
+{
+  "version": "1.0",
+  "createdAt": "2025-09-26T20:50:43.232Z",
+  "history": [
+    {
+      "name": "Orbital Trails",
+      "description": "A mesmerizing dance of orbiting nodes leaving colorful trails. This is the default animation. Use the dimension controls to generate a new one with AI!",
+      "parameters": [
+        {
+          "name": "rotationSpeed",
+          "label": "Rotation Speed",
+          "min": 1,
+          "max": 360,
+          "step": 1,
+          "defaultValue": 2
+        },
+        {
+          "name": "diameterSpeed",
+          "label": "Diameter Speed",
+          "min": 1,
+          "max": 360,
+          "step": 1,
+          "defaultValue": 6
+        },
+        {
+          "name": "maxDiameter",
+          "label": "Max Diameter",
+          "min": -360,
+          "max": 360,
+          "step": 1,
+          "defaultValue": 200
+        },
+        {
+          "name": "minDiameter",
+          "label": "Min Diameter",
+          "min": -360,
+          "max": 360,
+          "step": 1,
+          "defaultValue": 10
+        },
+        {
+          "name": "trailLength",
+          "label": "Trail Length",
+          "min": 1,
+          "max": 200,
+          "step": 1,
+          "defaultValue": 38
+        },
+        {
+          "name": "nodeCount",
+          "label": "Node Count",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "defaultValue": 3
+        },
+        {
+          "name": "lineWeight",
+          "label": "Line Weight",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "defaultValue": 14
+        },
+        {
+          "name": "ageFactor",
+          "label": "Color Age",
+          "min": 0,
+          "max": 10,
+          "step": 1,
+          "defaultValue": 3
+        },
+        {
+          "name": "fadeOut",
+          "label": "Fade Out",
+          "min": 0.01,
+          "max": 1,
+          "step": 0.01,
+          "defaultValue": 0.01
+        },
+        {
+          "name": "trailIntensity",
+          "label": "Trail Intensity",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "defaultValue": 2
+        },
+        {
+          "name": "headSizeFactor",
+          "label": "Head Size",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "defaultValue": 2
+        },
+        {
+          "name": "nodeHue",
+          "label": "Head Hue",
+          "min": 0,
+          "max": 360,
+          "step": 1,
+          "defaultValue": 0
+        },
+        {
+          "name": "nodeSaturation",
+          "label": "Head Saturation",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "defaultValue": 90
+        },
+        {
+          "name": "nodeAlpha",
+          "label": "Head Alpha",
+          "min": 0,
+          "max": 1,
+          "step": 0.01,
+          "defaultValue": 0.9
+        }
+      ],
+      "code": "\n// Helper function for linear interpolation (p5.js map)\nconst mapRange = (value, inMin, inMax, outMin, outMax) => {\n  return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;\n};\n\n// State initialization & real-time node count adjustment\nif (!state.nodes) {\n  state.nodes = [];\n}\nconst count = Math.floor(params.nodeCount);\nconst { width, height } = ctx.canvas;\n\n// Add nodes if the count has increased\nwhile (state.nodes.length < count) {\n    state.nodes.push({\n      x: width / 2,\n      y: height / 2,\n      offset: 0, // Will be updated below\n      direction: 1,\n      phase: 0,\n      angle: 0,\n      diameter: 0,\n      trail: [],\n    });\n}\n\n// Remove nodes if the count has decreased\nwhile (state.nodes.length > count) {\n    state.nodes.pop();\n}\n\n// Update offsets for all nodes to ensure even spacing\nstate.nodes.forEach((node, i) => {\n    node.offset = (Math.PI * 2 / count) * i;\n});\n\n\n// Animation update logic\nctx.fillStyle = 'rgba(16, 16, 20, ' + params.fadeOut + ')';\nctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);\n\nfor (const node of state.nodes) {\n  // Let angle grow indefinitely for smooth looping in sine waves.\n  // The old modulo operator was causing a jump/glitch when the angle wrapped from 360 to 0.\n  // Trigonometric functions handle large angles correctly, so no wrap is needed for continuous motion.\n  node.angle = node.angle + node.direction * params.rotationSpeed;\n  \n  const sinInput = node.angle * params.diameterSpeed + node.phase;\n  node.diameter = mapRange(\n    Math.sin(sinInput * Math.PI / 180),\n    -1, 1,\n    params.minDiameter,\n    params.maxDiameter\n  );\n\n  // The position calculation also works correctly with large, continuous angles.\n  const spiralX = node.x + Math.cos((node.angle + node.offset) * Math.PI / 180) * node.diameter;\n  const spiralY = node.y + Math.sin((node.angle + node.offset) * Math.PI / 180) * node.diameter;\n\n  node.trail.unshift({ x: spiralX, y: spiralY });\n\n  while (node.trail.length > params.trailLength) {\n    node.trail.pop();\n  }\n\n  // Drawing logic\n  if (node.trail.length > 0) {\n    const head = node.trail[0];\n    \n    // Draw the main ellipse (node head) - now filled and customizable with more vibrant lightness\n    ctx.fillStyle = `hsla(${params.nodeHue}, ${params.nodeSaturation}%, 75%, ${params.nodeAlpha})`;\n    ctx.beginPath();\n    ctx.arc(head.x, head.y, (Math.abs(node.diameter) / 10) * params.headSizeFactor, 0, Math.PI * 2);\n    ctx.fill();\n\n    // Draw the trail\n    ctx.beginPath();\n    ctx.moveTo(node.trail[0].x, node.trail[0].y);\n    for (let i = 1; i < node.trail.length; i++) {\n        const point = node.trail[i];\n        const alpha = mapRange(i, 0, node.trail.length, 1, 0);\n        // Link trail hue and saturation to the node's parameters for a cohesive color scheme\n        const hue = (params.nodeHue + frame + i * params.ageFactor) % 360;\n        const lightness = Math.min(100, 60 * params.trailIntensity);\n        ctx.strokeStyle = `hsla(${hue}, ${params.nodeSaturation}%, ${lightness}%, ${alpha * 0.7})`;\n        ctx.lineWidth = params.lineWeight;\n        ctx.lineTo(point.x, point.y);\n    }\n    ctx.stroke();\n  }\n}\n"
+    },
+    {
+      "name": "Aether Glyph",
+      "description": "A mesmerizing array of glowing, abstract symbols rotate and pulse, forming an ancient, luminous pattern reminiscent of a forgotten language.",
+      "parameters": [
+        {
+          "defaultValue": 8,
+          "label": "Glyph Count",
+          "max": 16,
+          "min": 4,
+          "name": "numGlyphs",
+          "step": 1
+        },
+        {
+          "defaultValue": 100,
+          "label": "Glyph Length",
+          "max": 200,
+          "min": 50,
+          "name": "glyphLength",
+          "step": 10
+        },
+        {
+          "defaultValue": 0.005,
+          "label": "Rotation Speed",
+          "max": 0.02,
+          "min": 0.001,
+          "name": "rotationSpeed",
+          "step": 0.001
+        },
+        {
+          "defaultValue": 0.05,
+          "label": "Pulse Speed",
+          "max": 0.1,
+          "min": 0.01,
+          "name": "pulseSpeed",
+          "step": 0.005
+        },
+        {
+          "defaultValue": 0.2,
+          "label": "Pulse Magnitude",
+          "max": 0.4,
+          "min": 0.05,
+          "name": "pulseMagnitude",
+          "step": 0.05
+        },
+        {
+          "defaultValue": 30,
+          "label": "Inner Radius",
+          "max": 80,
+          "min": 10,
+          "name": "innerRadius",
+          "step": 5
+        },
+        {
+          "defaultValue": 2,
+          "label": "Line Thickness",
+          "max": 5,
+          "min": 1,
+          "name": "lineThickness",
+          "step": 0.5
+        },
+        {
+          "defaultValue": 0.5,
+          "label": "Color Shift Rate",
+          "max": 2,
+          "min": 0.1,
+          "name": "colorShiftRate",
+          "step": 0.1
+        }
+      ],
+      "code": "const w = ctx.canvas.width;const h = ctx.canvas.height;ctx.fillStyle = 'rgba(0,0,0,0.08)';ctx.fillRect(0, 0, w, h);ctx.save();ctx.translate(w / 2, h / 2);ctx.rotate(frame * params.rotationSpeed);const numGlyphs = Math.floor(params.numGlyphs);const baseRadius = params.innerRadius;const glyphLength = params.glyphLength;const lineThickness = params.lineThickness;const pulseScale = 1 + Math.sin(frame * params.pulseSpeed) * params.pulseMagnitude;const pulseScale2 = 1 + Math.cos(frame * params.pulseSpeed * 0.7) * params.pulseMagnitude * 0.6;for (let i = 0; i < numGlyphs; i++) {ctx.save();const angle = (i / numGlyphs) * Math.PI * 2;ctx.rotate(angle);const hue = (frame * params.colorShiftRate + i * (360 / numGlyphs)) % 360;ctx.strokeStyle = `hsl(${hue}, 100%, 70%)`;ctx.lineWidth = lineThickness;ctx.lineCap = 'round';ctx.beginPath();ctx.moveTo(baseRadius * pulseScale, 0);ctx.lineTo((baseRadius + glyphLength) * pulseScale2, 0);ctx.stroke();const endX = (baseRadius + glyphLength) * pulseScale2;const arcRadius = glyphLength * 0.2 * pulseScale;const arcStartAngle = -Math.PI / 4;const arcEndAngle = Math.PI / 4;ctx.beginPath();ctx.arc(endX, 0, arcRadius, arcStartAngle, arcEndAngle);ctx.stroke();ctx.restore();}const corePulse = (Math.sin(frame * params.pulseSpeed * 1.5) * 0.3 + 0.7);const coreRadius = params.innerRadius * 0.6 * corePulse;const coreHue = (frame * params.colorShiftRate * 2) % 360;ctx.fillStyle = `hsl(${coreHue}, 100%, 60%)`;ctx.beginPath();ctx.arc(0, 0, coreRadius, 0, Math.PI * 2);ctx.fill();ctx.restore();"
+    },
+    {
+      "name": "Angular Bloom",
+      "description": "A radiant display of rotating and pulsing polygons forms an intricate, kaleidoscopic geometric pattern.",
+      "parameters": [
+        {
+          "defaultValue": 8,
+          "label": "Number of Segments",
+          "max": 16,
+          "min": 4,
+          "name": "numSegments",
+          "step": 1
+        },
+        {
+          "defaultValue": 100,
+          "label": "Segment Length",
+          "max": 200,
+          "min": 50,
+          "name": "segmentLength",
+          "step": 10
+        },
+        {
+          "defaultValue": 30,
+          "label": "Base Radius",
+          "max": 80,
+          "min": 10,
+          "name": "baseRadius",
+          "step": 5
+        },
+        {
+          "defaultValue": 3,
+          "label": "Line Width",
+          "max": 8,
+          "min": 1,
+          "name": "lineWidth",
+          "step": 1
+        },
+        {
+          "defaultValue": 0.005,
+          "label": "Rotation Speed",
+          "max": 0.02,
+          "min": 0.001,
+          "name": "rotationSpeed",
+          "step": 0.001
+        },
+        {
+          "defaultValue": 0.05,
+          "label": "Pulse Speed",
+          "max": 0.1,
+          "min": 0.01,
+          "name": "pulseSpeed",
+          "step": 0.005
+        },
+        {
+          "defaultValue": 0.2,
+          "label": "Pulse Magnitude",
+          "max": 0.4,
+          "min": 0.05,
+          "name": "pulseMagnitude",
+          "step": 0.05
+        },
+        {
+          "defaultValue": 6,
+          "label": "Center Polygon Sides",
+          "max": 12,
+          "min": 3,
+          "name": "centralPolygonSides",
+          "step": 1
+        }
+      ],
+      "code": "const w = ctx.canvas.width;const h = ctx.canvas.height;ctx.fillStyle = 'rgba(0,0,0,0.08)';ctx.fillRect(0, 0, w, h);ctx.save();ctx.translate(w / 2, h / 2);ctx.rotate(frame * params.rotationSpeed);const numSegments = Math.floor(params.numSegments);const segmentLength = params.segmentLength;const baseRadius = params.baseRadius;const lineWidth = params.lineWidth;const pulseScale = 1 + Math.sin(frame * params.pulseSpeed) * params.pulseMagnitude;const pulseScale2 = 1 + Math.cos(frame * params.pulseSpeed * 0.7) * params.pulseMagnitude * 0.6;for (let i = 0; i < numSegments; i++) {ctx.save();const angle = (i / numSegments) * Math.PI * 2;ctx.rotate(angle);const hue = (frame * 0.5 + i * (360 / numSegments)) % 360;ctx.fillStyle = `hsl(${hue}, 100%, 70%)`;ctx.strokeStyle = `hsl(${hue}, 100%, 70%)`;ctx.lineWidth = lineWidth;ctx.lineCap = 'butt';ctx.beginPath();const startX = baseRadius * pulseScale;const endX = (baseRadius + segmentLength) * pulseScale2;const halfWidth = lineWidth / 2;ctx.moveTo(startX, -halfWidth);ctx.lineTo(endX, -halfWidth);ctx.lineTo(endX, halfWidth);ctx.lineTo(startX, halfWidth);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();}const centralPolygonSides = Math.floor(params.centralPolygonSides);const corePulse = (Math.sin(frame * params.pulseSpeed * 1.5) * 0.3 + 0.7);const coreRadius = params.baseRadius * 0.8 * corePulse;const coreHue = (frame * 1.0) % 360;ctx.fillStyle = `hsl(${coreHue}, 100%, 60%)`;ctx.strokeStyle = `hsl(${coreHue}, 100%, 80%)`;ctx.lineWidth = lineWidth * 0.8;ctx.beginPath();for (let i = 0; i < centralPolygonSides; i++) {const angle = (i * 2 * Math.PI) / centralPolygonSides + Math.PI / centralPolygonSides;const currentX = coreRadius * Math.cos(angle);const currentY = coreRadius * Math.sin(angle);if (i === 0) {ctx.moveTo(currentX, currentY);} else {ctx.lineTo(currentX, currentY);}}ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();"
+    },
+    {
+      "name": "Quantum Glyphs",
+      "description": "Dynamic geometric patterns of light weave and shift, forming an evolving alien script on the canvas.",
+      "parameters": [
+        {
+          "defaultValue": 60,
+          "label": "Glyph Complexity",
+          "max": 120,
+          "min": 10,
+          "name": "glyphComplexity",
+          "step": 1
+        },
+        {
+          "defaultValue": 150,
+          "label": "Glyph Size",
+          "max": 300,
+          "min": 50,
+          "name": "glyphSize",
+          "step": 10
+        },
+        {
+          "defaultValue": 40,
+          "label": "Distortion Amplitude",
+          "max": 100,
+          "min": 0,
+          "name": "distortionAmplitude",
+          "step": 1
+        },
+        {
+          "defaultValue": 0.05,
+          "label": "Distortion Speed",
+          "max": 0.2,
+          "min": 0.01,
+          "name": "distortionSpeed",
+          "step": 0.005
+        },
+        {
+          "defaultValue": 3,
+          "label": "Distortion Waves",
+          "max": 10,
+          "min": 1,
+          "name": "distortionWaveCount",
+          "step": 0.5
+        },
+        {
+          "defaultValue": 2,
+          "label": "Line Thickness",
+          "max": 5,
+          "min": 0.5,
+          "name": "lineThickness",
+          "step": 0.1
+        },
+        {
+          "defaultValue": 1,
+          "label": "Color Shift Speed",
+          "max": 5,
+          "min": 0,
+          "name": "colorHueSpeed",
+          "step": 0.1
+        },
+        {
+          "defaultValue": 0.08,
+          "label": "Trail Effect",
+          "max": 0.2,
+          "min": 0,
+          "name": "trailOpacity",
+          "step": 0.005
+        }
+      ],
+      "code": "const { width, height } = ctx.canvas;const centerX = width / 2;const centerY = height / 2;if (!state.initialized || state.prevGlyphComplexity !== params.glyphComplexity) {state.initialized = true;state.prevGlyphComplexity = params.glyphComplexity;state.basePoints = [];const numSegments = Math.max(10, Math.floor(params.glyphComplexity));for (let i = 0; i < numSegments; i++) {const angle = (i / numSegments) * Math.PI * 2;state.basePoints.push({ x: Math.cos(angle), y: Math.sin(angle) });}}ctx.fillStyle = `rgba(0, 0, 0, ${params.trailOpacity})`;ctx.fillRect(0, 0, width, height);ctx.strokeStyle = `hsl(${((frame * params.colorHueSpeed) % 360).toFixed(0)}, 100%, 70%)`;ctx.lineWidth = params.lineThickness;ctx.lineCap = 'round';ctx.lineJoin = 'round';const currentPoints = [];const numSegments = state.basePoints.length;state.basePoints.forEach((p, i) => {const angle = Math.atan2(p.y, p.x);const distFactor1 = Math.sin(frame * params.distortionSpeed + i * Math.PI / numSegments * params.distortionWaveCount);const distFactor2 = Math.cos(frame * params.distortionSpeed * 0.5 + i * Math.PI / numSegments * (params.distortionWaveCount * 1.5));const distortedRadius = params.glyphSize + (distFactor1 + distFactor2) * 0.5 * params.distortionAmplitude;const x = centerX + distortedRadius * Math.cos(angle);const y = centerY + distortedRadius * Math.sin(angle);currentPoints.push({ x, y });});ctx.beginPath();ctx.moveTo(currentPoints[0].x, currentPoints[0].y);for (let i = 1; i < numSegments; i++) {ctx.lineTo(currentPoints[i].x, currentPoints[i].y);}ctx.closePath();ctx.stroke();const connectionOffset1 = Math.floor(numSegments / 3) + 1;const connectionOffset2 = Math.floor(numSegments / 2) - 1;for (let i = 0; i < numSegments; i++) {const p1 = currentPoints[i];const p2Index = (i + connectionOffset1 + Math.floor(frame / (10 * params.distortionSpeed))) % numSegments;const p2 = currentPoints[p2Index];ctx.beginPath();ctx.moveTo(p1.x, p1.y);ctx.lineTo(p2.x, p2.y);ctx.stroke();const p3Index = (i + connectionOffset2 - Math.floor(frame / (15 * params.distortionSpeed)));const p3 = currentPoints[(p3Index % numSegments + numSegments) % numSegments];ctx.beginPath();ctx.moveTo(p1.x, p1.y);ctx.lineTo(p3.x, p3.y);ctx.stroke();}"
+    },
+    {
+      "name": "Temporal Weave",
+      "description": "A mesmerizing tapestry of abstract lines, constantly shifting and intertwining, creating a visual metaphor for the flow and rhythm of time itself.",
+      "parameters": [
+        {
+          "defaultValue": 50,
+          "label": "Number of Weavers",
+          "max": 200,
+          "min": 10,
+          "name": "numAgents",
+          "step": 10
+        },
+        {
+          "defaultValue": 1.5,
+          "label": "Weaver Speed",
+          "max": 5,
+          "min": 0.5,
+          "name": "agentSpeed",
+          "step": 0.1
+        },
+        {
+          "defaultValue": 30,
+          "label": "Trail Length",
+          "max": 100,
+          "min": 5,
+          "name": "trailLength",
+          "step": 5
+        },
+        {
+          "defaultValue": 0.05,
+          "label": "Wave Frequency",
+          "max": 0.2,
+          "min": 0.01,
+          "name": "oscillationFrequency",
+          "step": 0.01
+        },
+        {
+          "defaultValue": 0.02,
+          "label": "Wave Intensity",
+          "max": 0.1,
+          "min": 0.005,
+          "name": "oscillationMagnitude",
+          "step": 0.005
+        },
+        {
+          "defaultValue": 1.5,
+          "label": "Thread Thickness",
+          "max": 5,
+          "min": 0.5,
+          "name": "lineThickness",
+          "step": 0.1
+        },
+        {
+          "defaultValue": 0.5,
+          "label": "Color Shift Speed",
+          "max": 2,
+          "min": 0,
+          "name": "hueShiftSpeed",
+          "step": 0.1
+        },
+        {
+          "defaultValue": 0.1,
+          "label": "Fade Speed",
+          "max": 0.5,
+          "min": 0.01,
+          "name": "fadeAlpha",
+          "step": 0.01
+        }
+      ],
+      "code": "if (frame === 0) {state.agents = [];for (let i = 0; i < params.numAgents; i++) {state.agents.push({id: i,x: Math.random() * ctx.canvas.width,y: Math.random() * ctx.canvas.height,angle: Math.random() * Math.PI * 2,vx: 0,vy: 0,history: [],baseHue: (i * (360 / params.numAgents)) % 360});}}ctx.fillStyle = `rgba(0,0,0,${params.fadeAlpha})`;ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);ctx.lineCap = 'round';ctx.lineJoin = 'round';for (let i = 0; i < state.agents.length; i++) {const agent = state.agents[i];const waveInfluence = Math.sin(frame * params.oscillationFrequency + agent.id * 0.5) * params.oscillationMagnitude;agent.angle += waveInfluence;agent.vx = Math.cos(agent.angle) * params.agentSpeed;agent.vy = Math.sin(agent.angle) * params.agentSpeed;agent.x += agent.vx;agent.y += agent.vy;if (agent.x < 0) agent.x = ctx.canvas.width;else if (agent.x > ctx.canvas.width) agent.x = 0;if (agent.y < 0) agent.y = ctx.canvas.height;else if (agent.y > ctx.canvas.height) agent.y = 0;agent.history.unshift({ x: agent.x, y: agent.y });if (agent.history.length > params.trailLength) {agent.history.pop();}if (agent.history.length > 1) {ctx.beginPath();ctx.moveTo(agent.history[0].x, agent.history[0].y);for (let j = 1; j < agent.history.length; j++) {ctx.lineTo(agent.history[j].x, agent.history[j].y);}ctx.strokeStyle = `hsl(${(360 + agent.baseHue + frame * params.hueShiftSpeed) % 360}, 70%, 50%)`;ctx.lineWidth = params.lineThickness;ctx.stroke();}}"
+    },
+    {
+      "name": "Chrono Weave",
+      "description": "A mesmerizing dance of luminous particles tracing intricate paths, evoking the flowing, interwoven fabric of time through pulsating connections.",
+      "parameters": [
+        {
+          "defaultValue": 80,
+          "label": "Agent Count",
+          "max": 150,
+          "min": 20,
+          "name": "agentCount",
+          "step": 1
+        },
+        {
+          "defaultValue": 0.08,
+          "label": "Trail Opacity",
+          "max": 0.3,
+          "min": 0.01,
+          "name": "trailOpacity",
+          "step": 0.01
+        },
+        {
+          "defaultValue": 0.8,
+          "label": "Speed Multiplier",
+          "max": 2,
+          "min": 0.1,
+          "name": "speedMultiplier",
+          "step": 0.1
+        },
+        {
+          "defaultValue": 70,
+          "label": "Connection Distance",
+          "max": 150,
+          "min": 30,
+          "name": "connectionDistance",
+          "step": 5
+        },
+        {
+          "defaultValue": 0.5,
+          "label": "Pulse Strength",
+          "max": 1,
+          "min": 0,
+          "name": "pulseStrength",
+          "step": 0.05
+        },
+        {
+          "defaultValue": 200,
+          "label": "Base Color Hue",
+          "max": 360,
+          "min": 0,
+          "name": "colorHue",
+          "step": 1
+        },
+        {
+          "defaultValue": 0.3,
+          "label": "Noise Influence",
+          "max": 1,
+          "min": 0,
+          "name": "noiseInfluence",
+          "step": 0.05
+        }
+      ],
+      "code": "const { width, height } = ctx.canvas;if (!state.agents) {    state.agents = [];    for (let i = 0; i < params.agentCount; i++) {        state.agents.push({            x: Math.random() * width,            y: Math.random() * height,            vx: (Math.random() - 0.5) * 2,            vy: (Math.random() - 0.5) * 2,            colorHueOffset: Math.random() * 60 - 30        });    }}ctx.fillStyle = `rgba(0,0,0,${params.trailOpacity})`;ctx.fillRect(0, 0, width, height);ctx.lineWidth = 1.5;for (let i = 0; i < state.agents.length; i++) {    const agent = state.agents[i];    const noiseFactor = params.noiseInfluence * 0.1;    const angleOffset = Math.sin(agent.x * 0.01 + frame * 0.005) * 0.5 + Math.cos(agent.y * 0.01 + frame * 0.007) * 0.5;    agent.vx += Math.cos(angleOffset * 2 * Math.PI) * noiseFactor;    agent.vy += Math.sin(angleOffset * 2 * Math.PI) * noiseFactor;    agent.vx *= 0.98;    agent.vy *= 0.98;    agent.x += agent.vx * params.speedMultiplier;    agent.y += agent.vy * params.speedMultiplier;    if (agent.x < 0 || agent.x > width) {        agent.vx *= -1;        agent.x = agent.x < 0 ? 0 : width;    }    if (agent.y < 0 || agent.y > height) {        agent.vy *= -1;        agent.y = agent.y < 0 ? 0 : height;    }    ctx.beginPath();    ctx.arc(agent.x, agent.y, 2, 0, Math.PI * 2);    ctx.fillStyle = `hsl(${params.colorHue + agent.colorHueOffset}, 100%, 70%)`;    ctx.fill();}for (let i = 0; i < state.agents.length; i++) {    for (let j = i + 1; j < state.agents.length; j++) {        const agentA = state.agents[i];        const agentB = state.agents[j];        const dx = agentA.x - agentB.x;        const dy = agentA.y - agentB.y;        const distance = Math.sqrt(dx * dx + dy * dy);        if (distance < params.connectionDistance) {            const opacity = 1 - (distance / params.connectionDistance);            const pulse = (Math.sin(frame * 0.05 + i * 0.1) * 0.5 + 0.5);            ctx.beginPath();            ctx.moveTo(agentA.x, agentA.y);            ctx.lineTo(agentB.x, agentB.y);            ctx.strokeStyle = `hsla(${params.colorHue}, 100%, 80%, ${opacity * (1 - params.pulseStrength) + pulse * params.pulseStrength})`;            ctx.stroke();        }    }}"
+    },
+    {
+      "name": "Astral Script",
+      "description": "A mesmerizing animation of glowing geometric patterns that continuously evolve, reminiscent of an ancient celestial alphabet being inscribed.",
+      "parameters": [
+        {
+          "defaultValue": 4,
+          "label": "Number of Rings",
+          "max": 8,
+          "min": 2,
+          "name": "numRings",
+          "step": 1
+        },
+        {
+          "defaultValue": 12,
+          "label": "Segments per Ring",
+          "max": 32,
+          "min": 4,
+          "name": "numSegments",
+          "step": 1
+        },
+        {
+          "defaultValue": 25,
+          "label": "Ring Spacing",
+          "max": 50,
+          "min": 10,
+          "name": "ringSpacing",
+          "step": 1
+        },
+        {
+          "defaultValue": 40,
+          "label": "Line Length",
+          "max": 100,
+          "min": 5,
+          "name": "lineLength",
+          "step": 1
+        },
+        {
+          "defaultValue": 1,
+          "label": "Animation Speed",
+          "max": 5,
+          "min": 0.1,
+          "name": "speed",
+          "step": 0.1
+        },
+        {
+          "defaultValue": 2,
+          "label": "Line Width",
+          "max": 5,
+          "min": 0.5,
+          "name": "lineWidth",
+          "step": 0.1
+        },
+        {
+          "defaultValue": 200,
+          "label": "Color Hue",
+          "max": 360,
+          "min": 0,
+          "name": "colorHue",
+          "step": 1
+        },
+        {
+          "defaultValue": 0.05,
+          "label": "Trail Alpha",
+          "max": 0.2,
+          "min": 0.01,
+          "name": "trailAlpha",
+          "step": 0.01
+        }
+      ],
+      "code": "ctx.fillStyle = `rgba(0,0,0,${params.trailAlpha})`;ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);const centerX = ctx.canvas.width / 2;const centerY = ctx.canvas.height / 2;ctx.save();ctx.translate(centerX, centerY);const globalRotation = (frame * params.speed * Math.PI / 180) % (2 * Math.PI);ctx.rotate(globalRotation);for (let i = 0; i < params.numRings; i++) {const ringRadius = params.ringSpacing * (i + 1);const ringRotation = globalRotation * (0.5 + i * 0.1) + Math.sin(frame * params.speed * 0.1 + i) * 0.2;ctx.rotate(ringRotation);const hue = (params.colorHue + i * 30) % 360;ctx.strokeStyle = `hsl(${hue}, 80%, 70%)`;ctx.lineWidth = params.lineWidth;ctx.lineCap = 'round';for (let j = 0; j < params.numSegments; j++) {const angle = (j / params.numSegments) * 2 * Math.PI;const x = ringRadius * Math.cos(angle);const y = ringRadius * Math.sin(angle);const pulse = Math.sin(frame * params.speed * 0.05 + j * 0.5 + i) * 0.5 + 0.5;const currentLineLength = params.lineLength * (0.5 + pulse * 0.5);ctx.beginPath();ctx.moveTo(x, y);const endAngle = angle + Math.PI / 4 + Math.sin(frame * params.speed * 0.08 + j) * 0.1;const endX = x + currentLineLength * Math.cos(endAngle);const endY = y + currentLineLength * Math.sin(endAngle);ctx.lineTo(endX, endY);ctx.stroke();ctx.beginPath();ctx.arc(x, y, params.lineWidth * 0.8, 0, Math.PI * 2);ctx.fillStyle = `hsl(${hue}, 90%, 80%)`;ctx.fill();}}ctx.restore();"
+    }
+  ],
+  "currentParams": {
+    "numRings": 8,
+    "numSegments": 4,
+    "ringSpacing": 50,
+    "lineLength": 15,
+    "speed": 0.2,
+    "lineWidth": 1.5,
+    "colorHue": 260,
+    "trailAlpha": 0.08
+  }
+}

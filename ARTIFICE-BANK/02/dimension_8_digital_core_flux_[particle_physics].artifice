@@ -1,0 +1,62 @@
+{
+  "code": "let particles = [];\n\nfunction Particle() {\n    this.reset = function() {\n        this.pos = createVector(random(width), random(height));\n        this.vel = createVector(0, 0);\n        this.acc = createVector(0, 0);\n        this.maxL = p.particleLifespan;\n        this.life = random(this.maxL);\n    }\n    this.reset();\n\n    this.update = function() {\n        this.maxL = p.particleLifespan;\n        \n        // Central Force (Attraction/Repulsion to Mouse)\n        let cx = mouseX;\n        let cy = mouseY;\n        let dx = cx - this.pos.x;\n        let dy = cy - this.pos.y;\n        let dSq = dx * dx + dy * dy;\n        dSq = constrain(dSq, 100, 100000); // Limit force magnitude near center\n        \n        let strength = p.forceStrength / dSq;\n        let mag = sqrt(dSq);\n        \n        let fx = (dx / mag) * strength;\n        let fy = (dy / mag) * strength;\n        \n        this.acc.add(fx, fy);\n\n        // Noise Influence (Perlin Field for 'shimmer')\n        let n = noise(this.pos.x * 0.01, this.pos.y * 0.01, frameCount * 0.005) * TWO_PI * 4;\n        this.acc.add(cos(n) * p.noiseInfluence, sin(n) * p.noiseInfluence);\n\n        // Integration\n        this.vel.add(this.acc);\n        this.vel.mult(1.0 - p.friction);\n        this.pos.add(this.vel);\n        this.acc.mult(0);\n\n        // Lifespan and boundary check\n        this.life -= 1;\n        if (this.life <= 0 || this.pos.x < -10 || this.pos.x > width + 10 || this.pos.y < -10 || this.pos.y > height + 10) {\n            this.reset();\n        }\n    }\n\n    this.display = function() {\n        let alpha = map(this.life, 0, this.maxL, 0, 1);\n        // Subtle hue shift based on position\n        let h = (p.hue + (this.pos.x * 0.1)) % 360;\n        \n        stroke(h, p.saturation, p.brightness, alpha);\n        point(this.pos.x, this.pos.y);\n    }\n}\n\nfunction setup() {\n    createCanvas(windowWidth, windowHeight);\n    colorMode(HSB, 360, 100, 100, 1);\n    strokeWeight(1.5);\n    let targetCount = floor(p.particleCount);\n    for (let i = 0; i < targetCount; i++) {\n        particles.push(new Particle());\n    }\n}\n\nfunction updateParticlesArray() {\n    let targetCount = floor(p.particleCount);\n    if (particles.length !== targetCount) {\n        if (particles.length < targetCount) {\n            while (particles.length < targetCount) {\n                particles.push(new Particle());\n            }\n        } else if (particles.length > targetCount) {\n            particles.splice(targetCount);\n        }\n    }\n}\n\nfunction draw() {\n    background(0, 0.05); \n    updateParticlesArray();\n\n    for (let i = 0; i < particles.length; i++) {\n        particles[i].update();\n        particles[i].display();\n    }\n}\n\nfunction windowResized() {\n    resizeCanvas(windowWidth, windowHeight);\n}",
+  "info": {
+    "name": "Digital Core Flux [particle physics]",
+    "description": "Thousands of luminous particles coalesce and disperse around a central gravitational point, creating a mesmerizing cloud of shimmering digital energy driven by subtle noise fields.",
+    "algorithm": "1. Initialize a large array of Particle objects, each given a random position and lifespan.\\n2. In the draw loop, apply a central force (attraction or repulsion) to each particle, calculated relative to the mouse position.\\n3. Add a secondary, spatially determined force derived from Perlin noise to simulate 'shimmering' or chaotic energy.\\n4. Update particle velocity and position, applying a friction factor to dampen movement.\\n5. Draw each particle as a bright point, fading its opacity based on its remaining lifespan.\\n6. When a particle's lifespan expires, or it leaves the screen, reset its properties to loop the effect."
+  },
+  "parameters": [
+    {
+      "name": "particleCount",
+      "label": "Particle Density",
+      "min": 50,
+      "max": 5000,
+      "step": 10,
+      "defaultValue": 1500,
+      "description": "Controls the total number of particles in the simulation."
+    },
+    {
+      "name": "forceStrength",
+      "label": "Central Force Strength",
+      "min": -500,
+      "max": 500,
+      "step": 10,
+      "defaultValue": 200,
+      "description": "The magnitude of the force applied towards (positive/attraction) or away from (negative/repulsion) the mouse position."
+    },
+    {
+      "name": "friction",
+      "label": "Velocity Damping",
+      "min": 0.001,
+      "max": 0.2,
+      "step": 0.001,
+      "defaultValue": 0.05,
+      "description": "A drag factor that slows particle velocity each frame, preventing runaway acceleration."
+    },
+    {
+      "name": "noiseInfluence",
+      "label": "Noise Jitter",
+      "min": 0,
+      "max": 2.5,
+      "step": 0.01,
+      "defaultValue": 1.5,
+      "description": "Increases the influence of the Perlin noise field on particle movement, adding a shimmering, erratic quality."
+    },
+    {
+      "name": "particleLifespan",
+      "label": "Max Lifespan (Frames)",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "defaultValue": 200,
+      "description": "How many frames a particle lives before being reset to a new random position."
+    }
+  ],
+  "parameterValues": {
+    "particleCount": 790,
+    "forceStrength": -500,
+    "friction": 0.001,
+    "noiseInfluence": 0.04,
+    "particleLifespan": 80
+  }
+}

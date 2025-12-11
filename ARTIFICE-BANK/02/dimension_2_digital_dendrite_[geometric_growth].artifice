@@ -1,0 +1,72 @@
+{
+  "code": "function setup(){createCanvas(windowWidth,windowHeight);colorMode(HSB,360,100,100,100);angleMode(DEGREES);}function windowResized(){resizeCanvas(windowWidth,windowHeight);}function draw(){background(0);translate(width/2,height);noFill();branch(p.trunkLength,p.maxLevels);}function branch(len,level){let t=frameCount*p.wobbleFreq;let angleShift=sin(t)*p.wobbleAmp;let currentHue=(p.hue+level*15)%360;let currentSat=p.saturation+10;let currentBrt=p.brightness-(p.maxLevels-level)*10;stroke(currentHue,currentSat,currentBrt,80);strokeWeight(len/p.trunkLength*3+0.5);line(0,0,0,-len);translate(0,-len);if(level>1){let newLen=len*p.lengthRatio;let currentAngle=p.branchAngle+angleShift;push();rotate(currentAngle);branch(newLen,level-1);pop();push();rotate(-currentAngle);branch(newLen,level-1);pop();}}",
+  "info": {
+    "name": "Digital Dendrite [geometric growth]",
+    "description": "A recursive fractal tree structure grows from the base, its branches oscillating gently with digital energy, forming a shimmering, ephemeral cloud of light.",
+    "algorithm": "The sketch initiates a recursive function at the bottom center, drawing a line segment (branch) and then translating to its end. At each step, it calls itself twice, rotating left and right by a variable angle and decreasing the branch length by a fixed ratio. The rotation angle is dynamically modulated by a sine wave based on frameCount to create a constant, shimmering movement."
+  },
+  "parameters": [
+    {
+      "name": "trunkLength",
+      "label": "Trunk Length",
+      "min": 50,
+      "max": 300,
+      "step": 1,
+      "defaultValue": 150,
+      "description": "Initial length of the fractal trunk."
+    },
+    {
+      "name": "branchAngle",
+      "label": "Branch Angle (Deg)",
+      "min": 1,
+      "max": 90,
+      "step": 0.5,
+      "defaultValue": 25,
+      "description": "The base angle between parent and child branches."
+    },
+    {
+      "name": "lengthRatio",
+      "label": "Length Ratio",
+      "min": 0.5,
+      "max": 0.9,
+      "step": 0.01,
+      "defaultValue": 0.67,
+      "description": "The factor by which each new branch shortens."
+    },
+    {
+      "name": "maxLevels",
+      "label": "Max Recursion Depth",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "defaultValue": 7,
+      "description": "How many levels deep the fractal grows."
+    },
+    {
+      "name": "wobbleAmp",
+      "label": "Shimmer Amplitude",
+      "min": 0,
+      "max": 15,
+      "step": 0.1,
+      "defaultValue": 5,
+      "description": "Magnitude of angular oscillation (the digital shimmer)."
+    },
+    {
+      "name": "wobbleFreq",
+      "label": "Shimmer Frequency",
+      "min": 0.001,
+      "max": 0.1,
+      "step": 0.001,
+      "defaultValue": 0.05,
+      "description": "Speed of the angular oscillation based on time."
+    }
+  ],
+  "parameterValues": {
+    "trunkLength": 300,
+    "branchAngle": 90,
+    "lengthRatio": 0.9,
+    "maxLevels": 10,
+    "wobbleAmp": 0,
+    "wobbleFreq": 0.097
+  }
+}

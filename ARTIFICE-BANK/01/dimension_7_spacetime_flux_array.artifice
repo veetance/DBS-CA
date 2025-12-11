@@ -1,0 +1,71 @@
+{
+  "code": "let w, h;\nlet cols, rows;\n\nfunction setup() {\n  createCanvas(windowWidth, windowHeight);\n  colorMode(HSB, 360, 100, 100);\n}\n\nfunction calculateGrid() {\n  // Recalculate grid points based on current canvas size and density\n  // p.gridDensity defines the number of points (not segments)\n  w = width / (p.gridDensity - 1);\n  h = height / (p.gridDensity - 1);\n  cols = floor(p.gridDensity);\n  rows = floor(p.gridDensity);\n}\n\nfunction draw() {\n  background(10, 5, 15); // Dark, deep space background\n  calculateGrid(); \n\n  let t = frameCount * p.fluxSpeed * 0.001; // Time step\n\n  strokeWeight(p.lineThickness);\n  // Futuristic, Material-inspired glow (cyan/blue)\n  stroke(190, 70, 95);\n  noFill();\n\n  // Function to get displaced point coordinates\n  const getDisplacedPoint = (i, j) => {\n    let x = map(i, 0, cols - 1, 0, width);\n    let y = map(j, 0, rows - 1, 0, height);\n\n    // Calculate noise value\n    let n = noise(x * p.noiseScale, y * p.noiseScale, t);\n    \n    // Map noise to displacement angle and magnitude\n    let angle = map(n, 0, 1, 0, TWO_PI * p.rotationMultiplier);\n    let magnitude = map(n, 0, 1, 0, p.pullStrength);\n    \n    let dx = cos(angle) * magnitude;\n    let dy = sin(angle) * magnitude;\n    \n    return createVector(x + dx, y + dy);\n  };\n\n  // Draw horizontal lines (rows)\n  for (let j = 0; j < rows; j++) {\n    beginShape();\n    // Ensure smooth curves by repeating start/end points\n    let ptStart = getDisplacedPoint(0, j);\n    curveVertex(ptStart.x, ptStart.y);\n    \n    for (let i = 0; i < cols; i++) {\n      let pt = getDisplacedPoint(i, j);\n      curveVertex(pt.x, pt.y);\n    }\n    \n    let ptEnd = getDisplacedPoint(cols - 1, j);\n    curveVertex(ptEnd.x, ptEnd.y); // Repeat end point\n    endShape();\n  }\n  \n  // Draw vertical lines (columns)\n  for (let i = 0; i < cols; i++) {\n    beginShape();\n    // Ensure smooth curves by repeating start/end points\n    let ptStart = getDisplacedPoint(i, 0);\n    curveVertex(ptStart.x, ptStart.y);\n\n    for (let j = 0; j < rows; j++) {\n      let pt = getDisplacedPoint(i, j);\n      curveVertex(pt.x, pt.y);\n    }\n    \n    let ptEnd = getDisplacedPoint(i, rows - 1);\n    curveVertex(ptEnd.x, ptEnd.y); // Repeat end point\n    endShape();\n  }\n}\n\nfunction windowResized() {\n  resizeCanvas(windowWidth, windowHeight);\n}",
+  "info": {
+    "name": "Spacetime Flux Array",
+    "description": "A dynamic, adaptive grid that maps Perlin noise onto vector fields, illustrating the fluid, warping nature of spacetime influenced by invisible gravitational flux lines."
+  },
+  "parameters": [
+    {
+      "name": "gridDensity",
+      "label": "Grid Density",
+      "min": 15,
+      "max": 80,
+      "step": 1,
+      "defaultValue": 45,
+      "description": "The number of grid points along each axis. Higher values increase detail and computation load."
+    },
+    {
+      "name": "noiseScale",
+      "label": "Noise Scale (Zoom)",
+      "min": 0.0005,
+      "max": 0.015,
+      "step": 0.0001,
+      "defaultValue": 0.005,
+      "description": "Controls the 'zoom' level of the Perlin noise field, determining the size of the distortion waves."
+    },
+    {
+      "name": "fluxSpeed",
+      "label": "Flux Speed (Time)",
+      "min": 0.5,
+      "max": 8,
+      "step": 0.1,
+      "defaultValue": 3,
+      "description": "The speed at which the noise pattern evolves over time, simulating cosmic flow."
+    },
+    {
+      "name": "pullStrength",
+      "label": "Pull Strength",
+      "min": 5,
+      "max": 200,
+      "step": 5,
+      "defaultValue": 100,
+      "description": "The maximum distance a grid point can be displaced from its original location."
+    },
+    {
+      "name": "rotationMultiplier",
+      "label": "Rotation Multiplier",
+      "min": 1,
+      "max": 8,
+      "step": 0.5,
+      "defaultValue": 4,
+      "description": "How many full rotations the displacement vector can undergo based on the noise value, influencing the swirling pattern."
+    },
+    {
+      "name": "lineThickness",
+      "label": "Line Thickness",
+      "min": 0.5,
+      "max": 4,
+      "step": 0.1,
+      "defaultValue": 1.5,
+      "description": "The visual weight of the structural lines."
+    }
+  ],
+  "parameterValues": {
+    "gridDensity": 36,
+    "noiseScale": 0.0019,
+    "fluxSpeed": 8,
+    "pullStrength": 200,
+    "rotationMultiplier": 1,
+    "lineThickness": 1.9
+  }
+}

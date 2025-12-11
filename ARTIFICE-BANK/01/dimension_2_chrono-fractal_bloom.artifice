@@ -1,0 +1,71 @@
+{
+  "code": "let t = 0;\n\nfunction setup() {\n  createCanvas(windowWidth, windowHeight);\n  colorMode(HSB, 360, 100, 100, 100);\n  strokeWeight(1.5);\n  noFill();\n  angleMode(DEGREES);\n}\n\nfunction draw() {\n  background(0, 0, 5, 5);\n  translate(width / 2, height / 2);\n  \n  t += p.growthSpeed;\n\n  let mainBranches = floor(p.complexity);\n  \n  for (let i = 0; i < mainBranches; i++) {\n    let angle = (360 / mainBranches) * i;\n    let hue = (t * 20 * p.colorShift + i * (360 / mainBranches)) % 360;\n    stroke(hue, 90, 90, 80);\n    \n    push();\n    rotate(angle + t * 5);\n    drawBranch(p.branchiness);\n    pop();\n  }\n}\n\nfunction drawBranch(level) {\n  if (level < 1) return;\n\n  let maxLen = min(width, height) * 0.4;\n  let len = map(sin(t + level * 20), -1, 1, p.coreSize, maxLen);\n  \n  // Prevent drawing if length is too small\n  if (len < 1) return;\n\n  beginShape();\n  // Use curveVertex, requires duplicate start/end points\n  curveVertex(0, 0);\n  curveVertex(0, 0);\n  \n  // Draw the main stem of the branch\n  for (let i = 0; i < len; i += 5) {\n    let sway = map(noise(i * 0.01, t, level), 0, 1, -p.noiseFactor, p.noiseFactor) * (i / len);\n    curveVertex(i, sway);\n  }\n  \n  // Anchor the end of the curve\n  let endSway = map(noise(len * 0.01, t, level), 0, 1, -p.noiseFactor, p.noiseFactor) * (len / len);\n  curveVertex(len, endSway);\n  curveVertex(len, endSway);\n  endShape();\n  \n  // Recursively draw sub-branches\n  push();\n  translate(len * 0.75, 0); \n  rotate(45 * sin(t + level));\n  drawBranch(level - 1);\n  rotate(-90 * sin(t + level));\n  drawBranch(level - 1);\n  pop();\n}\n\nfunction windowResized() {\n  resizeCanvas(windowWidth, windowHeight);\n}\n",
+  "info": {
+    "name": "Chrono-Fractal Bloom",
+    "description": "A mesmerizing digital organism pulsates at the center of the void, its fractal tendrils unfurling and retracting in a hypnotic, cyclical dance of growth and decay."
+  },
+  "parameters": [
+    {
+      "name": "growthSpeed",
+      "label": "Growth Speed",
+      "min": 0.001,
+      "max": 0.02,
+      "step": 0.001,
+      "defaultValue": 0.005,
+      "description": "Controls the overall speed of the pulsating growth and decay cycle."
+    },
+    {
+      "name": "complexity",
+      "label": "Complexity",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "defaultValue": 8,
+      "description": "Sets the number of primary branches originating from the central core."
+    },
+    {
+      "name": "branchiness",
+      "label": "Branchiness",
+      "min": 1,
+      "max": 7,
+      "step": 1,
+      "defaultValue": 4,
+      "description": "Determines the recursion depth, creating more intricate and detailed fractal structures."
+    },
+    {
+      "name": "colorShift",
+      "label": "Color Shift",
+      "min": 0,
+      "max": 2,
+      "step": 0.05,
+      "defaultValue": 0.3,
+      "description": "Controls the rate at which the hue of the entire structure changes over time."
+    },
+    {
+      "name": "noiseFactor",
+      "label": "Noise Factor",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "defaultValue": 25,
+      "description": "Adjusts the amount of chaotic 'sway' or organic irregularity in the branches."
+    },
+    {
+      "name": "coreSize",
+      "label": "Core Size",
+      "min": 0,
+      "max": 150,
+      "step": 1,
+      "defaultValue": 10,
+      "description": "Defines the minimum radius of the bloom, creating a larger or smaller empty center."
+    }
+  ],
+  "parameterValues": {
+    "growthSpeed": 0.005,
+    "complexity": 8,
+    "branchiness": 4,
+    "colorShift": 0.3,
+    "noiseFactor": 25,
+    "coreSize": 10
+  }
+}

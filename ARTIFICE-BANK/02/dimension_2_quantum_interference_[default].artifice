@@ -1,0 +1,72 @@
+{
+  "code": "let FST=-1000,FA='r',FI=0;function setup(){createCanvas(windowWidth,windowHeight,WEBGL);colorMode(HSB,360,100,100);}function windowResized(){resizeCanvas(windowWidth,windowHeight);}function draw(){background(0);orbitControl();if(random()<p.flashProbability){FST=frameCount;let G=floor(p.gridDensity);if(random()<0.5){FA='r';FI=floor(random(G));}else{FA='a';FI=floor(random(G));}}let W_SPD=0.1;let F_DUR=20;let I=max(0,1-(frameCount-FST)/F_DUR);let S_FACTOR=0.1;let shake=sin(frameCount*0.5)*I*S_FACTOR;camera(shake,0,(height/2)/tan(PI/6),0,0,0,0,1,0);stroke(p.hue,p.saturation,p.brightness*I*3);strokeWeight(p.lineThickness);noFill();let G=floor(p.gridDensity);let R_MAX=p.radiusExtent;for(let i=0;i<G;i++){let a=map(i,0,G-1,0,TWO_PI);beginShape();for(let k=0;k<G;k++){let r=map(k,0,G-1,0,R_MAX);let x=r*cos(a);let z=r*sin(a);let y=0;if(FA==='a'&&i===FI){let wave=sin(r*0.01*p.waveHarmonics+frameCount*W_SPD);y=p.flashMagnitude*I*wave;}vertex(x,y,z);}endShape();}for(let i=0;i<G;i++){let r=map(i,0,G-1,0,R_MAX);beginShape();for(let k=0;k<=G;k++){let a=map(k,0,G,0,TWO_PI);let x=r*cos(a);let z=r*sin(a);let y=0;if(FA==='r'&&i===FI){let wave=sin(a*p.waveHarmonics+frameCount*W_SPD);y=p.flashMagnitude*I*wave;}vertex(x,y,z);}endShape();}}",
+  "info": {
+    "name": "Quantum Interference [default]",
+    "description": "A vast 3D grid of parallel lines pulses with unpredictable flashes of energy, creating sudden, luminous ripples that distort the geometry before instantly fading back into the darkness. The viewer experiences the brief, violent signature of an ephemeral force.",
+    "algorithm": "A 3D circular grid is constructed from radial spokes and concentric rings using polar coordinates (radius, angle) and rendered in WEBGL. Randomly, a flash event selects one line (either a spoke or a ring) and calculates its displacement based on a traveling sine wave function. This displacement, which rapidly decays over 20 frames, causes the selected line to momentarily surge outward from the central plane, creating a luminous, transient ripple."
+  },
+  "parameters": [
+    {
+      "name": "gridDensity",
+      "label": "Grid Density",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "defaultValue": 40,
+      "description": "Number of radial spokes and concentric rings that form the grid."
+    },
+    {
+      "name": "radiusExtent",
+      "label": "Max Radius",
+      "min": 100,
+      "max": 800,
+      "step": 50,
+      "defaultValue": 400,
+      "description": "The maximum extent of the circular grid from the center."
+    },
+    {
+      "name": "flashProbability",
+      "label": "Flash Chance",
+      "min": 0.001,
+      "max": 0.1,
+      "step": 0.001,
+      "defaultValue": 0.01,
+      "description": "The probability per frame that a new interference flash will be triggered."
+    },
+    {
+      "name": "waveHarmonics",
+      "label": "Wave Harmonics",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "defaultValue": 8,
+      "description": "Controls the spatial frequency (tightness/number of peaks) of the distortion wave."
+    },
+    {
+      "name": "flashMagnitude",
+      "label": "Flash Height",
+      "min": 1,
+      "max": 200,
+      "step": 1,
+      "defaultValue": 80,
+      "description": "Maximum vertical displacement of the lines when a flash occurs."
+    },
+    {
+      "name": "lineThickness",
+      "label": "Line Thickness",
+      "min": 0.5,
+      "max": 5,
+      "step": 0.1,
+      "defaultValue": 1.5,
+      "description": "The thickness of the drawn lines in the grid."
+    }
+  ],
+  "parameterValues": {
+    "gridDensity": 72,
+    "radiusExtent": 400,
+    "flashProbability": 0.031,
+    "waveHarmonics": 8,
+    "flashMagnitude": 80,
+    "lineThickness": 0.5
+  }
+}

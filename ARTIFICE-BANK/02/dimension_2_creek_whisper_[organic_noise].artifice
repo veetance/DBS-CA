@@ -1,0 +1,52 @@
+{
+  "code": "let P=[];let T=0;function r(){P=[];for(let i=0;i<p.particleCount;i++){P.push({x:random(width),y:random(height)})}if(width>0)P.length=floor(p.particleCount)}function setup(){createCanvas(windowWidth,windowHeight);colorMode(HSB,360,100,100,1);r();T=random(1000)}function draw(){if(P.length!==floor(p.particleCount))r();background(0,0,0,0.08);T+=p.timeSpeed*.001;for(let i=0;i<P.length;i++){let pt=P[i];let n=noise(pt.x*p.noiseScale,pt.y*p.noiseScale,T);let a=n*TWO_PI*2;let px=pt.x,py=pt.y;pt.x+=cos(a)*p.stepSize;pt.y+=sin(a)*p.stepSize;let h=(p.hue+n*60)%360;strokeWeight(1.5);stroke(h,p.saturation,p.brightness,0.8);line(px,py,pt.x,pt.y);if(pt.x<0||pt.x>width||pt.y<0||pt.y>height){pt.x=random(width);pt.y=random(height)}}}function windowResized(){resizeCanvas(windowWidth,windowHeight);r()}",
+  "info": {
+    "name": "Creek Whisper [organic noise]",
+    "description": "Tracers drift silently through an ephemeral topographic landscape, visualizing the invisible currents of a 3D Perlin noise field as time flows, mimicking the slow, meandering path of a hidden stream.",
+    "algorithm": "Particles are initialized randomly across the canvas. In each frame, the particle's next direction is calculated using 3D Perlin noise (2D coordinates + time dimension). Particles move a small step in that direction, tracing their path, and are reset if they exit the screen boundaries."
+  },
+  "parameters": [
+    {
+      "name": "noiseScale",
+      "label": "Flow Zoom (Scale)",
+      "min": 0.0001,
+      "max": 0.05,
+      "step": 0.0005,
+      "defaultValue": 0.008,
+      "description": "Controls the level of zoom into the underlying Perlin noise field, affecting the curvature of the flow lines."
+    },
+    {
+      "name": "timeSpeed",
+      "label": "Animation Speed",
+      "min": 0.1,
+      "max": 5,
+      "step": 0.1,
+      "defaultValue": 1.5,
+      "description": "Determines how quickly the third dimension of the noise field evolves, speeding up or slowing down the overall animation flow."
+    },
+    {
+      "name": "particleCount",
+      "label": "Tracer Density",
+      "min": 100,
+      "max": 5000,
+      "step": 100,
+      "defaultValue": 2000,
+      "description": "The number of particles used to trace the flow field."
+    },
+    {
+      "name": "stepSize",
+      "label": "Flow Velocity",
+      "min": 0.1,
+      "max": 10,
+      "step": 0.1,
+      "defaultValue": 3,
+      "description": "Controls how far each particle moves along the vector direction per frame, affecting the apparent speed of the flow."
+    }
+  ],
+  "parameterValues": {
+    "noiseScale": 0.0046,
+    "timeSpeed": 0.1,
+    "particleCount": 4200,
+    "stepSize": 5.399999999999999
+  }
+}

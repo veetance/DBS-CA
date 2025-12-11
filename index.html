@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Blacksmith Studios</title>
+    <meta name="description" content="Digital Blacksmith Studios – Selected Works 2025" />
+
+    <!-- Modular CSS Architecture -->
+    <link rel="stylesheet" href="css/app-theme.css" /> <!-- Visual Tokens -->
+    <link rel="stylesheet" href="style.css" /> <!-- Layout & Components -->
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" defer></script>
+    <script src="js/artifice.js" defer></script> <!-- Art Engine -->
+    <script src="main.js" defer></script> <!-- App Logic -->
+</head>
+
+<body>
+
+    <!-- Generative Background (Scrolls Away) -->
+    <div id="artifice-container"
+        style="position:absolute; top:0; left:0; width:100%; height:100vh; z-index: -1; pointer-events: none;"></div>
+    <!-- Generative Background (Managed by p5.js) -->
+
+
+    <!-- ARTIFICE CURATION CONSOLE -->
+    <div id="curation-console" class="curation-widget" style="display:none;">
+        <div class="curation-header">
+            <span class="status-indicator">●</span> ARTIFICE AUDIT
+        </div>
+        <div class="file-readout" id="artifice-filename">Initialize...</div>
+
+        <div class="curation-controls">
+            <button id="btn-keep" class="curation-btn btn-keep" title="Keep File">KEEP</button>
+            <button id="btn-kill" class="curation-btn btn-kill" title="Mark for Deletion">KILL</button>
+            <button id="btn-next" class="curation-btn btn-next" title="Skip">></button>
+        </div>
+
+        <div class="rejection-counter" id="reject-counter" style="display:none; align-items:center; gap:5px;">
+            <span>0 FLAGGED</span>
+            <button id="btn-export" class="icon-btn" title="Copy Kill List">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Top Navigation (Tiny, Text-Based) -->
+    <!-- TWO-SLAB NAVIGATION HEADER -->
+    <nav id="global-nav" class="top-nav-slabs">
+
+        <!-- SLAB 1: BRANDING (Centered, Collapses on Scroll) -->
+        <div class="nav-slab-brand">
+            <div class="nav-logo-wrapper">
+                <div class="nav-logo">
+                    <div class="nav-word"><span>D</span><span class="logo-reveal">IGITAL</span></div>
+                    <div class="nav-word"><span>B</span><span class="logo-reveal">LACKSMITH</span></div>
+                    <div class="nav-word"><span>S</span><span class="logo-reveal">TUD</span><span
+                            class="i-container"><span class="i-glyph">I</span><span class="star-wrapper"><svg
+                                    class="y2k-star" viewBox="0 0 24 24">
+                                    <path d="M12 2 L15 10 L23 12 L15 14 L12 22 L9 14 L1 12 L9 10 Z" />
+                                </svg></span></span><span class="logo-reveal">OS</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLAB 2: CONTROLS (Links Left, Button Right) -->
+        <div class="nav-slab-controls">
+            <!-- Nav Timeline Links (Left) -->
+            <ul class="nav-links">
+                <li><a href="#hero" class="nav-link active" data-section="hero">HOME</a></li>
+                <li><a href="#works" class="nav-link" data-section="works">GALLERY</a></li>
+                <li><a href="#resume" class="nav-link" data-section="resume">RESUME</a></li>
+            </ul>
+
+
+
+
+
+            <!-- Contact Button (Right) -->
+            <button class="btn-contact">Contact Me</button>
+
+
+        </div>
+    </nav>
+
+    <!-- Hero Section: Fullscreen Intro -->
+    <section id="hero" class="hero-centered">
+        <!-- Generative Text that will be overlayed -->
+        <h1 class="hero-mega-text" style="font-size: clamp(2rem, 6vw, 10rem); letter-spacing: -0.05em;">
+            VEETANCE<br>DESIGN
+        </h1>
+
+        <div class="hero-tagline-container">
+            <p class="hero-tagline">
+                Sculpting the digital future of art & design -
+                <br>by bridging the gap between Human and Artificial efforts
+            </p>
+        </div>
+
+        <!-- Fade to Black Gradient -->
+        <div class="hero-gradient-mask"></div>
+    </section>
+
+    <!-- TECH STACK SECTION -->
+    <!-- TECH STACK SECTION -->
+    <section id="tech-stack" class="section-bordered">
+
+        <!-- Part 1: Proficiency Chips (Reordered to Top) -->
+        <div class="proficiency-container" style="border-top: none; padding-top: 0;">
+            <h3 class="subsection-title">TECHNICAL PROFICIENCY</h3>
+
+            <div class="proficiency-grid">
+                <!-- Column 1: Technical -->
+                <div class="prof-column">
+                    <h4 class="prof-header">Technical</h4>
+                    <div class="chip-group">
+                        <span class="skill-chip">Generative AI (ComfyUI, Stable Diffusion, Flux)</span>
+                        <span class="skill-chip">Prompt Engineering</span>
+                        <span class="skill-chip">ControlNet</span>
+                        <span class="skill-chip">IP-ADAPTERS</span>
+                    </div>
+                </div>
+
+                <!-- Column 2: Fine Arts (Renamed from Software) -->
+                <div class="prof-column">
+                    <h4 class="prof-header">Fine Arts</h4>
+                    <div class="chip-group">
+                        <span class="skill-chip">Illustration</span>
+                        <span class="skill-chip">Sketching</span>
+                        <span class="skill-chip">Painting</span>
+                        <span class="skill-chip">Sculpting</span>
+                        <span class="skill-chip">Still Life</span>
+                        <span class="skill-chip">Drawing Tablet</span>
+                        <span class="skill-chip">Color Theory</span>
+                        <span class="skill-chip">Artistic Perception</span>
+                    </div>
+                </div>
+
+                <!-- Column 3: Design -->
+                <div class="prof-column">
+                    <h4 class="prof-header">Design</h4>
+                    <div class="chip-group">
+                        <span class="skill-chip">Concept Art</span>
+                        <span class="skill-chip">UI/UX</span>
+                        <span class="skill-chip">Motion Graphics</span>
+                        <span class="skill-chip">Logo Design</span>
+                        <span class="skill-chip">Visual Storytelling</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: Square Tools Grid (Marquee, Moved Below) -->
+        <div class="tools-section" style="margin-top: 80px;">
+            <h3 class="subsection-title">TOOLS</h3>
+
+            <div class="tools-marquee-container">
+                <div class="tools-track">
+                    <!-- Original Set -->
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 1</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 2</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 3</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 4</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 5</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 6</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 7</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 8</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 9</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 10</span>
+                    </div>
+
+                    <!-- Duplicated Set for Loop -->
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 1</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 2</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 3</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 4</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 5</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 6</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 7</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 8</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 9</span>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon-placeholder"></div><span>TOOL 10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Works Section: The Grid (MOMA Style) -->
+    <section id="works">
+        <div style="margin-bottom: 4vh; display: flex; justify-content: space-between; align-items: baseline;">
+            <h2 class="section-title">GALLERY</h2>
+            <span
+                style="color: var(--text-gray); font-family: var(--font-body); font-size: 0.8rem; letter-spacing: 0.1em;">
+                RECENT WORKS
+            </span>
+        </div>
+        <!-- Grid Container -->
+        <div class="works-grid" id="works-grid-target">
+            <!-- JS INJECTED FROM assets/works.json -->
+        </div>
+    </section>
+
+    <!-- Resume Section: Split View -->
+    <section id="resume" class="section-bordered">
+        <div class="split-grid-resume">
+
+            <!-- Left: Sticky Title -->
+            <div class="sticky-sidebar">
+                <h2 class="section-title">RESUME</h2>
+                <p class="sidebar-subtitle">EXPERIENCE &<br>PROFICIENCY</p>
+                <!-- Ensuring the PDF link is correct -->
+                <a href="Veetance-portfolio-2025.pdf" target="_blank" class="pdf-download-link">[
+                    DOWNLOAD PDF ]</a>
+            </div>
+
+            <!-- Right: Content -->
+            <div class="resume-content">
+
+                <!-- Education Block -->
+                <div class="padded-bottom-8vh">
+                    <div class="resume-section-header">EDUCATION</div>
+                    <div id="resume-education-target">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+                <!-- Experience Block -->
+                <div>
+                    <div class="resume-section-header">EXPERIENCE</div>
+                    <div id="resume-experience-target">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section: Split View -->
+    <section id="contact" class="section-bordered-lg">
+        <div class="split-grid-contact">
+
+            <!-- Left: Call to Action -->
+            <!-- LEFT COLUMN: Title & Info -->
+            <!-- Left: Call to Action -->
+            <div>
+                <h2 class="section-title">
+                    LET'S<br>WORK
+                </h2>
+
+                <p class="contact-description">
+                    Available for freelance, contract, and long-term partnerships. Specializing in high-end brand
+                    identity and digital execution.
+                </p>
+
+                <div class="contact-links-group">
+                    <a href="mailto:divineokos@hotmail.com" class="contact-link-item">
+                        ✉ divineokos@hotmail.com
+                    </a>
+                    <a href="tel:4036047706" class="contact-link-item">
+                        📞 (403) 604-7706
+                    </a>
+                </div>
+
+                <div class="social-buttons-group">
+                    <a href="https://www.linkedin.com/in/divine-okonkwo-723a0a194/" target="_blank"
+                        class="social-button">LINKEDIN</a>
+                    <a href="https://www.instagram.com/veetance/" target="_blank" class="social-button">INSTAGRAM</a>
+                </div>
+            </div>
+
+            <!-- Right: Application Letter Card -->
+            <div class="job-application-card">
+                <div class="job-id-stamp">#1306772</div>
+
+                <h4 class="job-label">
+                    <span>//</span> APPLICATION STATEMENT
+                </h4>
+
+                <div class="letter-body">
+                    <p style="margin-bottom: 20px;"><strong>Dear Hiring Team,</strong></p>
+
+                    <p style="margin-bottom: 20px;">
+                        I am applying for the <strong>Freelance Graphic Designer (Remote)</strong> position. With a
+                        strong foundation in corporate visual identity and extensive experience delivering high-quality
+                        assets under strict guidelines, I am ready to support your marketing team immediately.
+                    </p>
+
+                    <p style="margin-bottom: 20px;">
+                        While my portfolio showcases experimental and Generative AI work, I possess the discipline to
+                        set that aside for strict brand adherence. I offer:
+                    </p>
+
+                    <ul class="letter-list">
+                        <li><strong>Corporate Brand Adherence:</strong> Experience working within established visual
+                            identity systems (Floating Axe, Veras AI).</li>
+                        <li><strong>Adobe Creative Suite Mastery:</strong> Advanced proficiency in Photoshop,
+                            Illustrator, and InDesign.</li>
+                        <li><strong>Reliability:</strong> Proactive communication and availability during EST business
+                            hours.</li>
+                    </ul>
+
+                    <p style="margin-top: 20px; margin-bottom: 20px;">
+                        I own all necessary equipment and software. I look forward to the possibility of collaborating.
+                    </p>
+
+                    <p>— Divine Okonkwo</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-bar">
+            <span>© 2025 VEETANCE DESIGN | ALL RIGHTS RESERVED</span>
+            <span>BUILT WITH ❤️ BY VEETANCE</span>
+        </div>
+    </section>
+</body>
+
+</html>

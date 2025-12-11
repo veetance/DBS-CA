@@ -1,0 +1,52 @@
+{
+  "code": "const PROMPT_TEXT = \"a cloud of shimmering digital energy\";\nlet chars;\n\nfunction setup() {\n  createCanvas(windowWidth, windowHeight);\n  colorMode(HSB, 360, 100, 100);\n  chars = PROMPT_TEXT.split('');\n  textAlign(CENTER, CENTER);\n}\n\nfunction draw() {\n  background(0);\n  \n  let fontSize = p.baseFontSize;\n  let gridStep = fontSize * 1.6; \n  let radius = max(1, p.mouseInfluenceRadius);\n  let radiusSq = radius * radius;\n  \n  let index = 0;\n  \n  for (let y = gridStep / 2; y < height; y += gridStep) {\n    for (let x = gridStep / 2; x < width; x += gridStep) {\n      \n      let dx = mouseX - x;\n      let dy = mouseY - y;\n      let dSq = dx * dx + dy * dy;\n\n      let n = noise(x * p.noiseScale, y * p.noiseScale, frameCount * 0.01);\n      \n      let influence = 0;\n      if (dSq < radiusSq) {\n        // Map squared distance to influence (1 near mouse, 0 at radius edge)\n        influence = map(dSq, 0, radiusSq, 1, 0);\n      }\n      \n      // Character selection based on noise and position\n      let charIndex = floor((index + n * 5) % chars.length);\n      let charToDraw = chars[charIndex];\n      \n      push();\n      translate(x, y);\n      \n      // Base noise rotation for general jitter\n      let noiseRot = map(n, 0, 1, -p.maxRotation * 0.1, p.maxRotation * 0.1); \n      let finalRotation = noiseRot;\n\n      if (influence > 0) {\n          let angleToMouse = atan2(dy, dx);\n          // Orient perpendicular to mouse and apply influence-based rotation\n          finalRotation += angleToMouse + HALF_PI + influence * p.maxRotation; \n      }\n\n      rotate(finalRotation);\n      \n      // Apply size scaling\n      let sizeScale = 1 + influence * 0.8; \n      textSize(fontSize * sizeScale);\n      \n      // Modulate color for shimmer effect\n      let charBrightness = constrain(p.brightness + map(n, 0, 1, -15, 15), 0, 100);\n      let charHue = (p.hue + n * 40) % 360; \n      \n      fill(charHue, p.saturation, charBrightness);\n      \n      text(charToDraw, 0, 0);\n      \n      pop();\n      \n      index++;\n    }\n  }\n}\n\nfunction windowResized() {\n  resizeCanvas(windowWidth, windowHeight);\n}",
+  "info": {
+    "name": "Digital Cloud Weave [typographic art]",
+    "description": "A dynamic field of generative typography drawn from the source text. Characters shimmer subtly using Perlin noise and react dramatically to the mouse cursor, swirling and scaling as if disturbed by a point of digital energy.",
+    "algorithm": "1. Initialize the character array from the prompt text and set up a grid based on the base font size.\n2. In the draw loop, iterate over every point (x, y) on the grid.\n3. Calculate the distance and angle to the mouse, and generate a Perlin noise value (n) incorporating time (frameCount).\n4. Determine an influence factor based on the point's distance from the mouse and the 'mouseInfluenceRadius'.\n5. Use the influence factor to scale the text size and apply rotation, causing characters near the cursor to swirl and enlarge, up to 'maxRotation'.\n6. Use the noise value (n) to subtly shift the character index, brightness, and hue, creating a continuous, shimmering energy effect across the field.\n7. Draw the chosen character at (x, y) with the calculated size and rotation."
+  },
+  "parameters": [
+    {
+      "name": "baseFontSize",
+      "label": "Base Font Size",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "defaultValue": 24,
+      "description": "Controls the default size of the characters when uninfluenced."
+    },
+    {
+      "name": "mouseInfluenceRadius",
+      "label": "Influence Radius (px)",
+      "min": 50,
+      "max": 400,
+      "step": 10,
+      "defaultValue": 180,
+      "description": "The distance within which the characters react to the mouse cursor."
+    },
+    {
+      "name": "maxRotation",
+      "label": "Max Rotation (rad)",
+      "min": 0.1,
+      "max": 3.14,
+      "step": 0.1,
+      "defaultValue": 1.57,
+      "description": "The maximum rotation applied to characters when they are directly influenced by the mouse (1.57 rad = 90 degrees)."
+    },
+    {
+      "name": "noiseScale",
+      "label": "Shimmer Scale",
+      "min": 0.001,
+      "max": 0.05,
+      "step": 0.001,
+      "defaultValue": 0.015,
+      "description": "Controls the granularity of the Perlin noise field used for general character shimmer and color modulation."
+    }
+  ],
+  "parameterValues": {
+    "baseFontSize": 24,
+    "mouseInfluenceRadius": 180,
+    "maxRotation": 1.57,
+    "noiseScale": 0.015
+  }
+}

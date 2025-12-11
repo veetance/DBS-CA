@@ -1,0 +1,62 @@
+{
+  "code": "function setup(){createCanvas(windowWidth,windowHeight);colorMode(HSB,360,100,100,100)}function draw(){background(0);translate(width/2,height);let aH=p.audio.high||0;let bT=p.thicknessFactor+p.audio.low*10;strokeWeight(bT);branch(p.trunkLength,aH)}function branch(l,aH,lvl=0){if(lvl>=p.recursionDepth||l<1)return;let h=(p.hue+l*0.5+frameCount*0.5)%360;let s=p.saturation;let b=p.brightness*(1-lvl/p.recursionDepth);let a=80+sin(frameCount*0.1+l)*20;stroke(h,s,b,a);line(0,0,0,-l);translate(0,-l);let cA=p.branchAngle+aH*0.1;let aT=sin(frameCount*0.5)*aH*0.05;push();rotate(cA+aT);branch(l*p.lengthRatio,aH,lvl+1);pop();push();rotate(-cA-aT);branch(l*p.lengthRatio,aH,lvl+1);pop()}function windowResized(){resizeCanvas(windowWidth,windowHeight)}",
+  "info": {
+    "name": "Digital Shroud Nebula [geometric growth]",
+    "description": "A recursive fractal structure grows upward from the base, resembling a shimmering cloud of ephemeral digital energy. Line thickness pulses subtly with bass, while high-frequency sounds introduce a nervous, crystalline twitch to the branching angles.",
+    "algorithm": "A recursive function draws branched line segments, starting at the screen's base. Each subsequent branch shortens by a ratio and rotates by a specific angle, defining the fractal shape. Audio high-frequency data modulates the rotation angle for a twitching effect, and low-frequency data controls the overall line thickness."
+  },
+  "parameters": [
+    {
+      "name": "trunkLength",
+      "label": "Trunk Length",
+      "min": 50,
+      "max": 300,
+      "step": 1,
+      "defaultValue": 150,
+      "description": "The initial length of the first segment of the fractal."
+    },
+    {
+      "name": "branchAngle",
+      "label": "Branch Angle (Rad)",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.01,
+      "defaultValue": 0.45,
+      "description": "The base angle (in radians) at which the structure branches left and right."
+    },
+    {
+      "name": "lengthRatio",
+      "label": "Length Reduction",
+      "min": 0.5,
+      "max": 0.85,
+      "step": 0.01,
+      "defaultValue": 0.7,
+      "description": "The multiplier applied to the length of each new, smaller branch."
+    },
+    {
+      "name": "recursionDepth",
+      "label": "Recursion Depth",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "defaultValue": 8,
+      "description": "The maximum number of levels the fractal will generate."
+    },
+    {
+      "name": "thicknessFactor",
+      "label": "Base Thickness",
+      "min": 1,
+      "max": 10,
+      "step": 0.5,
+      "defaultValue": 4,
+      "description": "The starting thickness of the lines, which is dynamically increased by low-frequency audio."
+    }
+  ],
+  "parameterValues": {
+    "trunkLength": 150,
+    "branchAngle": 0.45,
+    "lengthRatio": 0.7,
+    "recursionDepth": 8,
+    "thicknessFactor": 4
+  }
+}

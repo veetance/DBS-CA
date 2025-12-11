@@ -1,0 +1,62 @@
+{
+  "code": "const MAX_FORCE = 0.4;\nlet boids = [];\nconst NUM_BOIDS = 150;\n\nclass Boid {\n  constructor(x, y) {\n    this.position = createVector(x, y);\n    this.velocity = p5.Vector.random2D();\n    this.velocity.setMag(random(2, 4));\n    this.acceleration = createVector(0, 0);\n  }\n\n  seek(target) {\n    let desired = p5.Vector.sub(target, this.position);\n    desired.setMag(p.maxSpeed);\n    let steer = p5.Vector.sub(desired, this.velocity);\n    steer.limit(MAX_FORCE);\n    return steer;\n  }\n\n  separation(boids) {\n    let steer = createVector(0, 0);\n    let count = 0;\n    for (let other of boids) {\n      if (other !== this) {\n        let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);\n        if (d < p.perceptionRadius) {\n          let diff = p5.Vector.sub(this.position, other.position);\n          diff.normalize();\n          diff.div(d); // Weight by distance\n          steer.add(diff);\n          count++;\n        }\n      }\n    }\n    if (count > 0) {\n      steer.div(count);\n      steer.setMag(p.maxSpeed);\n      steer.sub(this.velocity);\n      steer.limit(MAX_FORCE);\n    }\n    return steer;\n  }\n\n  alignment(boids) {\n    let avgVelocity = createVector(0, 0);\n    let count = 0;\n    for (let other of boids) {\n      if (other !== this) {\n        let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);\n        if (d < p.perceptionRadius) {\n          avgVelocity.add(other.velocity);\n          count++;\n        }\n      }\n    }\n    if (count > 0) {\n      avgVelocity.div(count);\n      avgVelocity.setMag(p.maxSpeed);\n      let steer = p5.Vector.sub(avgVelocity, this.velocity);\n      steer.limit(MAX_FORCE);\n      return steer;\n    }\n    return createVector(0, 0);\n  }\n\n  cohesion(boids) {\n    let avgPosition = createVector(0, 0);\n    let count = 0;\n    for (let other of boids) {\n      if (other !== this) {\n        let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);\n        if (d < p.perceptionRadius) {\n          avgPosition.add(other.position);\n          count++;\n        }\n      }\n    }\n    if (count > 0) {\n      avgPosition.div(count);\n      return this.seek(avgPosition);\n    }\n    return createVector(0, 0);\n  }\n\n  flock(boids) {\n    let sep = this.separation(boids);\n    let ali = this.alignment(boids);\n    let coh = this.cohesion(boids);\n\n    sep.mult(p.separationForce);\n    ali.mult(p.alignmentForce);\n    coh.mult(p.cohesionForce);\n    \n    this.acceleration.add(sep);\n    this.acceleration.add(ali);\n    this.acceleration.add(coh);\n  }\n  \n  update() {\n    this.velocity.add(this.acceleration);\n    this.velocity.limit(p.maxSpeed);\n    this.position.add(this.velocity);\n    this.acceleration.mult(0);\n  }\n\n  edges() {\n    let x = this.position.x;\n    let y = this.position.y;\n    \n    if (x < 0) this.position.x = width;\n    if (y < 0) this.position.y = height;\n    if (x > width) this.position.x = 0;\n    if (y > height) this.position.y = 0;\n  }\n\n  display() {\n    let dynamicHue = (p.hue + frameCount * 0.5 + this.position.x * 0.05) % 360;\n    \n    strokeWeight(1);\n    stroke(dynamicHue, p.saturation, p.brightness * 0.7, 0.4); \n    fill(dynamicHue, p.saturation, p.brightness, 0.8);\n    \n    push();\n    translate(this.position.x, this.position.y);\n    let angle = this.velocity.heading() + HALF_PI;\n    rotate(angle);\n    \n    // Triangle shape for digital energy\n    beginShape();\n    vertex(0, -5);\n    vertex(-2, 5);\n    vertex(2, 5);\n    endShape(CLOSE);\n    \n    pop();\n  }\n}\n\nfunction setup() {\n  createCanvas(windowWidth, windowHeight);\n  colorMode(HSB, 360, 100, 100, 1);\n  for (let i = 0; i < NUM_BOIDS; i++) {\n    boids.push(new Boid(random(width), random(height)));\n  }\n}\n\nfunction draw() {\n  background(0, 0, 0, 0.05); // Low alpha for long, shimmering trails\n  \n  for (let boid of boids) {\n    boid.flock(boids);\n    boid.update();\n    boid.edges();\n    boid.display();\n  }\n}\n\nfunction windowResized() {\n  resizeCanvas(windowWidth, windowHeight);\n}",
+  "info": {
+    "name": "Digital Flocking Nebula [flocking swarm]",
+    "description": "A dense cloud of digital energy particles exhibits complex collective intelligence, swirling and coalescing according to underlying forces of attraction and repulsion. Each particle shimmers with dynamically shifting spectral hues, leaving faint, ethereal trails.",
+    "algorithm": "1. Initialize 150 Boids, each with random position and velocity, and set color mode to HSB.\n2. In the draw loop, apply a slightly transparent black background to create trails.\n3. For each Boid, calculate three steering vectors based on nearby flockmates (within the Perception Radius).\n4. Separation: Calculate a vector opposing the position of neighbors to prevent crowding, scaled by Separation Force.\n5. Alignment: Calculate a vector matching the average velocity of neighbors, scaled by Alignment Force.\n6. Cohesion: Calculate a vector seeking the average position of neighbors, scaled by Cohesion Force.\n7. Sum these forces into acceleration, update velocity (limited by Max Speed), and update position.\n8. Wrap the Boid's position around the screen edges.\n9. Display the Boid as a small, hue-shifting triangle pointing in the direction of its velocity."
+  },
+  "parameters": [
+    {
+      "name": "separationForce",
+      "label": "Separation Force",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "defaultValue": 1.5,
+      "description": "Controls how strongly boids push away from neighbors to avoid collision."
+    },
+    {
+      "name": "alignmentForce",
+      "label": "Alignment Force",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "defaultValue": 1,
+      "description": "Controls how strongly boids align their direction with their neighbors."
+    },
+    {
+      "name": "cohesionForce",
+      "label": "Cohesion Force",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "defaultValue": 1,
+      "description": "Controls how strongly boids move towards the average position of their neighbors."
+    },
+    {
+      "name": "maxSpeed",
+      "label": "Max Speed",
+      "min": 1,
+      "max": 10,
+      "step": 0.5,
+      "defaultValue": 4,
+      "description": "The maximum velocity a single boid can achieve."
+    },
+    {
+      "name": "perceptionRadius",
+      "label": "Perception Radius",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "defaultValue": 75,
+      "description": "The distance within which a boid can 'see' and react to its flockmates."
+    }
+  ],
+  "parameterValues": {
+    "separationForce": 4.6,
+    "alignmentForce": 0.3,
+    "cohesionForce": 5,
+    "maxSpeed": 6,
+    "perceptionRadius": 115
+  }
+}

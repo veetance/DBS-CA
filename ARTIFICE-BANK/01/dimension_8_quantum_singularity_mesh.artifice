@@ -1,0 +1,61 @@
+{
+  "code": "let cols, rows;\n\nfunction setup() {\n  createCanvas(windowWidth, windowHeight);\n  colorMode(HSB, 360, 100, 100, 100);\n}\n\nfunction windowResized() {\n  resizeCanvas(windowWidth, windowHeight);\n}\n\nfunction draw() {\n  background(0);\n  \n  // Access parameters via the global 'p' object\n  let density = p.gridDensity;\n  cols = floor(width / density);\n  rows = floor(height / density);\n  \n  push();\n  // Center the grid\n  translate(width / 2 - (cols * density) / 2, height / 2 - (rows * density) / 2);\n\n  let noiseScale = 0.1;\n  let timeFactor = frameCount * p.warpSpeed;\n  \n  // 1. Calculate and store warped positions\n  let points = [];\n  for (let i = 0; i <= cols; i++) {\n    points[i] = [];\n    for (let j = 0; j <= rows; j++) {\n      let x = i * density;\n      let y = j * density;\n      \n      // Use 3D Perlin noise for smooth, flowing distortion over time\n      let nx = noise(i * noiseScale, j * noiseScale, timeFactor);\n      let ny = noise(i * noiseScale + 100, j * noiseScale + 100, timeFactor);\n      \n      // Map noise output to the desired amplitude range\n      let offsetX = map(nx, 0, 1, -p.warpAmplitude, p.warpAmplitude);\n      let offsetY = map(ny, 0, 1, -p.warpAmplitude, p.warpAmplitude);\n      \n      points[i][j] = createVector(x + offsetX, y + offsetY);\n    }\n  }\n\n  // Determine color based on time\n  let hue = (frameCount * p.colorShiftRate) % 360;\n  \n  // 2. Draw connections (the mesh lines)\n  strokeWeight(p.lineThickness);\n  noFill();\n  stroke(hue, 80, 100, 80); // Bright, saturated, slightly transparent lines\n\n  for (let i = 0; i < cols; i++) {\n    for (let j = 0; j < rows; j++) {\n      let p1 = points[i][j];\n      let p2 = points[i+1][j];\n      let p3 = points[i][j+1];\n      \n      // Draw horizontal connection\n      line(p1.x, p1.y, p2.x, p2.y);\n      // Draw vertical connection\n      line(p1.x, p1.y, p3.x, p3.y);\n    }\n  }\n  \n  // 3. Draw the nodes (points)\n  fill(hue, 90, 100);\n  noStroke();\n  // Node size scales slightly with line thickness\n  let nodeSize = p.lineThickness * 1.5 + 1;\n  \n  for (let i = 0; i <= cols; i++) {\n    for (let j = 0; j <= rows; j++) {\n      let currentPoint = points[i][j];\n      ellipse(currentPoint.x, currentPoint.y, nodeSize, nodeSize);\n    }\n  }\n  \n  pop();\n}",
+  "info": {
+    "name": "Quantum Singularity Mesh",
+    "description": "A dynamic fabric of interconnected nodes stretches and warps in continuous motion, simulating the subtle distortion of spacetime by unseen quantum forces. Vibrant Material You hues highlight the structural integrity of the dark mesh."
+  },
+  "parameters": [
+    {
+      "name": "gridDensity",
+      "label": "Grid Density",
+      "min": 15,
+      "max": 80,
+      "step": 1,
+      "defaultValue": 35,
+      "description": "Controls the spacing between the nodes. Lower values create a denser mesh."
+    },
+    {
+      "name": "warpAmplitude",
+      "label": "Warp Amplitude",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "defaultValue": 80,
+      "description": "Determines the maximum distance points are displaced from their origin, controlling distortion strength."
+    },
+    {
+      "name": "warpSpeed",
+      "label": "Time Flow Rate",
+      "min": 0.001,
+      "max": 0.05,
+      "step": 0.001,
+      "defaultValue": 0.01,
+      "description": "Controls the speed at which the distortion pattern evolves."
+    },
+    {
+      "name": "lineThickness",
+      "label": "Mesh Weight",
+      "min": 0.5,
+      "max": 4,
+      "step": 0.1,
+      "defaultValue": 1.5,
+      "description": "Sets the stroke thickness of the connecting lines and the size of the nodes."
+    },
+    {
+      "name": "colorShiftRate",
+      "label": "Hue Cycle Speed",
+      "min": 0,
+      "max": 1.5,
+      "step": 0.1,
+      "defaultValue": 0.3,
+      "description": "Controls how quickly the color palette cycles through the HSB spectrum, giving the vibrant, dynamic look."
+    }
+  ],
+  "parameterValues": {
+    "gridDensity": 16,
+    "warpAmplitude": 35,
+    "warpSpeed": 0.01,
+    "lineThickness": 2.5,
+    "colorShiftRate": 1.1
+  }
+}

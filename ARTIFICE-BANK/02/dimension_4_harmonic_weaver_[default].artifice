@@ -1,0 +1,62 @@
+{
+  "code": "let grid = [];\nlet prevGridSize = 0;\n\nfunction setup() {\n  createCanvas(windowWidth, windowHeight, WEBGL);\n  colorMode(HSB, 360, 100, 100, 100);\n  createGrid();\n}\n\nfunction windowResized() {\n  resizeCanvas(windowWidth, windowHeight);\n  // Recalculate node XY positions on resize to fit new dimensions, preserving the wave\n  const size = p.gridSize;\n  const smallerDim = min(width, height);\n  const spacing = smallerDim * 0.8 / size;\n  for (let i = 0; i < size; i++) {\n    for (let j = 0; j < size; j++) {\n      if (grid[i] && grid[i][j]) {\n        grid[i][j].x = (i - (size - 1) / 2) * spacing;\n        grid[i][j].y = (j - (size - 1) / 2) * spacing;\n      }\n    }\n  }\n}\n\nfunction createGrid() {\n  grid = [];\n  const size = p.gridSize;\n  const smallerDim = min(width, height);\n  const spacing = smallerDim * 0.8 / size;\n  for (let i = 0; i < size; i++) {\n    grid[i] = [];\n    for (let j = 0; j < size; j++) {\n      grid[i][j] = {\n        x: (i - (size - 1) / 2) * spacing,\n        y: (j - (size - 1) / 2) * spacing,\n        z: 0,\n        v: 0,\n        a: 0\n      };\n    }\n  }\n  prevGridSize = size;\n}\n\nfunction draw() {\n  if (p.gridSize !== prevGridSize) {\n    createGrid();\n  }\n\n  background(0);\n  orbitControl(1, 1, 0.1);\n  rotateX(1.2);\n\n  if (mouseIsPressed) {\n    let i_pluck = constrain(floor(map(mouseX, 0, width, 0, p.gridSize)), 0, p.gridSize - 1);\n    let j_pluck = constrain(floor(map(mouseY, 0, height, 0, p.gridSize)), 0, p.gridSize - 1);\n    let r = p.pluckRadius;\n\n    let startI = floor(max(0, i_pluck - r));\n    let endI = ceil(min(p.gridSize, i_pluck + r));\n    let startJ = floor(max(0, j_pluck - r));\n    let endJ = ceil(min(p.gridSize, j_pluck + r));\n\n    for (let i = startI; i < endI; i++) {\n      for (let j = startJ; j < endJ; j++) {\n        let d = dist(i, j, i_pluck, j_pluck);\n        if (d < r) {\n          let falloff = (r - d) / r;\n          grid[i][j].v -= p.pluckForce * falloff * falloff * 0.1;\n        }\n      }\n    }\n  }\n\n  const size = p.gridSize;\n  for (let i = 0; i < size; i++) {\n    for (let j = 0; j < size; j++) {\n      let node = grid[i][j];\n      let forceZ = 0;\n      let neighbors = 0;\n      if (i > 0) { forceZ += grid[i - 1][j].z; neighbors++; }\n      if (i < size - 1) { forceZ += grid[i + 1][j].z; neighbors++; }\n      if (j > 0) { forceZ += grid[i][j - 1].z; neighbors++; }\n      if (j < size - 1) { forceZ += grid[i][j + 1].z; neighbors++; }\n      node.a = (forceZ - neighbors * node.z) * p.tension;\n    }\n  }\n\n  for (let i = 0; i < size; i++) {\n    for (let j = 0; j < size; j++) {\n      let node = grid[i][j];\n      node.v += node.a;\n      node.v *= p.damping;\n      node.z += node.v;\n    }\n  }\n\n  noFill();\n  for (let i = 0; i < size - 1; i++) {\n    for (let j = 0; j < size - 1; j++) {\n      let n1 = grid[i][j];\n      let n2 = grid[i + 1][j];\n      let n3 = grid[i][j + 1];\n\n      let avgVelH = abs(n1.v + n2.v) * 0.5;\n      strokeWeight(map(avgVelH, 0, 8, 0.5, 4, true));\n      stroke(p.hue, p.saturation, map(avgVelH, 0, 8, p.brightness, 100, true), 80);\n      line(n1.x, n1.y, n1.z, n2.x, n2.y, n2.z);\n\n      let avgVelV = abs(n1.v + n3.v) * 0.5;\n      strokeWeight(map(avgVelV, 0, 8, 0.5, 4, true));\n      stroke(p.hue, p.saturation, map(avgVelV, 0, 8, p.brightness, 100, true), 80);\n      line(n1.x, n1.y, n1.z, n3.x, n3.y, n3.z);\n    }\n  }\n}",
+  "info": {
+    "name": "Harmonic Weaver [default]",
+    "description": "Weave ripples of light through a resonant mesh. Your touch sends harmonic waves across the surface, their interference patterns creating a luminous, ever-changing tapestry of sound made visible.",
+    "algorithm": "1. A 2D grid of nodes is initialized in 3D space, forming a flat mesh.\n2. When the user holds the mouse, an impulse force is applied to nodes near the cursor, creating a wave.\n3. In each frame, the acceleration of every node is calculated based on the difference in height (Z-axis) between it and its neighbors, simulating tension.\n4. Each node's velocity and position are updated using this acceleration, and velocity is dampened over time to simulate energy loss.\n5. The grid is rendered as a series of connected lines. The brightness and thickness of each line are determined by the velocity of its nodes, making the waves glow brightly as they propagate."
+  },
+  "parameters": [
+    {
+      "name": "gridSize",
+      "label": "Grid Density",
+      "min": 30,
+      "max": 100,
+      "step": 1,
+      "defaultValue": 50,
+      "description": "Controls the number of nodes in the grid, affecting visual complexity."
+    },
+    {
+      "name": "tension",
+      "label": "Tension",
+      "min": 0.01,
+      "max": 0.4,
+      "step": 0.01,
+      "defaultValue": 0.15,
+      "description": "Determines the stiffness of the mesh, affecting how fast waves travel."
+    },
+    {
+      "name": "damping",
+      "label": "Damping",
+      "min": 0.95,
+      "max": 0.999,
+      "step": 0.001,
+      "defaultValue": 0.985,
+      "description": "Controls how quickly the waves fade out. Lower values mean shorter ripples."
+    },
+    {
+      "name": "pluckForce",
+      "label": "Pluck Force",
+      "min": 20,
+      "max": 300,
+      "step": 5,
+      "defaultValue": 150,
+      "description": "The strength of the initial impulse when you click on the grid."
+    },
+    {
+      "name": "pluckRadius",
+      "label": "Pluck Radius",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "defaultValue": 8,
+      "description": "The area of effect of your touch, measured in grid units."
+    }
+  ],
+  "parameterValues": {
+    "gridSize": 30,
+    "tension": 0.26,
+    "damping": 0.954,
+    "pluckForce": 40,
+    "pluckRadius": 4
+  }
+}

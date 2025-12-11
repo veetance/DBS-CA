@@ -1,0 +1,52 @@
+{
+  "code": "const PROMPT_TEXT = \"VEETANCE DESIGN\";let chars;function setup(){createCanvas(windowWidth,windowHeight);colorMode(HSB,360,100,100);chars=PROMPT_TEXT.split('');textAlign(CENTER,CENTER);}function draw(){background(0);let fontSize=p.baseFontSize;let gridStep=fontSize*1.6;let radius=max(1,p.mouseInfluenceRadius);let radiusSq=radius*radius;let index=0;for(let y=gridStep/2;y<height;y+=gridStep){for(let x=gridStep/2;x<width;x+=gridStep){let dx=mouseX-x;let dy=mouseY-y;let dSq=dx*dx+dy*dy;let n=noise(x*p.noiseScale,y*p.noiseScale,frameCount*0.01);let influence=0;if(dSq<radiusSq){influence=map(dSq,0,radiusSq,1,0);}let charIndex=floor((index+n*5)%chars.length);let charToDraw=chars[charIndex];push();translate(x,y);let noiseRot=map(n,0,1,-p.maxRotation*0.1,p.maxRotation*0.1);let finalRotation=noiseRot;if(influence>0){let angleToMouse=atan2(dy,dx);finalRotation+=angleToMouse+HALF_PI+influence*p.maxRotation;}rotate(finalRotation);let sizeScale=1+influence*0.8;textSize(fontSize*sizeScale);let charBrightness=constrain(p.brightness+map(n,0,1,-15,15),0,100);let charHue=(p.hue+n*40)%360;fill(charHue,p.saturation,charBrightness);text(charToDraw,0,0);pop();index++;}};}function windowResized(){resizeCanvas(windowWidth,windowHeight);}",
+  "info": {
+    "name": "Digital Cloud Weave [typographic art]",
+    "description": "A dynamic field of generative typography drawn from the source text. Characters shimmer subtly using Perlin noise and react dramatically to the mouse cursor, swirling and scaling as if disturbed by a point of digital energy.",
+    "algorithm": "1. Initialize a grid and set the source text to \"VEETANCE DESIGN\".\n2. Iterate over the grid positions (x, y) and calculate Perlin noise (n) for each point, animated over time and scaled by the Noise Detail.\n3. Calculate the mouse influence based on the distance to the cursor and the Influence Radius.\n4. Apply two types of rotation: a subtle jitter derived from noise, and a strong, influence-based rotation that makes characters swirl perpendicular to the mouse direction (controlled by Max Swirl Angle).\n5. Scale the character size based on mouse influence.\n6. Modulate the character's hue and brightness using noise to create a shimmering effect, then draw the character."
+  },
+  "parameters": [
+    {
+      "name": "baseFontSize",
+      "label": "Base Font Size",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "defaultValue": 18,
+      "description": "Sets the initial size of the characters and the density of the grid."
+    },
+    {
+      "name": "mouseInfluenceRadius",
+      "label": "Influence Radius",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "defaultValue": 150,
+      "description": "Defines the distance from the mouse cursor where characters start reacting."
+    },
+    {
+      "name": "noiseScale",
+      "label": "Shimmer Detail",
+      "min": 0.001,
+      "max": 0.05,
+      "step": 0.001,
+      "defaultValue": 0.015,
+      "description": "Controls the frequency and detail of the Perlin noise used for subtle character jitter and color shift."
+    },
+    {
+      "name": "maxRotation",
+      "label": "Max Swirl Angle",
+      "min": 0.1,
+      "max": 5,
+      "step": 0.1,
+      "defaultValue": 2.5,
+      "description": "Determines the maximum angular rotation applied to characters when they are close to the mouse."
+    }
+  ],
+  "parameterValues": {
+    "baseFontSize": 20,
+    "mouseInfluenceRadius": 500,
+    "noiseScale": 0.05,
+    "maxRotation": 2.5
+  }
+}

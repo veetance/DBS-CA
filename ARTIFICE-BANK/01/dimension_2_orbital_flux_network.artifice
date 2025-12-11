@@ -1,0 +1,61 @@
+{
+  "code": "let nodes = [];class Node {  constructor(index, totalNodes) {    this.index = index;    this.phaseOffset = map(index, 0, totalNodes, 0, TWO_PI);    this.baseRadius = 100 + (index % 5) * 50;     this.pos = createVector(0, 0);  }  update(t, orbitRadiusFactor, nodeSpeedMultiplier) {    const timeFactor = t * 0.001 * nodeSpeedMultiplier;    let R = min(width, height) * orbitRadiusFactor;    let r1 = this.baseRadius * orbitRadiusFactor * 2;    let r2 = R / 4;     this.pos.x = width / 2 +                  cos(this.phaseOffset + timeFactor) * r1 +                  cos(this.phaseOffset * 3 + timeFactor * 2) * r2;                          this.pos.y = height / 2 +                  sin(this.phaseOffset + timeFactor) * r1 +                  sin(this.phaseOffset * 3 + timeFactor * 2) * r2;  }  display() {    stroke(255, 255, 255, 150);    fill(100, 150, 255);     ellipse(this.pos.x, this.pos.y, 4, 4);  }}function setup() {  createCanvas(windowWidth, windowHeight);  angleMode(RADIANS);  frameRate(60);}function windowResized() {  resizeCanvas(windowWidth, windowHeight);}function initializeNodes() {  nodes = [];  for (let i = 0; i < p.numNodes; i++) {    nodes.push(new Node(i, p.numNodes));  }}function draw() {  if (nodes.length !== floor(p.numNodes)) {    initializeNodes();  }  background(10, 5, 15);  const maxDistSq = p.maxConnectionDist * p.maxConnectionDist;  const t = frameCount;  for (let node of nodes) {    node.update(t, p.orbitRadiusFactor, p.nodeSpeedMultiplier);  }  for (let i = 0; i < nodes.length; i++) {    for (let j = i + 1; j < nodes.length; j++) {      let n1 = nodes[i];      let n2 = nodes[j];      let dSq = (n1.pos.x - n2.pos.x) * (n1.pos.x - n2.pos.x) +                 (n1.pos.y - n2.pos.y) * (n1.pos.y - n2.pos.y);      if (dSq < maxDistSq) {        let connectionStrength = 1 - sqrt(dSq) / p.maxConnectionDist;        let R = map(connectionStrength, 0, 1, 50, 0);        let G = map(connectionStrength, 0, 1, 100, 255);        let B = map(connectionStrength, 0, 1, 200, 255);        let alpha = p.connectionAlpha * connectionStrength * 2;         alpha = constrain(alpha, 0, 255);        stroke(R, G, B, alpha);        strokeWeight(connectionStrength * 1.5 + 0.5);        line(n1.pos.x, n1.pos.y, n2.pos.x, n2.pos.y);      }    }  }  noStroke();  for (let node of nodes) {    fill(255, 255, 255, 200);    ellipse(node.pos.x, node.pos.y, 4, 4);  }}",
+  "info": {
+    "name": "Orbital Flux Network",
+    "description": "A dynamic visualization of data nodes traversing complex, multi-layered orbits, constantly re-establishing connections based on proximity, illuminating the architecture of a vast, adaptive system."
+  },
+  "parameters": [
+    {
+      "name": "numNodes",
+      "label": "Number of Nodes",
+      "min": 10,
+      "max": 150,
+      "step": 1,
+      "defaultValue": 80,
+      "description": "The total count of data nodes contributing to the network structure."
+    },
+    {
+      "name": "maxConnectionDist",
+      "label": "Connection Range",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "defaultValue": 180,
+      "description": "Maximum distance for nodes to form a connecting, illuminated link."
+    },
+    {
+      "name": "orbitRadiusFactor",
+      "label": "System Scale",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.05,
+      "defaultValue": 0.5,
+      "description": "Scales the overall size and spread of the orbital paths."
+    },
+    {
+      "name": "nodeSpeedMultiplier",
+      "label": "Orbital Velocity",
+      "min": 0.5,
+      "max": 3,
+      "step": 0.1,
+      "defaultValue": 1.5,
+      "description": "Controls the speed at which the nodes traverse their complex orbital paths."
+    },
+    {
+      "name": "connectionAlpha",
+      "label": "Line Opacity",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "defaultValue": 60,
+      "description": "The base transparency level of the connecting energy lines."
+    }
+  ],
+  "parameterValues": {
+    "numNodes": 150,
+    "maxConnectionDist": 200,
+    "orbitRadiusFactor": 0.55,
+    "nodeSpeedMultiplier": 2.9,
+    "connectionAlpha": 65
+  }
+}

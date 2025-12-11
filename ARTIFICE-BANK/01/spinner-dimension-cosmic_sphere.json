@@ -1,0 +1,224 @@
+{
+  "version": "1.0",
+  "createdAt": "2025-09-29T06:16:52.892Z",
+  "history": [
+    {
+      "name": "Light Chaser",
+      "description": "A traveler of mass pursues a point of light through a cosmic knot, its trail lagging behind.",
+      "parameters": [
+        {
+          "name": "travelerCatchUp",
+          "label": "Traveler Speed",
+          "min": 0.01,
+          "max": 1,
+          "step": 0.01,
+          "defaultValue": 0.1
+        },
+        {
+          "name": "rotationSpeed",
+          "label": "Rotation Speed",
+          "min": 0,
+          "max": 10,
+          "step": 0.1,
+          "defaultValue": 2
+        },
+        {
+          "name": "knotShape",
+          "label": "Knot Shape (KS)",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "defaultValue": 5
+        },
+        {
+          "name": "knotComplexity",
+          "label": "Knot Complexity (KC)",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "defaultValue": 12
+        },
+        {
+          "name": "stemRadius",
+          "label": "Stem Radius",
+          "min": 1,
+          "max": 100,
+          "step": 1,
+          "defaultValue": 30
+        },
+        {
+          "name": "maxDiameter",
+          "label": "Max Diameter",
+          "min": 0,
+          "max": 300,
+          "step": 1,
+          "defaultValue": 150
+        },
+        {
+          "name": "minDiameter",
+          "label": "Min Diameter",
+          "min": 0,
+          "max": 300,
+          "step": 1,
+          "defaultValue": 150
+        },
+        {
+          "name": "diameterSpeed",
+          "label": "Diameter Speed",
+          "min": 0.1,
+          "max": 5,
+          "step": 0.1,
+          "defaultValue": 1
+        },
+        {
+          "name": "trailLength",
+          "label": "Trail Length",
+          "min": 10,
+          "max": 500,
+          "step": 1,
+          "defaultValue": 200
+        },
+        {
+          "name": "nodeCount",
+          "label": "Node Count",
+          "min": 1,
+          "max": 10,
+          "step": 1,
+          "defaultValue": 1
+        },
+        {
+          "name": "strokeWeight",
+          "label": "Stroke Weight",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "defaultValue": 4
+        },
+        {
+          "name": "fadeOut",
+          "label": "Fade Out",
+          "min": 0.01,
+          "max": 1,
+          "step": 0.01,
+          "defaultValue": 0.2
+        },
+        {
+          "name": "fov",
+          "label": "Field of View",
+          "min": 50,
+          "max": 1000,
+          "step": 10,
+          "defaultValue": 300
+        },
+        {
+          "name": "hueSpeed",
+          "label": "Hue Speed",
+          "min": 0,
+          "max": 2,
+          "step": 0.1,
+          "defaultValue": 0.5
+        }
+      ],
+      "code": "\n// Helper functions\nconst mapRange = (value, inMin, inMax, outMin, outMax) => {\n  return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;\n};\nconst lerp = (a, b, t) => a + (b - a) * t;\n\n// State initialization\nif (!state.nodes) {\n  state.nodes = [];\n}\nconst { width, height } = ctx.canvas;\nconst centerX = width / 2;\nconst centerY = height / 2;\nconst fov = params.fov;\n\n// Adjust node count if parameter changes\nconst desiredCount = Math.floor(params.nodeCount);\nwhile (state.nodes.length < desiredCount) {\n    // Add a traveler object to follow the node\n    state.nodes.push({ angle: 0, trail: [], travelerX: 0, travelerY: 0, travelerZ: 0 });\n}\nwhile (state.nodes.length > desiredCount) {\n    state.nodes.pop();\n}\n// Re-distribute angle offsets for even spacing\nif (state.nodes.length > 0) {\n    state.nodes.forEach((node, i) => {\n        node.angleOffset = (Math.PI * 2 / state.nodes.length) * i;\n    });\n}\n\n// Animation update logic\nctx.fillStyle = 'rgba(13, 12, 29, ' + params.fadeOut + ')'; // Corresponds to gray-950\nctx.fillRect(0, 0, width, height);\nctx.lineCap = 'round';\n\nconst baseHue = frame * params.hueSpeed;\n\nfor (const node of state.nodes) {\n  // Update angle for animation\n  node.angle = (node.angle || 0) + params.rotationSpeed / 100; // Divide for finer control\n  \n  const u = node.angle + (node.angleOffset || 0);\n\n  // Calculate amplitude (oscillation of size)\n  const amplitude = mapRange(\n    Math.sin(u * params.diameterSpeed), -1, 1,\n    params.minDiameter,\n    params.maxDiameter\n  );\n\n  const KS = params.knotShape;\n  const KC = params.knotComplexity;\n  const waveIntensity = params.stemRadius / 50.0;\n\n  // Parametric equations for the 3D knot - this is the \"light\" node's target position\n  const targetX = amplitude * Math.sin(KS * u) * (1 + Math.cos(KC * u)) * waveIntensity;\n  const targetY = amplitude * Math.cos(KS * u) * (1 + Math.cos(KC * u)) * waveIntensity;\n  const targetZ = amplitude * Math.sin(KC * u) * waveIntensity;\n\n  // The \"traveler\" (mass) tries to catch up to the \"light\" node.\n  node.travelerX = lerp(node.travelerX || 0, targetX, params.travelerCatchUp);\n  node.travelerY = lerp(node.travelerY || 0, targetY, params.travelerCatchUp);\n  node.travelerZ = lerp(node.travelerZ || 0, targetZ, params.travelerCatchUp);\n\n  // Simple perspective projection for the traveler, which creates the trail\n  const travelerScale = fov / (fov + node.travelerZ);\n  const travelerScreenX = centerX + node.travelerX * travelerScale;\n  const travelerScreenY = centerY + node.travelerY * travelerScale;\n  \n  // Add traveler's current point to its trail\n  node.trail.unshift({ x: travelerScreenX, y: travelerScreenY, scale: travelerScale, z: node.travelerZ });\n\n  // Limit trail length\n  while (node.trail.length > params.trailLength) {\n    node.trail.pop();\n  }\n\n  // Draw the traveler's trail\n  if (node.trail.length > 1) {\n    for (let i = 0; i < node.trail.length - 1; i++) {\n      const p1 = node.trail[i];\n      const p2 = node.trail[i + 1];\n\n      const segmentProgress = i / params.trailLength;\n      \n      const gradient = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);\n      const hue1 = (baseHue + segmentProgress * 100) % 360;\n      const hue2 = (baseHue + (i + 1) / params.trailLength * 100) % 360;\n      const lightness = mapRange(p1.z, -amplitude, amplitude, 40, 90); \n      \n      gradient.addColorStop(0, `hsla(${hue1}, 100%, ${lightness}%, ${1 - segmentProgress})`);\n      gradient.addColorStop(1, `hsla(${hue2}, 100%, ${lightness}%, ${1 - (i + 1) / params.trailLength})`);\n\n      ctx.beginPath();\n      ctx.moveTo(p1.x, p1.y);\n      ctx.lineTo(p2.x, p2.y);\n      ctx.strokeStyle = gradient;\n      ctx.lineWidth = Math.max(0.1, params.strokeWeight * p1.scale * (1 - segmentProgress));\n      ctx.stroke();\n    }\n  }\n\n  // Draw the \"light\" node at its actual target position\n  const nodeScale = fov / (fov + targetZ);\n  const nodeScreenX = centerX + targetX * nodeScale;\n  const nodeScreenY = centerY + targetY * nodeScale;\n  const nodeSize = Math.max(1, params.strokeWeight / 2 * nodeScale);\n  const nodeLightness = mapRange(targetZ, -amplitude, amplitude, 70, 100);\n\n  ctx.shadowColor = 'hsl(174, 100%, 70%)'; // accent-cyan glow\n  ctx.shadowBlur = nodeSize * 2.5;\n  \n  ctx.beginPath();\n  ctx.arc(nodeScreenX, nodeScreenY, nodeSize, 0, Math.PI * 2);\n  ctx.fillStyle = `hsl(174, 100%, ${nodeLightness}%)`;\n  ctx.fill();\n\n  ctx.shadowBlur = 0; // Reset shadow blur\n}\n"
+    },
+    {
+      "name": "Cosmic Sphere",
+      "description": "A mesmerizing 3D sphere composed of numerous orbiting points, slowly rotating and shifting in color with depth.",
+      "parameters": [
+        {
+          "name": "pointCount",
+          "label": "Point Count",
+          "min": 10,
+          "max": 500,
+          "step": 1,
+          "defaultValue": 200
+        },
+        {
+          "name": "sphereRadius",
+          "label": "Sphere Radius",
+          "min": 50,
+          "max": 200,
+          "step": 1,
+          "defaultValue": 100
+        },
+        {
+          "name": "pointSize",
+          "label": "Point Size",
+          "min": 1,
+          "max": 10,
+          "step": 0.1,
+          "defaultValue": 3
+        },
+        {
+          "name": "rotationSpeedX",
+          "label": "Rotation Speed X",
+          "min": -0.5,
+          "max": 0.5,
+          "step": 0.01,
+          "defaultValue": 0.05
+        },
+        {
+          "name": "rotationSpeedY",
+          "label": "Rotation Speed Y",
+          "min": -0.5,
+          "max": 0.5,
+          "step": 0.01,
+          "defaultValue": 0.1
+        },
+        {
+          "name": "rotationSpeedZ",
+          "label": "Rotation Speed Z",
+          "min": -0.5,
+          "max": 0.5,
+          "step": 0.01,
+          "defaultValue": 0.02
+        },
+        {
+          "name": "fadeOut",
+          "label": "Fade Out",
+          "min": 0.01,
+          "max": 0.5,
+          "step": 0.01,
+          "defaultValue": 0.1
+        },
+        {
+          "name": "fov",
+          "label": "Field of View",
+          "min": 100,
+          "max": 1000,
+          "step": 10,
+          "defaultValue": 300
+        },
+        {
+          "name": "hueSpeed",
+          "label": "Hue Speed",
+          "min": 0,
+          "max": 2,
+          "step": 0.1,
+          "defaultValue": 0.5
+        },
+        {
+          "name": "depthColorIntensity",
+          "label": "Depth Color Intensity",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "defaultValue": 40
+        }
+      ],
+      "code": "const mapRange = (value, inMin, inMax, outMin, outMax) => {return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;};function rotateX(p, angle) {const cos = Math.cos(angle);const sin = Math.sin(angle);const y = p.y * cos - p.z * sin;const z = p.y * sin + p.z * cos;return { x: p.x, y: y, z: z };}function rotateY(p, angle) {const cos = Math.cos(angle);const sin = Math.sin(angle);const x = p.x * cos + p.z * sin;const z = p.x * -sin + p.z * cos;return { x: x, y: p.y, z: z };}function rotateZ(p, angle) {const cos = Math.cos(angle);const sin = Math.sin(angle);const x = p.x * cos - p.y * sin;const y = p.x * sin + p.y * cos;return { x: x, y: y, z: p.z };}if (!state.points || state.pointCount !== params.pointCount) {state.points = [];state.pointCount = params.pointCount;for (let i = 0; i < params.pointCount; i++) {const phi = Math.acos(1 - 2 * i / (params.pointCount - 1));const theta = Math.PI * (1 + Math.sqrt(5)) * i;const x = Math.cos(theta) * Math.sin(phi);const y = Math.sin(theta) * Math.sin(phi);const z = Math.cos(phi);state.points.push({initialX: x,initialY: y,initialZ: z});}}const { width, height } = ctx.canvas;const centerX = width / 2;const centerY = height / 2;const fov = params.fov;const radius = params.sphereRadius;ctx.fillStyle = 'rgba(13, 12, 29, ' + params.fadeOut + ')';ctx.fillRect(0, 0, width, height);const baseHue = frame * params.hueSpeed;const rotationAngleX = frame * params.rotationSpeedX;const rotationAngleY = frame * params.rotationSpeedY;const rotationAngleZ = frame * params.rotationSpeedZ;const renderedPoints = [];for (const point of state.points) {let { initialX, initialY, initialZ } = point;let p = {x: initialX * radius,y: initialY * radius,z: initialZ * radius};p = rotateX(p, rotationAngleX);p = rotateY(p, rotationAngleY);p = rotateZ(p, rotationAngleZ);renderedPoints.push({x: p.x,y: p.y,z: p.z});}renderedPoints.sort((a, b) => a.z - b.z);for (const p of renderedPoints) {const scale = fov / (fov + p.z);const screenX = centerX + p.x * scale;const screenY = centerY + p.y * scale;const size = Math.max(0.5, params.pointSize * scale);const depthFactor = mapRange(p.z, -radius, radius, 0, 1);const lightness = mapRange(depthFactor, 0, 1, 30, 90);const hueShift = mapRange(depthFactor, 0, 1, -params.depthColorIntensity, params.depthColorIntensity);const hue = (baseHue + hueShift) % 360;ctx.beginPath();ctx.arc(screenX, screenY, size, 0, Math.PI * 2);ctx.fillStyle = `hsl(${hue}, 100%, ${lightness}%)`;ctx.fill();}"
+    }
+  ],
+  "currentParams": {
+    "pointCount": 104,
+    "sphereRadius": 200,
+    "pointSize": 3,
+    "rotationSpeedX": 0.05,
+    "rotationSpeedY": 0.03,
+    "rotationSpeedZ": 0.02,
+    "fadeOut": 0.1,
+    "fov": 300,
+    "hueSpeed": 0.5,
+    "depthColorIntensity": 40
+  }
+}
