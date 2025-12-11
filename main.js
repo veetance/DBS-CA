@@ -260,7 +260,7 @@
         try {
             // --- HERO MODE: DIMENSION 6 LOCK ---
             console.log("[Main] HERO PROTOCOL ENGAGED: Dimension 6");
-            const heroFile = 'ARTIFICE-BANK/HERO-ARTIFICE/dimension_6_synthesized_archipelago.artifice';
+            const heroFile = 'assets/ARTIFICE-BANK/HERO-ARTIFICE/dimension_6_synthesized_archipelago.artifice';
 
             // Set single file availability
             availableFiles = [heroFile];
