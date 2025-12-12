@@ -1,105 +1,58 @@
 /* -------------------------------------------------
    Digital Blacksmith Studios – Core Application Logic
    main.js
-   Focus: State, Edit Mode, Interactions
+   Focus: State & Interactions
    ------------------------------------------------- */
 
 (() => {
     /* ---------- State ---------- */
     const state = {
-        editMode: false,
-        activeEditable: null,
+        logoCollapseTimeout: null,
+        logoExpandTimeout: null
     };
 
-    /* ---------- Edit Logic (Minimalist) ---------- */
-    // Trigger is now the small SVG icon in top right
-    const editToggleBtn = document.getElementById('edit-toggle');
+    /* ---------- DBS Logo Expansion Delay ---------- */
+    const initDBSLogoDelay = () => {
+        const navLogo = document.querySelector('.nav-logo');
+        if (!navLogo) return;
 
-    const toggleEditMode = () => {
-        state.editMode = !state.editMode;
-        document.body.classList.toggle('edit-mode', state.editMode);
+        navLogo.addEventListener('mouseenter', () => {
+            // Clear any pending collapse timeout
+            if (state.logoCollapseTimeout) {
+                clearTimeout(state.logoCollapseTimeout);
+                state.logoCollapseTimeout = null;
+            }
 
-        // Visual feedback
-        if (state.editMode) {
-            editToggleBtn.style.opacity = '1';
-            editToggleBtn.style.color = '#fff';
-        } else {
-            editToggleBtn.style.opacity = '0.3';
-            editToggleBtn.style.color = 'inherit';
-        }
+            // Immediately brighten (remove dimmed)
+            navLogo.classList.remove('dimmed');
+
+            // Hold brightness for 0.5s, THEN expand
+            if (state.logoExpandTimeout) {
+                clearTimeout(state.logoExpandTimeout);
+            }
+            state.logoExpandTimeout = setTimeout(() => {
+                navLogo.classList.add('open');
+                state.logoExpandTimeout = null;
+            }, 500 / 3); // 1 second pause at full brightness before expansion
+        });
+
+        navLogo.addEventListener('mouseleave', () => {
+            // Delay collapse by 4 seconds
+            state.logoCollapseTimeout = setTimeout(() => {
+                // Remove open (starts contraction while still bright)
+                navLogo.classList.remove('open');
+
+                // After contraction animation completes (0.8s), then dim
+                setTimeout(() => {
+                    navLogo.classList.add('dimmed');
+                }, 800); // Match contraction animation duration
+
+                state.logoCollapseTimeout = null;
+            }, 2000); // 2 second delay
+        });
     };
 
-    if (editToggleBtn) {
-        editToggleBtn.addEventListener('click', toggleEditMode);
-    }
 
-    // Media Swapper
-    document.addEventListener('click', (e) => {
-        if (!state.editMode) return;
-
-        const target = e.target.closest('.editable');
-        if (!target) return;
-
-        // Don't trigger if user is just selecting text
-        if (['H1', 'H2', 'P'].includes(e.target.tagName)) return;
-
-        e.preventDefault();
-        e.stopPropagation(); // Stop the link from opening
-
-        state.activeEditable = target;
-
-        // File Handler
-        let fileInput = document.getElementById('__dbs-file-input');
-        if (!fileInput) {
-            fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = 'image/*,video/*';
-            fileInput.id = '__dbs-file-input';
-            fileInput.style.display = 'none';
-            document.body.appendChild(fileInput);
-
-            fileInput.addEventListener('change', (ev) => {
-                const file = ev.target.files[0];
-                if (!file) return;
-                const url = URL.createObjectURL(file);
-
-                const img = state.activeEditable.querySelector('img');
-                const vid = state.activeEditable.querySelector('video');
-
-                // Swap logic
-                if (file.type.startsWith('video')) {
-                    // If existing video, swap src
-                    if (vid) {
-                        vid.src = url;
-                    } else {
-                        // Remove image, inject video
-                        state.activeEditable.querySelector('img')?.remove();
-                        const newVid = document.createElement('video');
-                        newVid.src = url;
-                        newVid.classList.add('work-media'); // Keep CSS class
-                        newVid.autoplay = true;
-                        newVid.loop = true;
-                        newVid.muted = true;
-                        newVid.playsInline = true;
-                        state.activeEditable.prepend(newVid);
-                    }
-                } else {
-                    if (img) {
-                        img.src = url;
-                    } else {
-                        // Remove video, inject image
-                        state.activeEditable.querySelector('video')?.remove();
-                        const newImg = document.createElement('img');
-                        newImg.src = url;
-                        newImg.classList.add('work-media');
-                        state.activeEditable.prepend(newImg);
-                    }
-                }
-                fileInput.value = '';
-            });
-        }
-        fileInput.click();
-    });
 
     /* ---------- Content Rendering (Resume & Works) ---------- */
     const renderContent = async () => {
@@ -157,7 +110,7 @@
         if (!worksTarget) return;
 
         worksTarget.innerHTML = data.map(work => `
-            <article class="work-item editable" data-id="${work.id}" onclick="window.open('${work.link}', '_blank')">
+            <article class="work-item" data-id="${work.id}" onclick="window.open('${work.link}', '_blank')">
                 <img src="assets/placeholder.svg" class="work-media" alt="${work.title}">
                 <div class="work-info">
                     <div>
@@ -440,6 +393,53 @@
         });
     };
 
+    /* ---------- SKILL CHIP GLOW EFFECT ---------- */
+    const initChipGlow = () => {
+        const chipGroups = document.querySelectorAll('.chip-group');
+
+        chipGroups.forEach(group => {
+            // Create single glow element for this chip-group
+            const glow = document.createElement('div');
+            glow.className = 'chip-glow';
+            group.appendChild(glow);
+
+            group.addEventListener('mousemove', (e) => {
+                const rect = group.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Move the glow
+                requestAnimationFrame(() => {
+                    glow.style.left = `${x}px`;
+                    glow.style.top = `${y}px`;
+                });
+
+                // Update CSS variables for each chip to reveal the glow
+                const chips = group.querySelectorAll('.skill-chip');
+                chips.forEach(chip => {
+                    const chipRect = chip.getBoundingClientRect();
+                    const chipX = e.clientX - chipRect.left;
+                    const chipY = e.clientY - chipRect.top;
+
+                    // Convert to percentage
+                    const percentX = (chipX / chipRect.width) * 100;
+                    const percentY = (chipY / chipRect.height) * 100;
+
+                    chip.style.setProperty('--mouse-x', `${percentX}%`);
+                    chip.style.setProperty('--mouse-y', `${percentY}%`);
+                });
+            });
+
+            group.addEventListener('mouseleave', () => {
+                glow.style.opacity = '0';
+            });
+
+            group.addEventListener('mouseenter', () => {
+                glow.style.opacity = '1';
+            });
+        });
+    };
+
     /* ---------- SLAB NAV SCROLL LOGIC ---------- */
     const initSlabNav = () => {
         const nav = document.getElementById('global-nav');
@@ -463,6 +463,8 @@
     initSlabNav();
     initScrollSpy();
     initSmoothScroll();
+    initChipGlow();
+    initDBSLogoDelay();
 
     // Force scroll to top on load
     window.addEventListener('load', () => {

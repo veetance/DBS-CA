@@ -36,6 +36,13 @@ class SyntheticCortex {
                     dna.parameters = extracted.defs;
                 } else {
                     dna = parsed;
+                    // FIX: Use defaults ONLY if parameterValues is missing
+                    if (!dna.parameterValues) {
+                        dna.parameterValues = {};
+                        parsed.parameters.forEach(param => {
+                            dna.parameterValues[param.name] = param.defaultValue;
+                        });
+                    }
                 }
                 return dna;
             }
@@ -79,9 +86,9 @@ class SyntheticCortex {
 
             foundVars.forEach(v => {
                 // --- BRAND THEME ENFORCEMENT ---
-                // Global Theme
-                if (v.name.toLowerCase() === 'hue' || v.name === 'h') v.val = 265; // ~#ad8bff
-                if (v.name.toLowerCase() === 'saturation' || v.name === 'sat' || v.name === 's') v.val = 80;
+                // Deep Blue-Purple Theme
+                if (v.name.toLowerCase() === 'hue' || v.name === 'h') v.val = 229; // ~#4561cc
+                if (v.name.toLowerCase() === 'saturation' || v.name === 'sat' || v.name === 's') v.val = 90;
                 if (v.name.toLowerCase() === 'brightness' || v.name === 'bri' || v.name === 'b') v.val = 100;
 
                 values[v.name] = v.val;
@@ -107,15 +114,15 @@ class SyntheticCortex {
 
                 // 1. Force the Base Hue Variable
                 // Matches "let baseHue = 210;" or similar
-                code = code.replace(/let\s+baseHue\s*=\s*\d+\s*;?/g, `let baseHue = 265;`);
+                code = code.replace(/let\s+baseHue\s*=\s*\d+\s*;?/g, `let baseHue = 229;`);
 
                 // 2. Direct Stroke Override (Safety Net)
-                // Finds "stroke(baseHue..." and ensures it uses 265 if the variable failes
-                code = code.replace(/stroke\s*\(\s*baseHue/g, `stroke(265`);
+                // Finds "stroke(baseHue..." and ensures it uses 229 (deep blue-purple)
+                code = code.replace(/stroke\s*\(\s*baseHue/g, `stroke(229`);
 
                 // 3. Grid Points Override
-                // "stroke(hue % 360..." -> "stroke(265..."
-                code = code.replace(/stroke\s*\(\s*hue\s*%\s*360/g, `stroke(265`);
+                // "stroke(hue % 360..." -> "stroke(229..."
+                code = code.replace(/stroke\s*\(\s*hue\s*%\s*360/g, `stroke(229`);
             }
         }
 

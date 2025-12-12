@@ -3,22 +3,30 @@
    Focus: Colors, Typography, Variables
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Zen+Dots&family=Stack+Sans+Text:wght@200..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hubot+Sans:ital,wght@0,200..900;1,200..900&family=Zen+Dots&display=swap');
 
 :root {
     --bg-black: #0a0a0a;
+    --bg-deepblack: #000000;
     --text-white: #ffffff;
     --text-gray: #888888;
-    --brand-pop: #ad8bff;
-    --brand-pop50: #ae8bff79;
-    /* Electric Purple */
+    --brand-pop: #667fe4;
+    /* Deep Blue-Purple (Hue 229°) */
+    --brand-pop-dark: hsl(250, 5%, 4%);
+    --brand-pop40: hsl(229, 30%, 44%);
+    /* Darker blue-purple */
+    --brand-pop50: #4561cc79;
+    /* 50% transparent */
+    --brand-pop60: #2f429952;
+    /* 60% transparent */
+    /* Deep Blue-Purple */
 
     /* Typography */
     --font-display: 'Zen Dots', cursive;
-    --font-body: 'Stack Sans Text', sans-serif;
+    --font-body: 'Hubot Sans', sans-serif;
 
     --text-mega: clamp(4rem, 15vw, 15rem);
-    --text-h1: clamp(2rem, 5vw, 4rem);
+    --text-h1: clamp(2rem, 6vw, 4rem);
     --text-label: 0.85rem;
 
     /* Layout Variables */
@@ -31,7 +39,7 @@
 
 /* Base Reset & Typography */
 body {
-    background-color: var(--bg-black);
+    background-color: var(--bg-deepblack);
     color: var(--text-white);
     font-family: var(--font-body);
     font-size: 16px;

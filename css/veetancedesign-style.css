@@ -1,0 +1,449 @@
+/* 
+   ============================================
+   VEETANCE DESIGN SYSTEM v1.0
+   Premium UI Component Library
+   Author: Divine Okonkwo (Veetance Design)
+   ============================================
+   
+   A curated collection of futuristic, premium UI components
+   with advanced interaction patterns and visual effects.
+   
+   TABLE OF CONTENTS:
+   1. Mouse-Following Glow Effects
+   2. Skill Chips (Interactive Tags)
+   3. Navigation Components
+   4. Tool Cards (Marquee Display)
+   5. Utility Classes
+*/
+
+/* ============================================
+   1. MOUSE-FOLLOWING GLOW EFFECTS
+   ============================================
+   
+   Creates a unified glow that follows the mouse cursor
+   across a container, revealed only through child elements.
+   
+   USAGE:
+   <div class="glow-container">
+       <div class="glow-item">Item 1</div>
+       <div class="glow-item">Item 2</div>
+   </div>
+   
+   JAVASCRIPT REQUIRED: See initGlowEffect() in main.js
+   
+   CUSTOMIZATION:
+   - Glow size: Modify .container-glow width/height
+   - Glow color: Adjust radial-gradient colors
+   - Reveal intensity: Change opacity in .glow-item::before
+*/
+
+/* Generic glow container - flexible wrapper */
+.glow-container {
+    position: relative;
+    overflow: visible;
+}
+
+/* The moving glow element (hidden, revealed through items) */
+.container-glow {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(69, 97, 204, 0.4) 0%,
+            rgba(173, 139, 255, 0) 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    visibility: hidden;
+    /* Only visible through glow-items */
+}
+
+.glow-container:hover .container-glow {
+    opacity: 1;
+    visibility: hidden;
+    /* Still hidden from direct view */
+}
+
+/* Items that reveal the glow within their boundaries */
+.glow-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Pseudo-element reveals the glow effect */
+.glow-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle 100px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            rgba(69, 97, 204, 0.35) 0%,
+            transparent 70%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.glow-container:hover .glow-item::before {
+    opacity: 1;
+}
+
+
+/* ============================================
+   2. SKILL CHIPS (Interactive Tags)
+   ============================================
+   
+   Pill-shaped chips with mouse-following glow effect.
+   Perfect for skill tags, filters, or category badges.
+   
+   USAGE:
+   <div class="chip-group glow-container">
+       <span class="skill-chip glow-item">JavaScript</span>
+       <span class="skill-chip glow-item">React</span>
+       <span class="skill-chip glow-item">CSS</span>
+   </div>
+   
+   VARIANTS:
+   - .skill-chip-sm: Smaller chips
+   - .skill-chip-lg: Larger chips
+   - .skill-chip-solid: Filled background
+   
+   CUSTOMIZATION:
+   - Border color: --chip-border (default: --brand-pop60)
+   - Text color: --chip-text (default: --text-gray)
+   - Hover border: --chip-hover-border (default: --brand-pop)
+*/
+
+.chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    /* Inherits .glow-container styles */
+}
+
+.skill-chip {
+    font-family: var(--font-body, sans-serif);
+    font-size: 0.8rem;
+    color: var(--chip-text, var(--text-gray, #888));
+    border: 1px solid var(--chip-border, var(--brand-pop60, rgba(123, 99, 180, 0.32)));
+    padding: 6px 14px;
+    border-radius: 8px;
+    background: transparent;
+    /* Inherits .glow-item styles */
+}
+
+.skill-chip::before {
+    border-radius: 8px;
+    /* Match chip border-radius */
+}
+
+.skill-chip:hover {
+    border-color: var(--chip-hover-border, var(--brand-pop, #4561cc));
+    color: var(--text-white, #fff);
+    background: rgba(69, 97, 204, 0.1);
+}
+
+/* Chip Variants */
+.skill-chip-sm {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+}
+
+.skill-chip-lg {
+    font-size: 1rem;
+    padding: 8px 18px;
+}
+
+.skill-chip-solid {
+    background: var(--brand-pop60, rgba(123, 99, 180, 0.32));
+    border-color: var(--brand-pop, #4561cc);
+}
+
+
+/* ============================================
+   3. NAVIGATION COMPONENTS
+   ============================================
+   
+   Modern navigation patterns with smooth transitions
+   and active state indicators.
+   
+   USAGE:
+   <ul class="nav-links">
+       <li><a href="#home" class="nav-link active">HOME</a></li>
+       <li><a href="#work" class="nav-link">WORK</a></li>
+   </ul>
+   
+   FEATURES:
+   - Animated dot indicator on active state
+   - Smooth color transitions
+   - Text glow effects on hover
+*/
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--text-gray, #888);
+    font-family: var(--font-body, sans-serif);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    position: relative;
+    padding: 5px 10px;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+/* Dot indicator - appears on active/hover */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    width: 4px;
+    height: 4px;
+    background-color: var(--brand-pop, #4561cc);
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 5px var(--brand-pop, #4561cc);
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--text-white, #fff);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.nav-link.active {
+    color: var(--brand-pop, #4561cc);
+    text-shadow: 0 0 15px rgba(69, 97, 204, 0.5);
+}
+
+.nav-link.active::after {
+    transform: translateX(-50%) scale(1);
+}
+
+
+/* ============================================
+   4. TOOL CARDS (Marquee Display)
+   ============================================
+   
+   Square cards for displaying tools/technologies
+   in an infinite scrolling marquee.
+   
+   USAGE:
+   <div class="tools-marquee-container">
+       <div class="tools-track">
+           <div class="tool-card">
+               <div class="tool-icon">🎨</div>
+               <span>Figma</span>
+           </div>
+       </div>
+   </div>
+   
+   FEATURES:
+   - Auto-scrolling animation
+   - Pause on hover
+   - Smooth fade masks on edges
+*/
+
+.tools-marquee-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    /* Fade masks for smooth entry/exit */
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.tools-track {
+    display: flex;
+    width: max-content;
+    gap: 20px;
+    animation: scroll-tools 40s linear infinite;
+    padding: 2vh;
+}
+
+.tools-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scroll-tools {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.tool-card {
+    width: 120px;
+    height: 120px;
+    flex: 0 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.tool-card:hover {
+    border-color: var(--brand-pop, #4561cc);
+    box-shadow: 0 0 15px rgba(173, 139, 255, 0.1);
+    transform: translateY(-5px) scale(1.05);
+    background: rgba(69, 97, 204, 0.05);
+}
+
+.tool-card span {
+    font-family: var(--font-body, sans-serif);
+    font-size: 0.7rem;
+    color: var(--text-gray, #888);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.tool-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+
+/* ============================================
+   5. UTILITY CLASSES
+   ============================================
+   
+   Reusable utility classes for common patterns.
+*/
+
+/* Glass morphism effect */
+.glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Premium button base */
+.btn-premium {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
+    font-weight: 700;
+    padding: 10px 28px;
+    border: 1px solid var(--brand-pop50, rgba(173, 139, 255, 0.47));
+    background-color: rgba(10, 10, 10, 0.8);
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--font-body, sans-serif);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    transition: transform 0.1s ease, box-shadow 0.2s ease, border-color 0.3s ease;
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+}
+
+.btn-premium:hover {
+    border-color: var(--brand-pop, #4561cc);
+    box-shadow: 0 0 20px rgba(69, 97, 204, 0.2);
+}
+
+.btn-premium:active {
+    transform: translateY(1px);
+}
+
+/* Section dividers */
+.section-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right,
+            transparent,
+            var(--brand-pop50, rgba(173, 139, 255, 0.47)) 50%,
+            transparent);
+    margin: 4vh 0;
+}
+
+/* Text glow effect */
+.text-glow {
+    text-shadow: 0 0 10px currentColor;
+}
+
+.text-glow-purple {
+    color: var(--brand-pop, #4561cc);
+    text-shadow: 0 0 15px rgba(69, 97, 204, 0.5);
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+    .chip-group {
+        gap: 8px;
+    }
+
+    .skill-chip {
+        font-size: 0.7rem;
+        padding: 5px 12px;
+    }
+
+    .nav-links {
+        gap: 20px;
+    }
+
+    .tool-card {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+
+/* ============================================
+   END OF VEETANCE DESIGN SYSTEM
+   ============================================
+   
+   NOTES FOR DEVELOPERS:
+   
+   1. This library depends on CSS custom properties:
+      - --brand-pop: Main accent color
+      - --brand-pop50/60: Transparent variations
+      - --text-white, --text-gray: Text colors
+      - --font-body, --font-display: Typography
+   
+   2. The mouse-following glow effect requires JavaScript.
+      See initGlowEffect() implementation.
+   
+   3. All components follow BEM-inspired naming:
+      Block__Element--Modifier pattern
+   
+   4. Transitions use cubic-bezier easing for premium feel.
+   
+   5. Mobile-first approach with responsive breakpoints.
+   
+   Built with ❤️ by Veetance Design
+   https://veetancedesign.com
+*/
