@@ -20,14 +20,22 @@
 
 <body>
 
+    <!-- Custom Overlay Scrollbar -->
+    <div id="virtual-scrollbar">
+        <div class="scrollbar-track"></div>
+        <div class="scrollbar-glow-container">
+            <div class="scrollbar-glow-ball"></div>
+        </div>
+        <div class="scrollbar-thumb"></div>
+    </div>
+
     <!-- Generative Background (Scrolls Away) -->
-    <div id="artifice-container"
-        style="position:absolute; top:0; left:0; width:100%; height:100vh; z-index: -1; pointer-events: none;"></div>
+    <div id="artifice-container"></div>
     <!-- Generative Background (Managed by p5.js) -->
 
 
     <!-- ARTIFICE CURATION CONSOLE -->
-    <div id="curation-console" class="curation-widget" style="display:none;">
+    <div id="curation-console" class="curation-widget">
         <div class="curation-header">
             <span class="status-indicator">●</span> ARTIFICE AUDIT
         </div>
@@ -39,7 +47,7 @@
             <button id="btn-next" class="curation-btn btn-next" title="Skip">></button>
         </div>
 
-        <div class="rejection-counter" id="reject-counter" style="display:none; align-items:center; gap:5px;">
+        <div class="rejection-counter" id="reject-counter">
             <span>0 FLAGGED</span>
             <button id="btn-export" class="icon-btn" title="Copy Kill List">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -53,24 +61,20 @@
     <!-- Top Navigation (Tiny, Text-Based) -->
     <!-- TWO-SLAB NAVIGATION HEADER -->
     <nav id="global-nav" class="top-nav-slabs">
-
         <!-- SLAB 1: BRANDING (Centered, Collapses on Scroll) -->
         <div class="nav-slab-brand">
-            <div class="nav-logo-wrapper">
-                <div class="nav-logo dimmed">
-                    <div class="nav-word"><span class="initial-letter initial-d">D</span><span
-                            class="logo-reveal">IGITAL</span></div>
-                    <div class="nav-word"><span class="initial-letter initial-b">B</span><span
-                            class="logo-reveal">LACKSMITH</span></div>
-                    <div class="nav-word"><span class="initial-letter initial-s">S</span><span
-                            class="logo-reveal">TUD</span><span class="i-container"><span class="i-glyph">I</span><span
-                                class="star-wrapper"><svg class="y2k-star" viewBox="0 0 24 24">
-                                    <path d="M12 2 L15 10 L23 12 L15 14 L12 22 L9 14 L1 12 L9 10 Z" />
-                                </svg></span></span><span class="logo-reveal">OS</span></div>
-                </div>
+            <div class="nav-logo open">
+                <div class="nav-word"><span class="initial-letter initial-d">D</span><span
+                        class="logo-reveal">IGITAL</span></div>
+                <div class="nav-word"><span class="initial-letter initial-b">B</span><span
+                        class="logo-reveal">LACKSMITH</span></div>
+                <div class="nav-word"><span class="initial-letter initial-s">S</span><span
+                        class="logo-reveal">TUD</span><span class="i-container"><span class="i-glyph">I</span><span
+                            class="star-wrapper"><svg class="y2k-star" viewBox="0 0 24 24">
+                                <path d="M12 2 L15 10 L23 12 L15 14 L12 22 L9 14 L1 12 L9 10 Z" />
+                            </svg></span></span><span class="logo-reveal">OS</span></div>
             </div>
         </div>
-
         <!-- SLAB 2: CONTROLS (Links Left, Button Right) -->
         <div class="nav-slab-controls">
             <!-- Nav Timeline Links (Left) -->
@@ -80,13 +84,8 @@
                 <li><a href="#resume" class="nav-link" data-section="resume">ABOUT</a></li>
             </ul>
 
-
-
-
-
             <!-- Contact Button (Right) -->
             <button class="btn-contact">Contact Me</button>
-
 
         </div>
     </nav>
@@ -94,42 +93,98 @@
     <!-- Hero Section: Fullscreen Intro -->
     <section id="hero" class="hero-centered">
         <!-- Generative Text that will be overlayed -->
-        <h1 class="hero-mega-text" style="font-size: clamp(2rem, 4vw, 10rem); letter-spacing: -0.05em;">
+        <h1 class="hero-mega-text">
             <span>Forging the</span>
             <span>digital future of</span>
-            <span>art & design</span>
+            <div class="blend-difference">
+                <span>art & design</span>
+            </div>
         </h1>
 
-        <div class="hero-tagline-container">
-            <p class="hero-tagline">
-                Bridging the human and artificial intelligence gap
-            </p>
-            <p class="hero-subtagline" style="margin-top: 1rem;">
-                <span style="font-weight: 500;">2025 VETANCE DESIGN</span> PORTFOLIO
-            </p>
+
+        <!-- Bottom Anchor Group -->
+        <div class="hero-footer-anchor">
+            <div class="hero-tagline-container">
+                <p class="hero-tagline">
+                    Bridging the human and artificial intelligence gap
+                </p>
+                <p class="hero-subtagline">
+                    2025 VEETANCE DESIGN PORTFOLIO
+                </p>
+            </div>
+
+            <!-- Scroll Prompt Arrow -->
+            <div class="scroll-prompt-container">
+                <svg class="scroll-arrow-svg" width="30" height="40" viewBox="0 0 30 40" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <!-- Shortened Tail -->
+                    <line x1="15" y1="15" x2="15" y2="40" stroke="white" stroke-width="2" />
+                    <!-- Arrowhead -->
+                    <path d="M1 25 L15 40 L29 25" stroke="white" stroke-width="2" fill="none" />
+                </svg>
+            </div>
         </div>
 
-        <!-- Scroll Prompt Arrow -->
-        <div class="scroll-prompt-container">
-            <svg class="scroll-arrow-svg" width="30" height="40" viewBox="0 0 30 40" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <!-- Shortened Tail -->
-                <line x1="15" y1="15" x2="15" y2="40" stroke="white" stroke-width="2" />
-                <!-- Arrowhead -->
-                <path d="M1 25 L15 40 L29 25" stroke="white" stroke-width="2" fill="none" />
-            </svg>
-        </div>
-
-        <!-- Fade to Black Gradient -->
+        <!-- Fade to Black Gradient (Bottom) -->
         <div class="hero-gradient-mask"></div>
+
+        <!-- Eclipse Vignette (Center Dark, Edges Clear) -->
+        <div class="hero-vignette-mask"></div>
     </section>
 
-    <!-- TECH STACK SECTION -->
+    <!-- Works Section: The Grid (MOMA Style) -->
+    <section id="works">
+        <div class="works-header-wrapper">
+            <h2 class="section-title">PORTFOLIO</h2>
+        </div>
+        <!-- Grid Container -->
+        <div class="works-grid" id="works-grid-target">
+            <!-- JS INJECTED FROM assets/works.json -->
+        </div>
+    </section>
+
+    <!-- Resume Section: Split View -->
+    <section id="resume" class="section-bordered">
+        <div class="split-grid-resume">
+
+            <!-- Left: Sticky Title -->
+            <div class="sticky-sidebar">
+                <h2 class="section-title">ABOUT ME</h2>
+                <p class="sidebar-subtitle">EXPERIENCE & PROFICIENCY</p>
+                <!-- Ensuring the PDF link is correct -->
+                <a href="Veetance-portfolio-2025.pdf" target="_blank" class="pdf-download-link">[
+                    DOWNLOAD PDF ]</a>
+            </div>
+
+            <!-- Right: Content -->
+            <div class="resume-content">
+
+                <!-- Education Block -->
+                <div class="padded-bottom-8vh">
+                    <div class="resume-section-header">EDUCATION</div>
+                    <div id="resume-education-target">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+                <!-- Experience Block -->
+                <div>
+                    <div class="resume-section-header">EXPERIENCE</div>
+                    <div id="resume-experience-target">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
     <!-- TECH STACK SECTION -->
     <section id="tech-stack" class="section-bordered">
 
         <!-- Part 1: Proficiency Chips (Reordered to Top) -->
-        <div class="proficiency-container" style="border-top: none; padding-top: 0;">
+        <div class="proficiency-container proficiency-container-top">
             <h3 class="subsection-title">TECHNICAL PROFICIENCY</h3>
 
             <div class="proficiency-grid">
@@ -179,7 +234,7 @@
         </div>
 
         <!-- Part 2: Square Tools Grid (Marquee, Moved Below) -->
-        <div class="tools-section" style="margin-top: 80px;">
+        <div class="tools-section tools-section-spaced">
             <h3 class="subsection-title">MY TOOLS</h3>
 
             <div class="tools-marquee-container">
@@ -252,52 +307,8 @@
         </div>
     </section>
 
-    <!-- Works Section: The Grid (MOMA Style) -->
-    <section id="works">
-        <div style="margin-bottom: 4vh; display: flex; justify-content: space-between; align-items: baseline;">
-            <h2 class="section-title">PORTFOLIO</h2>
-        </div>
-        <!-- Grid Container -->
-        <div class="works-grid" id="works-grid-target">
-            <!-- JS INJECTED FROM assets/works.json -->
-        </div>
-    </section>
 
-    <!-- Resume Section: Split View -->
-    <section id="resume" class="section-bordered">
-        <div class="split-grid-resume">
 
-            <!-- Left: Sticky Title -->
-            <div class="sticky-sidebar">
-                <h2 class="section-title">ABOUT ME</h2>
-                <p class="sidebar-subtitle">EXPERIENCE & PROFICIENCY</p>
-                <!-- Ensuring the PDF link is correct -->
-                <a href="Veetance-portfolio-2025.pdf" target="_blank" class="pdf-download-link">[
-                    DOWNLOAD PDF ]</a>
-            </div>
-
-            <!-- Right: Content -->
-            <div class="resume-content">
-
-                <!-- Education Block -->
-                <div class="padded-bottom-8vh">
-                    <div class="resume-section-header">EDUCATION</div>
-                    <div id="resume-education-target">
-                        <!-- JS injected -->
-                    </div>
-                </div>
-
-                <!-- Experience Block -->
-                <div>
-                    <div class="resume-section-header">EXPERIENCE</div>
-                    <div id="resume-experience-target">
-                        <!-- JS injected -->
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
 
     <!-- Contact Section: Split View -->
 
@@ -356,15 +367,15 @@
             </h4>
 
             <div class="letter-body">
-                <p style="margin-bottom: 20px;"><strong>Dear Hiring Team,</strong></p>
+                <p><strong>Dear Hiring Team,</strong></p>
 
-                <p style="margin-bottom: 20px;">
+                <p>
                     I am applying for the <strong>Freelance Graphic Designer (Remote)</strong> position. With a
                     strong foundation in corporate visual identity and extensive experience delivering high-quality
                     assets under strict guidelines, I am ready to support your marketing team immediately.
                 </p>
 
-                <p style="margin-bottom: 20px;">
+                <p>
                     While my portfolio showcases experimental and Generative AI work, I possess the discipline to
                     set that aside for strict brand adherence. I offer:
                 </p>
@@ -378,7 +389,7 @@
                         hours.</li>
                 </ul>
 
-                <p style="margin-top: 20px; margin-bottom: 20px;">
+                <p class="final-paragraph">
                     I own all necessary equipment and software. I look forward to the possibility of collaborating.
                 </p>
 
@@ -390,7 +401,9 @@
         <!-- Footer -->
         <div class="footer-bar">
             <span>© 2025 VEETANCE DESIGN | ALL RIGHTS RESERVED</span>
-            <span>BUILT WITH ❤️ BY VEETANCE</span>
+            <span>BUILT WITH <span class="material-icons heart-pulse heart-pulse-icon">favorite_border</span> <span
+                    class="footer-plus">+</span> BARE METAL
+                STACK</span>
         </div>
     </section>
 </body>

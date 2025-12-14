@@ -105,8 +105,8 @@
 /* SLAB 1: BRANDING (Top, Collapsible) */
 .nav-slab-brand {
     width: 100%;
-    height: 60px;
-    /* Initial Height */
+    height: 45px;
+    /* REDUCED from 60px */
     display: flex;
     justify-content: center;
     /* Center Stage */
@@ -117,18 +117,18 @@
     /* For smooth collapse */
 }
 
-/* SLAB 2: CONTROLS (Bottom, Persistent) */
+/* Make Controls Full Width behind Brand */
 .nav-slab-controls {
     width: 100%;
+    padding: 1vw;
+    /* THIN PADDING: 1vw */
+    justify-content: space-between;
+
     height: fit-content;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 1rem 1rem;
-
     /* Darker glass for better contrast */
     backdrop-filter: blur(15px);
-    /* Responsive side padding */
 }
 
 /* --- COLLAPSED STATE (Applied via JS) --- */
@@ -159,7 +159,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    font-size: 1.2rem;
+    font-size: 1rem;
     /* Slightly larger for center stage */
     display: flex;
     align-items: center;
@@ -409,7 +409,7 @@
 .nav-link::before {
     content: '';
     position: absolute;
-    top: -12px;
+    top: -4px;
     left: 50%;
     transform: translateX(-50%) scale(0);
     width: 10px;
@@ -526,7 +526,7 @@
     position: relative;
     background: transparent;
     /* Allows canvas behind */
-    z-index: 2;
+    /* z-index: 2; REMOVED FOR BLEND MODE */
 }
 
 .hero-gradient-mask {
@@ -535,35 +535,136 @@
     left: 0;
     width: 100%;
     height: 40vh;
-    /* Taller for smoother transition */
+    /* Smooth fade height */
     /* Non-linear "Scrub" Gradient for smoothness */
     background: linear-gradient(to bottom,
             rgba(10, 10, 10, 0) 0%,
             rgba(10, 10, 10, 0.1) 20%,
             rgba(10, 10, 10, 0.3) 40%,
             rgba(10, 10, 10, 0.6) 70%,
-            var(--brand-pop-dark) 100%);
+            var(--bg-deepblack) 100%);
+    /* Match Works BG */
     z-index: 1;
     pointer-events: none;
+    display: block;
+}
+
+.hero-vignette-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Eclipse: Dark Center (Backing Text), Transparent Edges (Revealing Sketch) */
+    background: radial-gradient(circle at center,
+            rgba(5, 5, 8, 0.9) 0%,
+            rgba(5, 5, 8, 0.6) 50%,
+            transparent 100%);
+    /* Maximum Radius */
+    z-index: 1;
+    /* Locked with Bottom Mask */
+    pointer-events: none;
+    mix-blend-mode: multiply;
 }
 
 .hero-mega-text {
     font-family: var(--font-display);
-    font-size: var(--text-mega);
-    line-height: 0.85;
+    font-size: clamp(1rem, 5.5vw, 9rem);
+    /* Calibrated for Mobile fit + Desktop Scale */
+    line-height: 0.9;
     text-transform: uppercase;
-    margin-left: -0.5vw;
-    /* Optical alignment */
+    width: 100%;
+    max-width: 100vw;
+    margin: 0;
     pointer-events: none;
+    letter-spacing: -0.03em;
+    position: relative;
+    z-index: 10 !important;
+    /* RESTORED: Sits above Vignette */
 
     /* Vertical Spacing Control */
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.2em;
+    /* Reluative gap */
     align-items: center;
-    /* Left align items */
-    text-align: left;
-    /* Left align text */
+    text-align: center;
+}
+
+/* FORCE 3 LINES: Clean Style */
+.hero-mega-text span {
+    white-space: nowrap;
+    display: block;
+    color: #e0e6ff !important;
+    /* Unified Luminous Frost */
+    -webkit-text-stroke: 0;
+    transition: color 0.3s;
+}
+
+/* POP CLASS: Unified Color */
+.blend-difference,
+.blend-difference span {
+    mix-blend-mode: normal !important;
+    color: #e0e6ff !important;
+    /* Unified Luminous Frost */
+    opacity: 1;
+    /* Removed !important to allow animation control */
+    -webkit-text-stroke: 0;
+    /* No Border */
+    position: relative;
+    display: block;
+}
+
+/* --- CHARACTER REVEAL ANIMATION (QUANTUM FLUX) --- */
+.hero-mega-text span.char {
+    display: inline-block !important;
+    /* Override parent block */
+    opacity: 0;
+    will-change: transform, opacity, filter;
+    /* Animation injected via JS */
+}
+
+@keyframes revealChar {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(1.1);
+        filter: blur(12px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes revealChunk {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- GLOBAL REVEAL UTILITIES --- */
+/* Standard Headers (Slide Up, No Blur) */
+.reveal-standard {
+    opacity: 0;
+    /* Hidden waiting for scroll */
+    will-change: opacity, transform;
+}
+
+.reveal-standard.is-visible {
+    animation: revealChunk 0.8s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+/* Special VFX (Blur Cascade) - Handled logic in JS, this is base state */
+.reveal-fx-blur .char {
+    opacity: 0;
 }
 
 
@@ -965,7 +1066,11 @@
     }
 
     .hero-mega-text {
-        font-size: clamp(3rem, 12vw, 5rem) !important;
+        font-size: clamp(1rem, 5.5vw, 2.5rem) !important;
+        width: 100%;
+        overflow-wrap: break-word;
+        padding-inline: 10px;
+        /* Ensure safety buffer */
     }
 }
 
@@ -1001,6 +1106,7 @@
     font-weight: 600;
     /* Thicker font */
     text-transform: uppercase;
+    margin-top: .2rem;
 }
 
 /* --- SCROLL PROMPT ARROW --- */
@@ -1361,6 +1467,20 @@
     text-decoration: underline;
 }
 
+/* --- MOBILE COLLAPSE LOGIC (Stack -> Single Bar) --- */
+.nav-slab-brand {
+    transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, padding 0.4s ease;
+    overflow: hidden;
+    /* Ensure content hides */
+}
+
+.top-nav-slabs.nav-collapsed .nav-slab-brand {
+    height: 0 !important;
+    padding: 0 !important;
+    opacity: 0;
+    border: none;
+}
+
 /* --- DESKTOP / TABLET OVERRIDE (Single Row) --- */
 @media (min-width: 1028px) {
     .top-nav-slabs {
@@ -1388,7 +1508,7 @@
     /* Make Controls Full Width behind Brand */
     .nav-slab-controls {
         width: 100%;
-        padding: 2vw;
+        padding: 1vw;
         /* Ensure Links and Button are separated */
         justify-content: space-between;
     }
@@ -1403,4 +1523,320 @@
         border-bottom: 1px solid var(--brand-pop50);
         /* Keep border */
     }
+}
+
+/* --- FOOTER HEART & SCROLLBAR --- */
+
+/* Footer Heart Animation */
+.footer-bar span:nth-child(2) {
+    color: var(--text-gray);
+}
+
+/* Note: The HTML needs to wrap the heart in a span or we target the text node carefully. 
+   Ideally, wrap '❤️' in <span class="heart-pulse">❤️</span> in HTML. 
+   Assuming standard text for now, but will add class in HTML next step. */
+.heart-pulse {
+    display: inline-block;
+    color: var(--brand-pop) !important;
+    /* Force Pop Color */
+    filter: drop-shadow(0 0 5px var(--brand-pop));
+    font-style: normal;
+}
+
+
+/* --- VIRTUAL SCROLLBAR (OVERLAY) --- */
+/* Hide Default Scrollbar Globally */
+html,
+body {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+}
+
+/* Chrome/Safari */
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+    display: none;
+}
+
+#virtual-scrollbar {
+    position: fixed;
+    top: 130px;
+    /* DEFAULT: Stacked Nav Height (Mobile/Tablet) */
+    right: 8px;
+    width: 8px;
+    /* Wider Track (Thumb + 2px) */
+    height: calc(100vh - 130px);
+    z-index: 9999;
+    pointer-events: auto;
+    /* Allow clicking/dragging */
+    mix-blend-mode: normal;
+    /* ensure visibility */
+    cursor: pointer;
+    /* Clickable */
+    opacity: 0;
+    /* Hidden on Load */
+    transition: opacity 0.4s ease-out;
+}
+
+#virtual-scrollbar.scrolling {
+    opacity: 1;
+    /* Revealed on Scroll */
+}
+
+/* --- DESKTOP SCROLLBAR ADJUSTMENT --- */
+@media (min-width: 1028px) {
+    #virtual-scrollbar {
+        top: 80px;
+        /* DESKTOP: Single Row Nav Height */
+        height: calc(100vh - 80px);
+    }
+}
+
+/* The Track Line */
+.scrollbar-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(102, 127, 228, 0.1);
+    /* Faint Brand Tint */
+    border-radius: 4px;
+}
+
+/* The Draggable Thumb */
+.scrollbar-thumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    /* Center in 8px track */
+    width: 6px;
+    height: 100px;
+    /* Dynamic via JS */
+    background: var(--brand-pop);
+    /* Veetance Blue-Purple */
+    border-radius: 4px;
+    cursor: grab;
+    box-shadow: 0 0 10px rgba(102, 127, 228, 0.5);
+    /* Neon Glow */
+    transition: background 0.2s, width 0.2s;
+}
+
+/* Hover Effects */
+#virtual-scrollbar:hover .scrollbar-thumb {
+    background: var(--text-white);
+    width: 8px;
+    /* Expands slightly */
+    right: 3px;
+}
+
+/* Glow Container */
+.scrollbar-glow-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /* Clips the glow */
+    pointer-events: none;
+}
+
+/* The Glow Ball */
+.scrollbar-glow-ball {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, var(--brand-pop) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    /* Centered on mouse */
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+#virtual-scrollbar:hover .scrollbar-glow-ball {
+    opacity: 0.6;
+}
+
+/* --- SCROLL INDICATOR OVERRIDE --- */
+.hero-subtagline {
+    color: var(--brand-pop) !important;
+}
+
+.scroll-arrow-svg line,
+.scroll-arrow-svg path {
+    stroke: var(--brand-pop) !important;
+    opacity: 1.0;
+}
+
+/* --- Z-INDEX FIXES --- */
+#artifice-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -10 !important;
+    /* Retaining the override */
+    pointer-events: none;
+}
+
+.hero-gradient-mask {
+    z-index: -5 !important;
+    pointer-events: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30vh;
+    background: linear-gradient(to top, var(--bg-deepblack), transparent);
+}
+
+/* --- HERO FOOTER ANCHOR (Taglines + Arrow) --- */
+.hero-footer-anchor {
+    position: absolute;
+    bottom: 4vh;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Added back based on original intent */
+    gap: 2vh;
+    /* Changed from 20px to 2vh */
+
+    /* SEQUENCE STATE: HIDDEN */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.hero-footer-anchor.sequence-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.scroll-prompt-container {
+    /* Reset previous absolute positioning */
+    z-index: 1;
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: auto;
+    display: flex;
+    justify-content: center;
+}
+
+@keyframes arrow-pulse {
+
+    0%,
+    20%,
+    100% {
+        opacity: 0.4;
+    }
+
+    60% {
+        opacity: 1.0;
+    }
+}
+
+.scroll-arrow-svg {
+    animation: arrow-pulse 5s ease-in-out infinite !important;
+    transform: scale(0.8) !important;
+}
+
+.hero-tagline {
+    font-size: clamp(0.8rem, 2.5vw, 1.4rem) !important;
+    /* Boosted */
+    width: 100%;
+    margin: 0 auto;
+    white-space: nowrap;
+    color: #e0e6ff !important;
+    /* Unified Luminous Frost */
+}
+
+.hero-subtagline {
+    font-size: clamp(0.6rem, 1.2vw, 0.9rem) !important;
+    white-space: nowrap;
+    opacity: 0.9;
+    font-weight: 700 !important;
+    /* ALL BOLD */
+    letter-spacing: 0.05em;
+}
+
+/* --- EXTRACTED INLINE STYLES --- */
+
+#curation-console {
+    display: none;
+}
+
+#reject-counter {
+    display: none;
+    align-items: center;
+    gap: 5px;
+}
+
+.works-header-wrapper {
+    margin-bottom: 4vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.proficiency-container-top {
+    border-top: none;
+    padding-top: 0;
+}
+
+.tools-section-spaced {
+    margin-top: 80px;
+}
+
+.letter-body p {
+    margin-bottom: 20px;
+}
+
+.letter-body p:last-child {
+    margin-bottom: 0;
+}
+
+.final-paragraph {
+    margin-top: 20px;
+}
+
+/* Remove Glow from Heart */
+.heart-pulse,
+.heart-pulse-icon {
+    font-size: 1rem;
+    vertical-align: middle;
+    text-shadow: none !important;
+    filter: none !important;
+    box-shadow: none !important;
+    animation: none !important;
+    color: var(--brand-pop);
+    color: var(--brand-pop);
+    background: transparent;
+    -webkit-text-stroke: 1px var(--brand-pop);
+}
+
+.footer-plus {
+    font-size: 2rem;
+    font-weight: 400;
+    /* Thinner is cleaner at this size */
+    vertical-align: sub;
+    line-height: 0;
+    margin: 0 8px;
+    /* Tighter spacing */
+    color: var(--text-white);
+    display: inline-block;
 }

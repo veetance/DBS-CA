@@ -25,7 +25,7 @@
     --font-display: 'Zen Dots', cursive;
     --font-body: 'Hubot Sans', sans-serif;
 
-    --text-mega: clamp(4rem, 15vw, 15rem);
+    --text-mega: clamp(3rem, 9vw, 10rem);
     --text-h1: clamp(2rem, 6vw, 4rem);
     --text-label: 0.85rem;
 

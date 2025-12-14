@@ -141,17 +141,24 @@
     renderContent();
 
     /* ---------- Logo Intro Sequence ---------- */
-    setTimeout(() => {
-        const logo = document.querySelector('.nav-logo');
-        if (logo) {
-            logo.classList.add('open');
-
-            // Hold for 2 seconds then close
-            setTimeout(() => {
+    const startLogoIntroSequence = () => {
+        // Logo starts EXPANDED via HTML class (.open)
+        // Wait for footer reveal to finish, then CONTRACT at 3.5s
+        setTimeout(() => {
+            const logo = document.querySelector('.nav-logo');
+            if (logo) {
                 logo.classList.remove('open');
-            }, 2000);
-        }
-    }, 500); // Slight delay after load
+                // Dim after contraction completes (0.8s)
+                setTimeout(() => {
+                    logo.classList.add('dimmed');
+                    // AUTO-COLLAPSE LAYOUT (Mobile: Two Slab -> One Bar)
+                    const nav = document.getElementById('global-nav');
+                    if (nav) nav.classList.add('nav-collapsed');
+                }, 800);
+            }
+        }, 3500);
+    };
+    startLogoIntroSequence();
 
     /* ---------- ARTIFICE ENGINE v2 INITIALIZATION & CURATION ---------- */
     // Initialize the Host
@@ -213,7 +220,7 @@
         try {
             // --- HERO MODE: DIMENSION 6 LOCK ---
             console.log("[Main] HERO PROTOCOL ENGAGED: Dimension 6");
-            const heroFile = 'assets/ARTIFICE-BANK/HERO-ARTIFICE/dimension_6_synthesized_archipelago.artifice';
+            const heroFile = 'assets/ARTIFICE-BANK/HERO-ARTIFICE/dimension_4_digital_strata_[topographic_map].artifice';
 
             // Set single file availability
             availableFiles = [heroFile];
@@ -459,12 +466,198 @@
         });
     };
 
+    /* ---------- VIRTUAL SCROLLBAR LOGIC ---------- */
+    const initVirtualScrollbar = () => {
+        const scrollbar = document.getElementById('virtual-scrollbar');
+        const thumb = scrollbar.querySelector('.scrollbar-thumb');
+        const glowBall = scrollbar.querySelector('.scrollbar-glow-ball');
+
+        if (!scrollbar || !thumb) return;
+
+        let isDragging = false;
+        let startY, startScrollTop;
+
+        // 1. Update Thumb Height & Position
+        const updateScrollbar = () => {
+            const docHeight = document.documentElement.scrollHeight;
+            const winHeight = window.innerHeight;
+            const trackHeight = scrollbar.clientHeight; // Actual height of the track
+            const scrollTop = window.scrollY;
+
+            // Calculate Thumb Height
+            // Ratio of visible window to total content, scaled to track height
+            const thumbHeight = Math.max((winHeight / docHeight) * trackHeight, 50);
+            thumb.style.height = `${thumbHeight}px`;
+
+            // VISIBILITY LOGIC: Show when scrolled down
+            if (scrollTop > 10) {
+                scrollbar.classList.add('scrolling');
+            } else {
+                scrollbar.classList.remove('scrolling');
+            }
+
+            // Calculate Position
+            // Max scrollable area for window: docHeight - winHeight
+            // Max scrollable area for thumb: trackHeight - thumbHeight
+            const scrollRatio = scrollTop / (docHeight - winHeight);
+            const thumbTop = scrollRatio * (trackHeight - thumbHeight);
+
+            thumb.style.transform = `translateY(${thumbTop}px)`;
+        };
+
+        // 2. Drag Logic
+        thumb.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startY = e.clientY;
+            startScrollTop = window.scrollY;
+            document.body.style.userSelect = 'none'; // Prevent text selection
+            thumb.style.background = 'var(--text-white)';
+            e.stopPropagation(); // Prevent bubbling to track click
+        });
+
+        // 3. Track Click Logic (Jump to position)
+        scrollbar.addEventListener('mousedown', (e) => {
+            // If we clicked the thumb, do nothing (handled above via stopPropagation)
+            if (e.target === thumb) return;
+
+            const rect = scrollbar.getBoundingClientRect();
+            const clickY = e.clientY - rect.top;
+            const trackHeight = scrollbar.clientHeight;
+            const docHeight = document.documentElement.scrollHeight;
+            const winHeight = window.innerHeight;
+
+            // Ratio of click position in track
+            const ratio = clickY / trackHeight;
+
+            // Calculate target scroll position
+            const targetScroll = ratio * (docHeight - winHeight);
+
+            window.scrollTo({
+                top: targetScroll,
+                behavior: 'smooth'
+            });
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                const deltaY = e.clientY - startY;
+                const docHeight = document.documentElement.scrollHeight;
+                const winHeight = window.innerHeight;
+                const trackHeight = scrollbar.clientHeight;
+
+                const thumbHeight = parseFloat(thumb.style.height) || 50;
+
+                // Convert pixel movement of thumb to pixel movement of scroll
+                // Ratio: (docHeight - winHeight) / (trackHeight - thumbHeight)
+                const scrollableRatio = (docHeight - winHeight) / (trackHeight - thumbHeight);
+
+                window.scrollTo(0, startScrollTop + (deltaY * scrollableRatio));
+            }
+
+            // Glow Ball Tracking (Updated Relative Logic)
+            if (glowBall) {
+                const rect = scrollbar.getBoundingClientRect();
+                const y = e.clientY - rect.top; // Relative Y to container
+
+                requestAnimationFrame(() => {
+                    glowBall.style.top = `${y}px`;
+                });
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            document.body.style.userSelect = '';
+            thumb.style.background = ''; // Revert to CSS hover/default
+        });
+
+        // Loop Update
+        window.addEventListener('scroll', updateScrollbar);
+        window.addEventListener('resize', updateScrollbar);
+
+        // Initial Call
+        updateScrollbar();
+    };
+
+    /* ---------- HERO TEXT ANIMATION (QUANTUM FLUX) ---------- */
+    const initHeroTextReveal = () => {
+        // GROUP 1: CHUNKS (No Blur, Slide Up)
+        const chunks = document.querySelectorAll('.hero-mega-text > span');
+        chunks.forEach((chunk, index) => {
+            chunk.style.opacity = '0'; // Prepare for entry
+            chunk.style.animation = `revealChunk 0.8s cubic-bezier(0.1, 0.9, 0.2, 1) forwards`;
+            chunk.style.animationDelay = `${0.2 + (index * 0.3)}s`; // 0.2s, 0.5s
+        });
+
+        // GROUP 2: CHARS (Blur, Cascade) -> "ART & DESIGN"
+        const specialLines = document.querySelectorAll('.blend-difference span');
+        specialLines.forEach((line) => {
+            const text = line.innerText;
+            line.innerHTML = '';
+            line.setAttribute('aria-label', text);
+
+            // Start after chunks (approx 0.8s mark)
+            let baseDelay = 1.0;
+
+            [...text].forEach((char, i) => {
+                const s = document.createElement('span');
+                s.className = 'char';
+                s.textContent = char === ' ' ? '\u00A0' : char;
+                s.style.animation = `revealChar 0.8s cubic-bezier(0.1, 0.9, 0.2, 1) forwards`;
+                s.style.animationDelay = `${baseDelay + (i * 0.04)}s`;
+                line.appendChild(s);
+            });
+        });
+
+        // SEQUENCE STEP 2: REVEAL FOOTER
+        setTimeout(() => {
+            const footer = document.querySelector('.hero-footer-anchor');
+            if (footer) footer.classList.add('sequence-visible');
+        }, 2200);
+    };
+
+    /* ---------- GLOBAL SCROLL REVEAL SYSTEM ---------- */
+    const initScrollRevealSystem = () => {
+        // 1. Auto-Detect Targets for Standard Reveal (Slide Up)
+        const standardTargets = document.querySelectorAll(
+            '.section-title, .subsection-title, .prof-header, .job-label, .resume-section-header'
+        );
+
+        standardTargets.forEach(el => {
+            el.classList.add('reveal-standard');
+        });
+
+        // 2. Observer Logic
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // One-shot trigger
+                }
+            });
+        }, {
+            threshold: 0.1, // Trigger when 10% visible
+            rootMargin: '0px 0px -50px 0px' // Offset slightly so it triggers when requested
+        });
+
+        // 3. Observe All
+        document.querySelectorAll('.reveal-standard').forEach(el => observer.observe(el));
+    };
+
     // Initialize Navigation Logic
     initSlabNav();
     initScrollSpy();
     initSmoothScroll();
     initChipGlow();
-    initDBSLogoDelay();
+    setTimeout(initDBSLogoDelay, 2200); // Updated to use setTimeout
+    initVirtualScrollbar();
+
+    // Trigger Text Animation after a slight delay
+    setTimeout(initHeroTextReveal, 100);
+
+    // Start Global Reveal System
+    initScrollRevealSystem();
 
     // Force scroll to top on load
     window.addEventListener('load', () => {
