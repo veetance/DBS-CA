@@ -1,0 +1,111 @@
+/* --- VIRTUAL SCROLLBAR (OVERLAY) --- */
+#virtual-scrollbar {
+    position: fixed;
+    /* Top = Nav Height + Gap */
+    top: calc(var(--nav-height-mobile) + var(--scrollbar-gap));
+    right: 8px;
+    width: 8px;
+    /* Height = 100vh - Top - Gap (Bottom Padding) */
+    height: calc(100vh - (var(--nav-height-mobile) + var(--scrollbar-gap) + var(--scrollbar-gap)));
+    z-index: 9999;
+    pointer-events: auto;
+    /* Allow clicking/dragging */
+    mix-blend-mode: normal;
+    /* ensure visibility */
+    cursor: pointer;
+    /* Clickable */
+    opacity: 0;
+    /* Hidden on Load */
+    transition: opacity 0.4s ease-out;
+}
+
+#virtual-scrollbar.scrolling {
+    opacity: 1;
+    /* Revealed on Scroll */
+}
+
+/* --- DESKTOP SCROLLBAR ADJUSTMENT --- */
+@media (min-width: 1028px) {
+    #virtual-scrollbar {
+        /* Desktop Nav Height */
+        top: calc(var(--nav-height-desktop) + var(--scrollbar-gap));
+        height: calc(100vh - (var(--nav-height-desktop) + var(--scrollbar-gap) + var(--scrollbar-gap)));
+    }
+}
+
+/* The Track Line */
+.scrollbar-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(102, 127, 228, 0.027);
+    /* Faint Brand Tint */
+    border-radius: 4px;
+}
+
+/* The Draggable Thumb */
+.scrollbar-thumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 6px;
+    height: 100px;
+    /* User Spec: Normal = Not Solid (50% Opacity) */
+    background: rgba(102, 127, 228, 0.5);
+    /* Brand Pop 50% */
+    border: 1px solid transparent;
+    /* Start No Outline */
+    border-radius: 4px;
+    cursor: grab;
+    transition: background 0.2s, border 0.2s, opacity 0.2s;
+    backdrop-filter: blur(2px);
+}
+
+/* Hover Effects */
+.scrollbar-thumb:hover {
+    /* User Spec: Border 2px, 50% Opacity context (handled by bg) */
+    border: 2px solid var(--brand-pop);
+}
+
+/* Click/Active State */
+.scrollbar-thumb:active {
+    /* User Spec: Click = Hover Outline Color (Brand Pop) */
+    background: var(--brand-pop) !important;
+    border-color: var(--brand-pop) !important;
+    width: 6px !important;
+    opacity: 1 !important;
+}
+
+/* Glow Container */
+.scrollbar-glow-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /* Clips the glow */
+    pointer-events: none;
+}
+
+/* The Glow Ball */
+.scrollbar-glow-ball {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, var(--brand-pop) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    /* Centered on mouse */
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+#virtual-scrollbar:hover .scrollbar-glow-ball {
+    opacity: 0.6;
+}

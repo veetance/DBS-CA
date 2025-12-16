@@ -1,0 +1,355 @@
+/* --- NAV --- */
+/* Sticky, minimal, text-based. No buttons. */
+/* --- TWO SLABS --- */
+
+#global-nav {
+    display: flex;
+    z-index: 1000;
+    padding-left: calc(var(--spacing-page) - 10px);
+    padding-right: calc(var(--spacing-page) - 10px);
+    padding-top: 1vw;
+    background: linear-gradient(to bottom, rgb(0, 0, 0), rgba(0, 0, 0, 0.836), rgba(0, 0, 0, 0));
+}
+
+.nav-slab-controls {
+    background: rgba(1, 5, 10, 0.74);
+    backdrop-filter: blur(25px);
+    border-top: 1px solid var(--brand-pop50);
+
+    border-left: 2px solid var(--brand-pop50);
+    border-right: 2px solid var(--brand-pop50);
+    border-bottom: 2px solid var(--brand-pop50);
+
+    border-bottom-left-radius: calc(1vw + 10px);
+    border-bottom-right-radius: calc(1vw + 10px);
+    border-top-left-radius: calc(1vw + 10px);
+    border-top-right-radius: calc(1vw + 10px);
+}
+
+.top-nav-slabs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* SLAB 1: BRANDING (Top, Collapsible) */
+.nav-slab-brand {
+    width: 100%;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 0px solid var(--brand-pop50);
+    transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    overflow: hidden;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+}
+
+/* Make Controls Full Width behind Brand */
+.nav-slab-controls {
+    width: 100%;
+    padding: 1vw;
+    justify-content: space-between;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(15px);
+}
+
+/* --- COLLAPSED STATE --- */
+.top-nav-slabs.nav-collapsed .nav-slab-brand {
+    height: 0;
+    opacity: 0;
+    border-bottom: none;
+}
+
+/* Wrapper Update - Allow Full Center Expansion */
+.nav-logo-wrapper {
+    width: auto;
+    height: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.nav-logo {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    z-index: 1002;
+    background: transparent;
+    padding-right: 0;
+    width: max-content;
+    white-space: nowrap;
+    gap: 12px;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
+
+.nav-word {
+    display: inline-flex;
+    align-items: flex-end;
+}
+
+/* Dim state */
+.nav-logo.dimmed {
+    opacity: 0.5;
+}
+
+/* Bright on hover AND when expanded */
+.nav-logo:hover,
+.nav-logo.open {
+    opacity: 1;
+}
+
+/* Base Spans */
+.nav-logo span {
+    display: inline-block;
+}
+
+/* Initial letters D, B, S */
+.initial-letter {
+    opacity: 1;
+    transition: opacity 0.6s ease-in-out;
+}
+
+/* Cascading delays */
+.nav-logo.open .initial-d {
+    opacity: 0.5;
+    transition-delay: 0s;
+}
+
+.nav-logo.open .initial-b {
+    opacity: 0.5;
+    transition-delay: 0.15s;
+}
+
+.nav-logo.open .initial-s {
+    opacity: 0.5;
+    transition-delay: 0.3s;
+}
+
+/* Expansion Logic - Text */
+.logo-reveal {
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-in-out;
+    vertical-align: bottom;
+    font-family: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+}
+
+.nav-logo.open .logo-reveal {
+    max-width: 400px;
+    opacity: 0.5;
+}
+
+/* I Container Logic */
+.i-container {
+    position: relative;
+    display: inline-block;
+    width: 0;
+    transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.nav-logo.open .i-container {
+    width: 0.4em;
+}
+
+/* The Letter 'I' Glyph */
+.i-glyph {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.nav-logo.open .i-glyph {
+    opacity: 0.5;
+}
+
+/* Y2K Star Logic */
+.star-wrapper {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    top: -10px;
+    left: -5px;
+    transform-origin: center;
+    transform: scale(1.2);
+    pointer-events: none;
+}
+
+.nav-logo.open .star-wrapper {
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) scale(1);
+}
+
+.y2k-star {
+    width: 100%;
+    height: 100%;
+    fill: var(--text-white);
+    transform: rotate(0deg);
+    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+    display: block;
+    opacity: 1;
+    transition: opacity 0.6s ease-in-out;
+}
+
+.nav-logo.open .y2k-star {
+    animation: spin-slow 2s linear infinite;
+    opacity: 0.5;
+    transition-delay: 0.45s;
+}
+
+@keyframes spin-slow {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* --- NAV TIMELINE (SPA) --- */
+.nav-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--text-gray);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    position: relative;
+    padding: 5px 1vw;
+    transition: color 0.3s, text-shadow 0.3s;
+    cursor: pointer;
+}
+
+/* 4-Point Star Indicator */
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    width: 11px;
+    height: 11px;
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2 L15 10 L23 12 L15 14 L12 22 L9 14 L1 12 L9 10 Z" fill="%23667fe4"/></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 0 5px var(--brand-pop));
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--text-white);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0);
+}
+
+.nav-link.active {
+    color: var(--brand-pop);
+    text-shadow: 0 0 15px rgba(69, 97, 204, 0.5);
+}
+
+.nav-link.active::before {
+    transform: translateX(-50%) scale(1);
+}
+
+/* --- MOBILE COLLAPSE LOGIC --- */
+.nav-slab-brand {
+    transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, padding 0.4s ease;
+    overflow: hidden;
+}
+
+.top-nav-slabs.nav-collapsed .nav-slab-brand {
+    height: 0 !important;
+    padding: 0 !important;
+    opacity: 0;
+    border: none;
+}
+
+/* --- DESKTOP / TABLET OVERRIDE --- */
+@media (min-width: 1028px) {
+    .top-nav-slabs {
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
+    }
+
+    .nav-slab-brand {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: auto;
+        height: auto;
+        border: none;
+        overflow: visible;
+        z-index: 2002;
+        /* Ensure it sits on top */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        /* Let clicks pass through except on logo itself */
+        margin-top: 0.5vw;
+    }
+
+    .nav-logo {
+        pointer-events: auto;
+        /* Re-enable for logo */
+    }
+
+    .nav-slab-controls {
+        width: 100%;
+        padding: 1vw;
+        justify-content: space-between;
+    }
+
+    .top-nav-slabs.nav-collapsed .nav-slab-brand {
+        height: auto;
+        opacity: 1;
+    }
+
+}
+
+@media (max-width: 1020px) {
+    .nav-slab-controls {
+        padding-left: 2vw !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-slab-controls {
+        padding-left: 3vw !important;
+    }
+}

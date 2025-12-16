@@ -1568,7 +1568,7 @@ body {
     right: 8px;
     width: 8px;
     /* Wider Track (Thumb + 2px) */
-    height: calc(100vh - 130px);
+    height: calc(100vh - 260px);
     z-index: 9999;
     pointer-events: auto;
     /* Allow clicking/dragging */
@@ -1591,7 +1591,7 @@ body {
     #virtual-scrollbar {
         top: 80px;
         /* DESKTOP: Single Row Nav Height */
-        height: calc(100vh - 80px);
+        height: calc(100vh - 160px);
     }
 }
 

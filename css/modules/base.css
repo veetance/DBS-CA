@@ -1,0 +1,45 @@
+/* Base Reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Global Variables */
+:root {
+    --nav-height-mobile: 95px;
+    /* 45px Brand + ~50px Controls */
+    --nav-height-desktop: 60px;
+    /* Single Row Estimate */
+    --scrollbar-gap: calc(100vh * 0.03);
+}
+
+/* Hide Default Scrollbar Globally */
+html,
+body {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+}
+
+/* Chrome/Safari */
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+    display: none;
+}
+
+/* Base Z-Index Fixes */
+#artifice-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -10 !important;
+    pointer-events: none;
+}

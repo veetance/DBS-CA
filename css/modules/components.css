@@ -1,0 +1,404 @@
+/* --- COMPONENT: BUTTONS --- */
+.btn-contact {
+    background: rgba(69, 97, 204, 0.1);
+    border: 1px solid var(--brand-pop-dim);
+    padding: 10px 20px;
+    color: var(--text-gray);
+    font-family: var(--font-body);
+    font-weight: 600;
+    /* Match Nav Links */
+    /* Secondary Font */
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+/* Tap Effect */
+.btn-contact:active {
+    transform: scale(0.975);
+}
+
+/* Remove Solid Fill - Enable Glow Visibility */
+.btn-contact:hover {
+    color: var(--text-white);
+    border-color: var(--brand-pop);
+    /* No solid background here, the .contact-glow handles the fill effect */
+}
+
+/* The Mouse Follower (Injected by JS) */
+.contact-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, var(--brand-pop) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: -1;
+    /* Sit behind text */
+    mix-blend-mode: screen;
+    /* Nice blending */
+    opacity: 0.3;
+}
+
+/* The Click Ripple (Injected by JS) */
+.rippling {
+    animation: ripple-anim 0.6s ease-out forwards;
+    background: radial-gradient(circle, var(--text-white) 0%, transparent 70%);
+    /* brighter white center */
+    z-index: -1;
+}
+
+@keyframes ripple-anim {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.8;
+    }
+
+    100% {
+        width: 500px;
+        height: 500px;
+        opacity: 0;
+    }
+}
+
+/* --- COMPONENT: TOOLS GRID --- */
+.tools-marquee-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.tools-track {
+    display: flex;
+    width: max-content;
+    gap: 20px;
+    animation: scroll-tools 40s linear infinite;
+    padding: 2vh;
+}
+
+.tools-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scroll-tools {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.tool-card {
+    width: 120px;
+    height: 120px;
+    flex: 0 0 auto;
+    border: 1px solid var(--brand-pop60);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: rgba(55, 52, 100, 0.11);
+}
+
+.tool-card:hover {
+    border-color: var(--brand-pop);
+    box-shadow: 0 0 15px rgba(69, 97, 204, 0.1);
+    transform: translateY(-5px) scale(1.05);
+    background: rgba(69, 97, 204, 0.05);
+}
+
+.tool-card span {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.tool-icon-placeholder {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* --- COMPONENT: SKILL CHIPS --- */
+.chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    position: relative;
+    overflow: visible;
+}
+
+.skill-chip {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--text-gray);
+    border: 1px solid var(--brand-pop60);
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+}
+
+/* Glow effect that follows mouse across entire chip-group */
+.chip-glow {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(69, 97, 204, 0.4) 0%, rgba(69, 97, 204, 0) 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+    visibility: hidden;
+    /* Hide the actual glow, only show through chips */
+}
+
+.chip-group:hover .chip-glow {
+    opacity: 1;
+    visibility: hidden;
+    /* Keep hidden, only chips reveal it */
+}
+
+/* Chips reveal the glow */
+.skill-chip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle 100px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            rgba(69, 97, 204, 0.35) 0%,
+            transparent 70%);
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 8px;
+    /* Match chip border-radius */
+}
+
+.chip-group:hover .skill-chip::before {
+    opacity: 1;
+}
+
+.skill-chip:hover {
+    border-color: var(--brand-pop);
+    color: var(--text-white);
+    background: rgba(69, 97, 204, 0.05);
+}
+
+/* --- COMPONENT: CONTACT SECTION --- */
+.split-grid-contact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5vw;
+}
+
+.contact-description {
+    color: var(--text-gray);
+    font-size: 1rem;
+    line-height: 1.6;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.contact-links-group {
+    margin-bottom: 40px;
+}
+
+.contact-link-item {
+    color: var(--text-white);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    text-decoration: none;
+    transition: color 0.3s;
+    display: flex;
+    justify-content: space-between;
+}
+
+.contact-link-item:hover {
+    color: var(--brand-pop);
+}
+
+.contact-icon {
+    color: var(--brand-pop);
+    font-size: 1.4rem;
+}
+
+.social-buttons-group {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.social-button {
+    border: 1px solid var(--brand-pop-dim);
+    background: rgba(69, 97, 204, 0.05);
+    padding: 10px 20px;
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 1;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    border-radius: 8px;
+
+    /* Enable Glow */
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    display: inline-block;
+
+    width: 100%;
+}
+
+.social-button:active {
+    transform: scale(0.975);
+}
+
+.social-button:hover {
+    background: rgba(69, 97, 204, 0.1);
+    /* Remove solid background */
+    border-color: var(--brand-pop);
+    color: var(--text-white);
+}
+
+.job-application-card {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    font-family: var(--font-body);
+}
+
+.job-id-stamp {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.1);
+}
+
+.job-label {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+    display: block;
+}
+
+/* FIX: Ripple Color to Brighter Purple */
+.rippling {
+    animation: ripple-anim 0.6s ease-out forwards;
+    background: radial-gradient(circle, #a3b1ff 0%, transparent 70%);
+    /* Brighter Purple */
+    z-index: -1;
+}
+
+.split-right-column {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: var(--spacing-page);
+    border: 2px solid #44549434;
+    border-radius: calc(var(--spacing-page) / 2);
+
+    background: rgba(2, 2, 3, 0.541)
+}
+
+.split-left-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-right: var(--spacing-page);
+    padding-top: var(--spacing-page);
+}
+
+.footer-bar {
+
+    padding: 20px 0px;
+    /* Ensure content isn't flush if full width */
+    margin-top: 0px;
+    border-top: 0px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: #444;
+    text-transform: uppercase;
+    font-family: var(--font-body);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    align-items: center;
+    /* Helper for vertical align */
+}
+
+.footer-bar span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.heart-pulse-icon {
+    font-size: 0.9rem !important;
+    /* Override material default */
+    color: var(--brand-pop);
+    vertical-align: middle;
+    display: inline-flex;
+}
+
+.footer-plus {
+    font-size: 1.2rem;
+    line-height: 1;
+    font-weight: bold;
+}
+
+/* DEUS: Footer Mobile Repair */
+@media (max-width: 768px) {
+    .footer-bar {
+        flex-direction: column-reverse;
+        /* Stack Reversed */
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .footer-bar span {
+        justify-content: center;
+    }
+}

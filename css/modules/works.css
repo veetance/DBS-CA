@@ -1,0 +1,306 @@
+/* --- WORKS GRID --- */
+#works {
+    background: var(--bg-deepblack);
+    padding: var(--spacing-page);
+    z-index: 5;
+    position: relative;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5vh;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 20px;
+}
+
+.works-filter-bar {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: transparent;
+    border: none;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--text-gray);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    color: var(--text-white);
+}
+
+.filter-btn.active {
+    color: var(--text-white);
+    border-bottom-color: var(--brand-pop);
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: var(--text-h1);
+    text-transform: uppercase;
+}
+
+.works-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--grid-gap);
+}
+
+.work-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 5vh;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.work-item:hover .work-media {
+    transform: scale(1.03);
+    filter: brightness(1.1);
+}
+
+.work-media {
+    width: 100%;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+    background: #151515;
+    display: block;
+    transition: transform 0.5s var(--ease-out), filter 0.5s var(--ease-out);
+}
+
+.work-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 15px;
+}
+
+.work-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+}
+
+.work-meta {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 4px 8px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    color: var(--text-gray);
+}
+
+.work-role {
+    color: var(--brand-pop);
+    /* Blue Theme for Roles */
+    font-weight: 600;
+}
+
+.works-header-wrapper {
+    margin-bottom: 4vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+/* --- RESUME --- */
+#resume {
+    background-color: var(--brand-pop-dark);
+}
+
+.resume-section-header {
+    font-size: 0.8rem;
+    color: var(--text-white);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    border-bottom: 2px solid var(--brand-pop50);
+    padding-bottom: 10px;
+    margin-bottom: 40px;
+    display: inline-block;
+    width: 100%;
+}
+
+.resume-entry {
+    margin-bottom: 60px;
+}
+
+.resume-institution {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--text-white);
+}
+
+.resume-role {
+    font-family: var(--font-body);
+    font-style: normal;
+    font-size: 1.1rem;
+    color: var(--brand-pop);
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+
+.resume-date {
+    font-size: 0.75rem;
+    color: var(--text-gray);
+    float: right;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: var(--font-body);
+}
+
+.resume-bullets {
+    padding-left: 20px;
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.resume-bullets li {
+    margin-bottom: 5px;
+}
+
+/* --- TECH STACK & PROFICIENCY --- */
+#tech-stack {
+    /* Background Removed (Swapped with Contact) */
+    position: relative;
+    z-index: 5;
+    padding: var(--spacing-page);
+}
+
+.proficiency-container {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 40px;
+}
+
+.proficiency-container-top {
+    border-top: none;
+    padding-top: 0;
+}
+
+.proficiency-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+}
+
+.subsection-title {
+    display: block;
+    width: 100%;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--text-white);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--brand-pop50);
+    padding-bottom: 15px;
+}
+
+.prof-header {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--brand-pop);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.tools-section-spaced {
+    margin-top: 80px;
+}
+
+/* --- LAYOUT UTILITIES --- */
+.section-bordered,
+.section-bordered-lg {
+    padding: var(--spacing-page);
+    border-top: 1px solid var(--brand-pop-dark);
+}
+
+.split-grid-resume {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--grid-gap);
+}
+
+.split-grid-contact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    background: var(--brand-pop-dark);
+}
+
+#contact-footer {
+    background: var(--bg-deepblack);
+    position: relative;
+    z-index: 2;
+    padding: 0px var(--spacing-page);
+}
+
+
+.sticky-sidebar {
+    position: sticky;
+    top: 15vh;
+    height: fit-content;
+    background-color: var(--brand-pop-dark);
+}
+
+.sidebar-subtitle {
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+
+.padded-bottom-8vh {
+    margin-bottom: 8vh;
+}
+
+.contact-description {
+    color: var(--text-gray);
+    font-size: 1rem;
+    line-height: 1.6;
+    width: 100%;
+    margin-bottom: 40px;
+    margin-top: 10px;
+}
+
+.contact-links-group {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.final-paragraph {
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .works-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #resume>div,
+    #contact-footer>div,
+    .split-grid-contact,
+    .proficiency-grid {
+        grid-template-columns: 1fr !important;
+    }
+}

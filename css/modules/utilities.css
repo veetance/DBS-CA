@@ -1,0 +1,20 @@
+/* --- UTILITIES --- */
+.reveal-standard {
+    opacity: 0;
+    will-change: opacity, transform;
+}
+
+.reveal-standard.is-visible {
+    animation: revealChunk 0.8s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+/* Inline Extractions */
+#curation-console {
+    display: none;
+}
+
+#reject-counter {
+    display: none;
+    align-items: center;
+    gap: 5px;
+}

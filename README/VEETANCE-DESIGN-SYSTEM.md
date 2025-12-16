@@ -403,4 +403,24 @@ Email: divineokos@hotmail.com
 
 ---
 
+### 6. Virtual Scrollbar (Scanner UI)
+A custom, JavaScript-driven overlay scrollbar designed for deep immersion.
+
+#### Behavior:
+1.  **Scanner Light:** A radial gradient (`.scrollbar-glow-ball`) tracks the mouse Y-position relative to the track, illuminating the thumb.
+2.  **Thumb Logic:**
+    *   **Default:** Translucent (50% Opacity) Blue (`var(--brand-pop50)`). No Border.
+    *   **Hover:** Thumb Border becomes **Solid Blue** (`var(--brand-pop)`). Fill remains translucent.
+    *   **Active (Click):** Thumb becomes **Solid Blue** (`var(--brand-pop)`). Opacity 100%. No expansion.
+3.  **Track:** Faint static track line.
+4.  **Layout Logic:**
+    *   **Position:** Fixed, pushed down by `var(--nav-height-mobile/desktop)`.
+    *   **Height:** Calculated dynamically (`100vh - nav_height - padding`) to ensure it never overlaps the header or footer area, adapting to responsive changes.
+
+#### Implementation:
+*   **CSS:** `css/modules/scrollbar.css`
+*   **JS:** `js/ui/virtual-scrollbar.js`
+
+---
+
 **Built with ❤️ in the realm of Deus** 🚀

@@ -3,85 +3,96 @@
 ## 1. High-Level Overview
 Type: Single Page Application (SPA) / One-Page Scroll
 Theme: Cyber-Industrial, Dark Mode, High Contrast ("MOMA" Aesthetic)
-Core Features: Generative Art Background, Client-Side Edit Mode, Sticky Navigation.
+Core Features: Custom State Store, Modular Architecture, Generative Hero FX.
 
 ## 2. Navigation Structure (Anchors)
 The application flows vertically through the following sections:
 
-1.  **Home / Hero Section** (`#home`)
-    *   **Interactive Background**: p5.js generative "Molten Lattice".
+1.  **Home / Hero Section** (`#hero`)
+    *   **Interactive Background**: p5.js generative "Molten Lattice" (Integrated).
     *   **Branding**: "DIGITAL BLACKSMITH" (Mega Typography).
-    *   **Tagline**: "Sculpting the digital future..." + "Bridging human/artificial efforts".
-    *   **Controls**: Edit Mode Trigger (Hidden Icon), Sticky Text Nav.
+    *   **Hero FX**: Cascading Text Reveal + Dim-to-Outline Animation ("Art & Design").
+    *   **Nav**: Two-Slab Morphing Navigation (Brand / Controls).
 
 2.  **Work / Portfolio** (`#works`)
-    *   **Header**: "SELECTED WORKS" [2018 — 2025].
+    *   **Header**: "PORTFOLIO".
     *   **Grid Layout**: Strict 3-Col Grid (Sharp Edges).
-    *   **Content**: 
-        *   Coat of Arms Gen AI (Generative Art)
-        *   Legacy UI/UX (Interface Design)
-        *   Gate Of Golgotha (Game UI)
-        *   Veras AI (Brand/Web)
-        *   RIVOS Brand ID (Identity)
-        *   Academic Motion (Animation)
-    *   **Interaction**: Hover lift, Click to Open Link / Edit Image.
+    *   **Content**: Driven by `assets/works.json`.
+    *   **Sub-Points**: Role Labels in Blue Theme.
 
 3.  **Resume** (`#resume`)
     *   **Layout**: Split view / Sticky Header.
-    *   **Experience**:
-        *   Floating Axe Studios (Generative Concept Artist, Graphic Designer)
-        *   Veras AI (Graphic Designer & Web Developer)
-    *   **Technical Proficiency**:
-        *   Generative AI, ComfyUI, Flux.
-        *   Adobe Suite, Figma, 3ds Max.
+    *   **Theme**: `job-application-card` aesthetic.
+    *   **Assets**: Defined in `assets/resume.json` (Consumed by Store).
 
 4.  **Contact** (`#contact`)
-    *   **Layout**: Minimalist Contact Grid.
-    *   **Contact Details**: Email, LinkedIn, Instagram.
-    *   **Footer**: Copyright.
+    *   **Layout**: Split Grid.
+    *   **Buttons**: Glow/Ripple Interaction Model.
 
 ## 3. Technical Components Map
 
 ### UI Components
-*   **Navbar**: Fixed, `mix-blend-mode: difference`, Small text links.
-*   **Edit Mode**: Global state toggle.
-    *   Hot-swap images/videos on click.
+*   **Virtual Scrollbar**: Custom JS-driven scrollbar with Glow Ball tracking and Translucent Thumb.
+*   **Navigation**:
+    *   **Slab System**: Two independent slabs that collapse into a single bar on scroll.
+    *   **Logo**: "D B S" with Star Glyph, expands on interaction.
+*   **Buttons**: `.btn-contact`, `.social-button` with Mouse Glow & Ripple.
 
 ### Visual Assets
-*   **Fonts**: 
-    *   Display: 'Syne' (Weights: 400, 700, 800)
-    *   Body: 'Inter' (Weights: 300, 400, 600)
+*   **Fonts**:
+    *   Display: 'Zen Dots' (Techno/Industrial)
+    *   Body: 'Hubot Sans' (Robotic/Clean)
 
-## 4. File Structure (Target Architecture)
+## 4. File Structure (Implemented Architecture)
 ```text
 root/
-├── index.html        (Contains all sections)
-├── style.css         (Design System)
-├── main.js           (Logic Layer)
-└── assets/           (Images/Videos)
+├── index.html        (Layout Shell)
+├── css/
+│   ├── main.css      (Import Hub)
+│   ├── app-theme.css (Variables: Colors, Fonts)
+│   └── modules/
+│       ├── base.css
+│       ├── hero.css
+│       ├── nav.css
+│       ├── works.css
+│       ├── components.css
+│       ├── scrollbar.css
+│       └── utilities.css
+├── js/
+│   ├── main.js       (Entry Point)
+│   ├── core/
+│   │   └── artifice-controller.js (Init Logic)
+│   ├── state/
+│   │   └── store.js  (Redux-Lite Engine)
+│   └── ui/
+│       ├── hero-fx.js
+│       ├── navigation.js
+│       ├── works-grid.js
+│       ├── interactions.js
+│       └── virtual-scrollbar.js
+└── assets/           (JSON Data & Images)
 ```
 
 ## 5. Design System & Theming
 *   **Color Palette**:
-    *   **Background**: `var(--bg-black)` (Deep Void Black)
-    *   **Text (Primary)**: `var(--text-white)`
-    *   **Text (Secondary)**: `var(--text-gray)`
-    *   **Brand Pop**: `var(--brand-pop)` (Purple/Violet Accent) - Used for hovers, active states, and focal points.
-*   **Typography**:
-    *   **Display**: 'Syne' (Broad, bold headers)
-    *   **Body**: 'Inter' (Clean, legible data)
+    *   **Background**: `var(--bg-black)` / `var(--bg-deepblack)`
+    *   **Text (Primary)**: `var(--text-white)` (#e0e6ff - Pop-Offwhite)
+    *   **Text (Secondary)**: `var(--text-gray)` (#888888)
+    *   **Brand Pop**: `var(--brand-pop)` (#667fe4 - Blue/Purple)
+    *   **Glows**: Radial Gradients using Brand Pop.
 
 ## 6. Interaction Mechanics
-### The "Digital Contact" Button
-A specialized interaction model for high-priority calls to action (e.g., Contact Button).
-*   **Mechanism**:
-    *   **Masking**: `overflow: hidden` on parent container clips internal elements.
-    *   **Glow**: A 300px radial gradient (`.contact-glow`) tracks mouse position via JS.
-    *   **Clamping**: Geometry (`min-width: 140px`) is locked to prevent layout jitter during bold/hover state changes.
-    *   **Ripple**: On click, the glow is cloned and expanded (`transform: scale(4)`) to simulate a fluid impact.
+### Hero Text ("Art & Design")
+*   **Cascade**: Individual characters reveal (`0.8s` duration) with stagger.
+*   **Phase Shift**: After `1.2s`, characters transition to **0.05px Outline** (Solid fill fades to transparent).
 
-### Generative Background
-*   **Engine**: p5.js (`artifice.js`)
-*   **Behavior**:
-    *   Scrolls at 0.5x speed (Parallax) relative to content.
-    *   Fades to black via CSS mask at the bottom of the Hero section to ensure text readability in the content sections.
+### Navigation
+*   **Auto-Collapse**: Triggers at `4.2s` (Aligned with Hero sequence).
+*   **Scroll Logic**: Collapses on scroll > 50px.
+
+### Virtual Scrollbar
+*   **State**: Fixed `8px` width.
+*   **Thumb**: `50%` Translucent Blue. No Border.
+*   **Hover**: Blue Border (`2px`).
+*   **Active**: Solid Brand-Pop (`#667fe4`) fill.
+*   **Glow**: Track Glow follows mouse Y-position.

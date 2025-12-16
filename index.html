@@ -9,13 +9,13 @@
 
     <!-- Modular CSS Architecture -->
     <link rel="stylesheet" href="css/app-theme.css" /> <!-- Visual Tokens -->
-    <link rel="stylesheet" href="style.css" /> <!-- Layout & Components -->
+    <link rel="stylesheet" href="css/main.css" /> <!-- Layout & Components -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" defer></script>
     <script src="js/artifice.js" defer></script> <!-- Art Engine -->
-    <script src="main.js" defer></script> <!-- App Logic -->
+    <script type="module" src="js/main.js" defer></script> <!-- App Logic -->
 </head>
 
 <body>
@@ -60,6 +60,7 @@
 
     <!-- Top Navigation (Tiny, Text-Based) -->
     <!-- TWO-SLAB NAVIGATION HEADER -->
+
     <nav id="global-nav" class="top-nav-slabs">
         <!-- SLAB 1: BRANDING (Centered, Collapses on Scroll) -->
         <div class="nav-slab-brand">
@@ -85,10 +86,11 @@
             </ul>
 
             <!-- Contact Button (Right) -->
-            <button class="btn-contact">Contact Me</button>
+            <button class="btn-contact">CONTACT</button>
 
         </div>
     </nav>
+
 
     <!-- Hero Section: Fullscreen Intro -->
     <section id="hero" class="hero-centered">
@@ -151,9 +153,6 @@
             <div class="sticky-sidebar">
                 <h2 class="section-title">ABOUT ME</h2>
                 <p class="sidebar-subtitle">EXPERIENCE & PROFICIENCY</p>
-                <!-- Ensuring the PDF link is correct -->
-                <a href="Veetance-portfolio-2025.pdf" target="_blank" class="pdf-download-link">[
-                    DOWNLOAD PDF ]</a>
             </div>
 
             <!-- Right: Content -->
@@ -235,7 +234,7 @@
 
         <!-- Part 2: Square Tools Grid (Marquee, Moved Below) -->
         <div class="tools-section tools-section-spaced">
-            <h3 class="subsection-title">MY TOOLS</h3>
+            <h3 class="subsection-title">TOOLS</h3>
 
             <div class="tools-marquee-container">
                 <div class="tools-track">
@@ -307,9 +306,6 @@
         </div>
     </section>
 
-
-
-
     <!-- Contact Section: Split View -->
 
     <div class="split-grid-contact section-bordered-lg">
@@ -324,24 +320,29 @@
                 LET'S WORK
             </h2>
             <p class="contact-description">
-                Available for freelance, contract, and long-term partnerships. Specializing in high-end brand
-                identity and digital execution.
+                Digital Blacksmith Studios is a Brand Identity development entity founded by Veetance Design since 2020.
+                Merging experimentation with creative adherence - while delivering precision engineered assets for
+                the modern digital landscape.
             </p>
 
 
         </div>
+
+        <!-- Vertical Demarcator -->
+
 
         <!-- RIGHT COLUMN: Contact Info -->
         <div class="split-right-column">
 
             <div class="contact-links-group">
                 <a href="mailto:divineokos@hotmail.com" class="contact-link-item">
-                    <span class="material-icons contact-icon">email</span> divineokos@hotmail.com
+                    divineokos@hotmail.com <span class="material-icons contact-icon">email</span>
                 </a>
                 <a href="tel:4036047706" class="contact-link-item">
-                    <span class="material-icons contact-icon">phone</span> (403) 604-7706
+                    (403) 604-7706 <span class="material-icons contact-icon">phone</span>
                 </a>
             </div>
+
             <div class="social-buttons-group">
                 <a href="https://www.linkedin.com/in/divine-okonkwo-723a0a194/" target="_blank"
                     class="social-button">LINKEDIN</a>
@@ -355,47 +356,10 @@
 
 
     </div>
-    <section id="contact" class="section-bordered-lg">
+    <section id="contact-footer" class="section-bordered-lg">
 
 
-        <!-- Bottom: Application Letter Card -->
-        <div class="job-application-card">
-            <div class="job-id-stamp">#1306772</div>
-
-            <h4 class="job-label">
-                <span>//</span> APPLICATION STATEMENT
-            </h4>
-
-            <div class="letter-body">
-                <p><strong>Dear Hiring Team,</strong></p>
-
-                <p>
-                    I am applying for the <strong>Freelance Graphic Designer (Remote)</strong> position. With a
-                    strong foundation in corporate visual identity and extensive experience delivering high-quality
-                    assets under strict guidelines, I am ready to support your marketing team immediately.
-                </p>
-
-                <p>
-                    While my portfolio showcases experimental and Generative AI work, I possess the discipline to
-                    set that aside for strict brand adherence. I offer:
-                </p>
-
-                <ul class="letter-list">
-                    <li><strong>Corporate Brand Adherence:</strong> Experience working within established visual
-                        identity systems (Floating Axe, Veras AI).</li>
-                    <li><strong>Adobe Creative Suite Mastery:</strong> Advanced proficiency in Photoshop,
-                        Illustrator, and InDesign.</li>
-                    <li><strong>Reliability:</strong> Proactive communication and availability during EST business
-                        hours.</li>
-                </ul>
-
-                <p class="final-paragraph">
-                    I own all necessary equipment and software. I look forward to the possibility of collaborating.
-                </p>
-
-                <p>— Divine Okonkwo</p>
-            </div>
-        </div>
+        <!-- Bottom: Application Card Removed -->
 
 
         <!-- Footer -->
@@ -406,6 +370,7 @@
                 STACK</span>
         </div>
     </section>
+
 </body>
 
 </html>

@@ -8,17 +8,23 @@
 :root {
     --bg-black: #0a0a0a;
     --bg-deepblack: #000000;
-    --text-white: #ffffff;
+    --text-white: #e0e6ff;
+    /* Replaced #ffffff with Offwhite */
     --text-gray: #888888;
+    --bg-gray-dark: #0a0a0bff;
+    /* Visual Gray Surface */
     --brand-pop: #667fe4;
+    --brand-pop-dim: rgba(102, 127, 228, 0.425);
     /* Deep Blue-Purple (Hue 229°) */
-    --brand-pop-dark: hsl(250, 5%, 4%);
+    --brand-pop-dark: #0a0a0bff;
+    --brand-pop40: hsl(229, 30%, 44%);
     --brand-pop40: hsl(229, 30%, 44%);
     /* Darker blue-purple */
     --brand-pop50: #4561cc79;
     /* 50% transparent */
     --brand-pop60: #2f429952;
     /* 60% transparent */
+    --pop-offwhite: #e0e6ff;
     /* Deep Blue-Purple */
 
     /* Typography */
@@ -26,7 +32,7 @@
     --font-body: 'Hubot Sans', sans-serif;
 
     --text-mega: clamp(3rem, 9vw, 10rem);
-    --text-h1: clamp(2rem, 6vw, 4rem);
+    --text-h1: clamp(1.8rem, 6vw, 2.5rem);
     --text-label: 0.85rem;
 
     /* Layout Variables */
@@ -43,6 +49,9 @@ body {
     color: var(--text-white);
     font-family: var(--font-body);
     font-size: 16px;
+    line-height: 1.6;
+    /* Improved Global Readability */
+    word-spacing: 0.1em;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
 }
