@@ -1,4 +1,19 @@
-import { store, ACTIONS } from '../state/store.js';
+// Pagination State
+let currentPage = 1;
+const itemsPerPage = 3;
+let allWorks = [];
+
+// Helper: Specific Page Render
+const renderPage = (page) => {
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedItems = allWorks.slice(start, end);
+    renderWorksGrid(paginatedItems);
+
+    // Update Display
+    const display = document.getElementById('pagination-display');
+    if (display) display.innerText = `PORTFOLIO PG. ${page}`;
+};
 
 export const renderContent = async () => {
     try {
@@ -36,10 +51,16 @@ export const renderContent = async () => {
 
         // 2. Fetch Works
         const worksRes = await fetch('assets/works.json');
-        const worksData = await worksRes.json();
+        allWorks = await worksRes.json(); // Store locally for pagination
 
-        // DISPATCH: Save to Store
-        store.dispatch({ type: ACTIONS.SET_WORKS, payload: worksData });
+        // Initial Render (Page 1)
+        renderPage(1);
+
+        // Initialize Controls
+        setupPaginationControls();
+
+        // DISPATCH: Save to Store (Legacy support for store)
+        store.dispatch({ type: ACTIONS.SET_WORKS, payload: allWorks });
 
     } catch (error) {
         console.error('Error loading content:', error);
@@ -53,7 +74,9 @@ export const renderWorksGrid = (data) => {
 
     worksTarget.innerHTML = data.map(work => `
         <article class="work-item" data-id="${work.id}" onclick="window.open('${work.link}', '_blank')">
-            <img src="assets/placeholder.svg" class="work-media" alt="${work.title}">
+            <div class="media-wrapper">
+                <img src="assets/placeholder.svg" class="work-media" alt="${work.title}">
+            </div>
             <div class="work-info">
                 <div>
                     <h2 class="work-title">${work.title}</h2>
@@ -64,29 +87,32 @@ export const renderWorksGrid = (data) => {
     `).join('');
 };
 
-// Global Filter Function
+// Pagination Controls
+export const setupPaginationControls = () => {
+    const totalPages = Math.ceil(allWorks.length / itemsPerPage);
+
+    const prevBtn = document.querySelector('.deck-control.prev');
+    const nextBtn = document.querySelector('.deck-control.next');
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            currentPage--;
+            if (currentPage < 1) currentPage = totalPages; // Loop to end
+            renderPage(currentPage);
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            currentPage++;
+            if (currentPage > totalPages) currentPage = 1; // Loop to start
+            renderPage(currentPage);
+        });
+    }
+};
+
+// Global Filter Function (Deprecated but kept for legacy calls if any)
 export const setupGlobalFilter = () => {
-    // 1. Define Filter Logic
-    window.filterWorks = (category) => {
-        // Update Buttons UI
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        if (event && event.target) event.target.classList.add('active');
-
-        // DISPATCH: Set Filter
-        store.dispatch({ type: ACTIONS.SET_FILTER, payload: category });
-    };
-
-    // 2. SUBSCRIBE: Listen for State Changes
-    store.subscribe(() => {
-        const state = store.getState();
-        const works = state.works;
-        const filter = state.filter;
-
-        if (filter === 'all') {
-            renderWorksGrid(works);
-        } else {
-            const filtered = works.filter(work => work.category === filter);
-            renderWorksGrid(filtered);
-        }
-    });
+    // Legacy support or removal if strictly moving to pagination only.
+    // Keeping empty or basic support to prevent errors if invoked.
 };

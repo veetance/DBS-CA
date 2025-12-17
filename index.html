@@ -137,7 +137,23 @@
     <!-- Works Section: The Grid (MOMA Style) -->
     <section id="works">
         <div class="works-header-wrapper">
-            <h2 class="section-title">PORTFOLIO</h2>
+            <!-- Unified Header & Pagination Deck -->
+            <div class="filter-deck">
+                <button class="deck-control prev">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="deck-arrow">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                </button>
+                <div class="deck-display">
+                    <span class="current-category" id="pagination-display">PORTFOLIO PG. 1</span>
+                    <div class="deck-scanlines"></div>
+                </div>
+                <button class="deck-control next">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="deck-arrow">
+                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                </button>
+            </div>
         </div>
         <!-- Grid Container -->
         <div class="works-grid" id="works-grid-target">
