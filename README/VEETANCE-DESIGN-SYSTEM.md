@@ -423,4 +423,29 @@ A custom, JavaScript-driven overlay scrollbar designed for deep immersion.
 
 ---
 
+### 7. Works Grid (State-Driven)
+A reactive grid system that derives its content and pagination from a pure functional state engine.
+
+#### Behavior:
+1.  **Pure Selection:** Uses memoized selectors (`selectPaginatedWorks`) to derive the visible data slice.
+2.  **Reactive Rendering:** Subscribes to the Store. DOM updates are gated by reference checks (`!==`), ensuring zero redundant repaints.
+3.  **Crystallization Reveal:** Staggered entrance using the "Radiant Reveal" physics protocol.
+
+#### Usage:
+```html
+<div class="works-grid" id="works-grid-target">
+    <!-- Items are injected via store subscription -->
+</div>
+```
+
+#### State Pattern:
+```javascript
+// Example Selector Usage
+const paginatedWorks = selectPaginatedWorks(state);
+renderGrid(paginatedWorks);
+```
+
+---
+
 **Built with ❤️ in the realm of Deus** 🚀
+

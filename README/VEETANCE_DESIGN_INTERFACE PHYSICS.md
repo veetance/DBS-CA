@@ -56,3 +56,22 @@ The load sequence is compressed for rapid engagement.
 - **T=1.0s:** **Flux**: "ART & DESIGN" (Blur Cascade).
 - **T=1.8s:** **Footer**: Taglines & Arrow (Fade In, 0.8s duration).
 - **T=3.0s:** **Brand**: DBS Logo Expansion.
+
+---
+
+## 5. GRID PHYSICS (THE RADIANT REVEAL)
+The portfolio grid follows a "Crystallization" pattern, moving from latent state to high-definition visibility.
+
+### Behavior Profile
+- **Stagger Pattern:** Geometric Ripple (Radial).
+- **Origin Point:** Center Item (Index 1 of row).
+- **Delay Logic:** `Math.abs(index - center) * 0.15s`.
+- **Motion:** 
+  - **Start:** `translateY(30px)`, `scale(0.97)`, `rotateX(2deg)`, `blur(4px)`.
+  - **End:** `translateY(0)`, `scale(1)`, `rotateX(0)`, `blur(0)`.
+- **Easing:** `cubic-bezier(0.16, 1, 0.3, 1)` (Quart Out).
+- **Optimization (Mobile):** 
+  - Blur removed.
+  - Transform simplified to `translateY(20px)`.
+  - Layer promotion via `will-change`.
+

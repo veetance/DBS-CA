@@ -9,8 +9,15 @@ import { initHeroTextReveal } from './ui/hero-fx.js';
 import { activateButtonEffects, initChipGlow, initScrollRevealSystem, initParallax } from './ui/interactions.js';
 import { initVirtualScrollbar } from './ui/virtual-scrollbar.js';
 import { initArtificeController } from './core/artifice-controller.js';
+import { initModalSystem } from './ui/modal.js';
 
 (() => {
+    // 0. Force Top Scroll (Strict Override)
+    if (history.scrollRestoration) {
+        history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+
     // 1. Initialize Content
     renderContent();
     setupGlobalFilter();
@@ -26,6 +33,7 @@ import { initArtificeController } from './core/artifice-controller.js';
     activateButtonEffects();
     initScrollRevealSystem();
     initVirtualScrollbar();
+    initModalSystem();
 
     // 4. Logo Sequence & Artifice
     // Note: DBS Logo Delay needs to wait for intro
@@ -37,9 +45,5 @@ import { initArtificeController } from './core/artifice-controller.js';
     // 5. Trigger Text Animation
     setTimeout(initHeroTextReveal, 100);
 
-    // Force scroll to top on load
-    window.addEventListener('load', () => {
-        window.scrollTo(0, 0);
-    });
 
 })();

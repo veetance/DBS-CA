@@ -11,20 +11,19 @@
     background: linear-gradient(to bottom, rgb(0, 0, 0), rgba(0, 0, 0, 0.836), rgba(0, 0, 0, 0));
 }
 
+
 .nav-slab-controls {
     background: rgba(1, 5, 10, 0.74);
     backdrop-filter: blur(25px);
-    border-top: 1px solid var(--brand-pop50);
+    border-radius: calc(1vw + 10px);
+    /* Full Capsule Shape */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    /* Depth lift */
+    /* Ensure borders are uniform for the shape */
+    border: 1px solid var(--brand-pop50);
 
-    border-left: 2px solid var(--brand-pop50);
-    border-right: 2px solid var(--brand-pop50);
-    border-bottom: 2px solid var(--brand-pop50);
-
-    border-bottom-left-radius: calc(1vw + 10px);
-    border-bottom-right-radius: calc(1vw + 10px);
-    border-top-left-radius: calc(1vw + 10px);
-    border-top-right-radius: calc(1vw + 10px);
 }
+
 
 .top-nav-slabs {
     position: fixed;
@@ -38,6 +37,7 @@
 }
 
 /* SLAB 1: BRANDING (Top, Collapsible) */
+
 .nav-slab-brand {
     width: 100%;
     height: 45px;
@@ -50,7 +50,10 @@
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
 }
 
+
 /* Make Controls Full Width behind Brand */
+
+
 .nav-slab-controls {
     width: 100%;
     padding: 1vw;

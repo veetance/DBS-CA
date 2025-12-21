@@ -48,7 +48,7 @@
     height: 100%;
     background: radial-gradient(circle at center,
             rgba(5, 5, 8, 0.9) 0%,
-            rgba(5, 5, 8, 0.6) 50%,
+            rgba(36, 1, 58, 0.586) 50%,
             transparent 100%);
     z-index: 1;
     pointer-events: none;

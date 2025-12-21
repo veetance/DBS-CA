@@ -1,6 +1,6 @@
 /* --- COMPONENT: BUTTONS --- */
 .btn-contact {
-    background: rgba(69, 97, 204, 0.1);
+    background: rgba(0, 0, 0, 0.1);
     border: 1px solid var(--brand-pop-dim);
     padding: 10px 20px;
     color: var(--text-gray);

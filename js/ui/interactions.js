@@ -1,7 +1,7 @@
 /* ---------- CONTACT BUTTON EFFECTS ---------- */
 export const activateButtonEffects = () => {
-    // Target both main Contact Button and Social Buttons
-    const btns = document.querySelectorAll('.btn-contact, .social-button');
+    // Target Contact, Social, AND Navigation Paddles
+    const btns = document.querySelectorAll('.btn-contact, .social-button, .deck-control');
 
     btns.forEach(btn => {
         let glow = null;

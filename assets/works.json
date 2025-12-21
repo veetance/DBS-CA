@@ -1,8 +1,8 @@
 [
   {
     "id": 1,
-    "title": "Coat of Arms",
-    "role": "Generative Concept Artist | FAS",
+    "title": "COA",
+    "role": "Concept Artist | FAS",
     "desc": "Authored a complete series of Coat of Arms designs using a Generative AI-assisted workflow (ComfyUI, Flux), integrating AI outputs with manual refinement for dynamic in-game assets.",
     "link": "https://drive.google.com/drive/folders/1oXxTbJ6j782qIp6fJu-TvyAX_3Go-Vos?usp=drive_link",
     "type": "image",
@@ -10,8 +10,8 @@
   },
   {
     "id": 2,
-    "title": "Gate of Golgotha",
-    "role": "UI/UX Designer | Floating Axe Studios",
+    "title": "GOG",
+    "role": "UI/UX Designer | FAS",
     "desc": "Legacy UI/UX created in Figma. Developed comprehensive design systems and visual assets contributing to the overall art direction.",
     "link": "https://www.figma.com/design/YbLszQ27r4xjVvErvRkGZe/Gate-Of-Golgotha-Ui-old?node-id=1307-661&t=hZrTrY9EyB9MB0Nv-1",
     "type": "image",
@@ -19,7 +19,7 @@
   },
   {
     "id": 3,
-    "title": "UI-UX Prototypes",
+    "title": "UI-UX ",
     "role": "Interaction Designer",
     "desc": "Animated high-fidelity prototypes demonstrating complex interaction flows and micro-animations for game interfaces.",
     "link": "https://drive.google.com/file/d/10nTXx8G8j28cCRpBvlcGLix-z2xtBIjm/view?usp=sharing",
@@ -46,8 +46,8 @@
   },
   {
     "id": 6,
-    "title": "Animation Archive",
-    "role": "Animator",
+    "title": "Motion",
+    "role": "Animation archive",
     "desc": "A collection of Academic 2D/3D animations and motion graphics exploring digital art and emerging technologies.",
     "link": "https://drive.google.com/drive/folders/1QCt4P3kNB55WDtC5JBmUubRKv3cv6oUK?usp=sharing",
     "type": "video",
@@ -55,7 +55,7 @@
   },
   {
     "id": 7,
-    "title": "Platform Odyssey",
+    "title": "Latent Games",
     "role": "Game Designer & Developer",
     "desc": "A 2D platformer game focusing on fluid mechanics and responsive controls, built with Unity and C#.",
     "link": "#",

@@ -56,13 +56,73 @@
     gap: var(--grid-gap);
 }
 
+/* --- WORKS GRID --- */
 .work-item {
+    position: relative;
+    /* Anchor for Sensors */
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     margin-bottom: 5vh;
     cursor: pointer;
-    /* overflow: hidden; Removed from parent to allow text flow if needed, but wrapper controls media */
+    opacity: 1;
+    /* Always opaque or handled strictly via reveal */
+    transform: translate(var(--inertia-x, 0), 0);
+    transition:
+        transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: none;
+    perspective: 1000px;
+    will-change: transform;
+    transition-delay: var(--reveal-delay, 0s);
+}
+
+/* INITIAL REVEAL (Middle -> Sides Cascade) */
+.work-item.initial-reveal {
+    opacity: 0;
+    transform: translateY(110px) scale(0.97) rotateX(2deg);
+    filter: blur(4px);
+    will-change: transform, opacity;
+    transition:
+        opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.work-item.initial-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0);
+    filter: blur(0);
+}
+
+@media (max-width: 768px) {
+    .work-item {
+        filter: none;
+        /* Efficient performance on mobile */
+        transform: translateY(20px) scale(0.98);
+    }
+}
+
+.work-item.is-visible {
+    transform: translate(0, 0);
+}
+
+/* --- LEAN & ENTER KINETICS --- */
+.work-item.exit-left {
+    transform: translateX(-150%);
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.work-item.exit-right {
+    transform: translateX(150%);
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.work-item.enter-right {
+    transform: translateX(100%);
+}
+
+.work-item.enter-left {
+    transform: translateX(-100%);
 }
 
 .media-wrapper {
@@ -74,8 +134,82 @@
     /* Clips image on zoom */
     display: block;
     position: relative;
-    border-radius: 4px;
+    border-radius: 10px;
     /* Optional slight rounding */
+}
+
+/* --- LUMINOUS SWEEP (PHYSICS OPTIMIZATION) --- */
+.media-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0),
+            rgba(102, 127, 228, 0.4),
+            /* Brand Pop 40% */
+            white,
+            rgba(102, 127, 228, 0.4),
+            rgba(255, 255, 255, 0),
+            transparent);
+    transform: skewX(-30deg);
+    filter: blur(30px);
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+}
+
+.work-item.is-visible .media-wrapper.sweep-ltr::after {
+    animation: luminous-sweep-ltr 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--reveal-delay, 0s);
+}
+
+.work-item.is-visible .media-wrapper.sweep-rtl::after {
+    animation: luminous-sweep-rtl 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--reveal-delay, 0s);
+}
+
+@keyframes luminous-sweep-ltr {
+    0% {
+        left: -150%;
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.25;
+    }
+
+    70% {
+        opacity: 0.25;
+    }
+
+    100% {
+        left: 250%;
+        opacity: 0;
+    }
+}
+
+@keyframes luminous-sweep-rtl {
+    0% {
+        left: 250%;
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.25;
+    }
+
+    70% {
+        opacity: 0.25;
+    }
+
+    100% {
+        left: -150%;
+        opacity: 0;
+    }
 }
 
 .work-item:hover .work-media {
@@ -92,18 +226,26 @@
 }
 
 .work-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.185);
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 15px;
+    align-items: flex-end;
+    /* Align to bottom */
+    z-index: 2;
+    pointer-events: none;
+    /* Let clicks pass through to image/link */
 }
 
 .work-title {
     font-family: var(--font-display);
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 1.2rem;
+    font-size: calc(var(--text-h2) * 0.75);
 }
 
 .work-meta {
@@ -122,107 +264,137 @@
     font-weight: 600;
 }
 
-.works-header-wrapper {
-    margin-bottom: 4vh;
+/* --- STATUS STRIP (Split Header) --- */
+.works-status-strip {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    /* Center horizontally */
-    justify-content: center;
-    gap: 20px;
+    width: 100%;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* --- FILTER DECK (SCANNER UI) --- */
-.filter-deck {
-    display: flex;
-    align-items: center;
-    width: 90%;
-    /* Fill available width */
-    height: 48px;
-    background: rgba(10, 10, 10, 0.6);
-    /* Glass effect */
-    border: 1px solid var(--brand-pop50);
-    border-radius: 100px;
-    /* Pill shape */
-    backdrop-filter: blur(10px);
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 0 15px rgba(102, 127, 228, 0.1);
+.status-label,
+.status-page {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    /* Large Display Size */
+    color: var(--text-white);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 300;
 }
 
-.deck-control {
-    background: transparent;
-    border: none;
+.status-label {
+    text-decoration: line-through;
+    text-decoration-color: var(--brand-pop);
+    text-decoration-thickness: 2px;
+}
+
+.status-page {
     color: var(--brand-pop);
-    width: 48px;
-    height: 100%;
+}
+
+/* --- SIDE PADDLES (Floating Nav) --- */
+.deck-control.side-paddle {
+    position: absolute;
+    top: 55%;
+    /* Centered relative to grid items */
+    transform: translateY(-50%);
+    width: 25px;
+    height: 100px;
+    background: rgba(10, 10, 10, 0.3);
+    border: 1px solid var(--brand-pop50);
+    backdrop-filter: blur(4px);
+    color: var(--brand-pop);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 2;
+    z-index: 10;
+    border-radius: 8px;
+    overflow: hidden;
+    /* Necessary for glow clipping */
+
+    /* ENTROPY STATE (Hidden/Exit) */
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity 0.6s ease,
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        background 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
-.deck-control:hover {
-    background: rgba(102, 127, 228, 0.1);
+/* REVEAL STATE (Enter) */
+.deck-control.side-paddle.is-revealed {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(0, -50%);
+    /* Reset X, Keep Y center */
+}
+
+.deck-control.prev {
+    left: var(--spacing-page);
+    margin-left: -12.5px;
+    transform: translate(-40px, -50%);
+    /* Start further LEFT */
+}
+
+.deck-control.next {
+    right: var(--spacing-page);
+    margin-right: -12.5px;
+    transform: translate(40px, -50%);
+    /* Start further RIGHT */
+}
+
+/* Update Hover to respect new transform context */
+.deck-control.side-paddle.is-revealed:hover,
+.deck-control.side-paddle.force-hover {
+    background: rgba(102, 127, 228, 0.15);
+    border-color: var(--brand-pop);
     color: var(--text-white);
+    /* Scale from centered position */
+    transform: translate(0, -50%) scale(1.05);
 }
 
-.deck-display {
-    flex-grow: 1;
-    /* Stretch to fill space between arrows */
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    border-left: 1px solid rgba(102, 127, 228, 0.2);
-    border-right: 1px solid rgba(102, 127, 228, 0.2);
+.deck-control:active {
+    transform: translateY(-50%) scale(0.95);
 }
 
-.current-category {
-    font-family: var(--font-display);
-    color: var(--text-white);
-    font-size: 1rem;
-    letter-spacing: 0.1em;
-    z-index: 2;
-    text-shadow: 0 0 10px var(--brand-pop50);
-}
-
-/* Scanline Animation inside the deck */
-.deck-scanlines {
+/* --- PROXIMITY SENSORS (Parented to Work Item) --- */
+.paddle-sensor {
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
+    width: 12.5%;
+    /* Covers slice of the media */
     height: 100%;
-    background: repeating-linear-gradient(0deg,
-            transparent,
-            transparent 2px,
-            rgba(102, 127, 228, 0.05) 3px,
-            rgba(102, 127, 228, 0.05) 4px);
-    pointer-events: none;
-    z-index: 1;
+    z-index: 10;
+    /* Above media click layer */
+    cursor: pointer;
+    /* opacity: 0.2; background: lime; /* DEBUG ZONE */
 }
+
+.prev-sensor {
+    left: -22px;
+    /* Extend into gutter */
+    width: calc(12.5% + 22px);
+}
+
+.next-sensor {
+    right: -22px;
+    /* Extend into gutter */
+    width: calc(12.5% + 22px);
+}
+
+/* Force Hover State (Triggered by JS) */
+/* Removed redundant force-hover block as it is merged above */
 
 /* Responsive adjust */
 @media (min-width: 768px) {
-    .works-header-wrapper {
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        /* Center the single deck */
-    }
-
-    .filter-deck {
-        width: auto;
-        min-width: 400px;
-        /* Wider to accommodate longer text */
-        flex-grow: 0;
-        /* Don't stretch too much if centered */
-        margin-left: 0;
-    }
+    /* No special margins needed */
 }
 
 /* --- RESUME --- */
@@ -367,6 +539,7 @@
     top: 15vh;
     height: fit-content;
     background-color: var(--brand-pop-dark);
+    z-index: 2;
 }
 
 .sidebar-subtitle {

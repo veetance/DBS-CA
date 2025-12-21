@@ -10,6 +10,7 @@
     <!-- Modular CSS Architecture -->
     <link rel="stylesheet" href="css/app-theme.css" /> <!-- Visual Tokens -->
     <link rel="stylesheet" href="css/main.css" /> <!-- Layout & Components -->
+    <link rel="stylesheet" href="css/modules/modal.css" /> <!-- Modal System -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- Scripts -->
@@ -32,6 +33,11 @@
     <!-- Generative Background (Scrolls Away) -->
     <div id="artifice-container"></div>
     <!-- Generative Background (Managed by p5.js) -->
+
+    <!-- WORK DETAIL MODAL (Digital Forge Viewport) -->
+    <div id="work-modal" class="modal-overlay">
+        <!-- Injected via js/ui/modal.js -->
+    </div>
 
 
     <!-- ARTIFICE CURATION CONSOLE -->
@@ -136,43 +142,47 @@
 
     <!-- Works Section: The Grid (MOMA Style) -->
     <section id="works">
-        <div class="works-header-wrapper">
-            <!-- Unified Header & Pagination Deck -->
-            <div class="filter-deck">
-                <button class="deck-control prev">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="deck-arrow">
-                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" />
-                    </svg>
-                </button>
-                <div class="deck-display">
-                    <span class="current-category" id="pagination-display">PORTFOLIO PG. 1</span>
-                    <div class="deck-scanlines"></div>
-                </div>
-                <button class="deck-control next">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="deck-arrow">
-                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" />
-                    </svg>
-                </button>
-            </div>
+
+        <!-- STATUS STRIP (Split Header) -->
+        <div class="works-status-strip">
+            <span class="status-label">FOLIO</span>
+            <span class="status-page" id="pagination-display">01</span>
         </div>
+
+        <!-- SIDE PADDLES (Direct Children) -->
+        <button class="deck-control prev side-paddle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="deck-arrow">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" />
+            </svg>
+        </button>
+
+        <button class="deck-control next side-paddle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="deck-arrow">
+                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" />
+            </svg>
+        </button>
+
         <!-- Grid Container -->
         <div class="works-grid" id="works-grid-target">
             <!-- JS INJECTED FROM assets/works.json -->
         </div>
+
+
+
     </section>
 
     <!-- Resume Section: Split View -->
-    <section id="resume" class="section-bordered">
+    <section id="resume">
         <div class="split-grid-resume">
 
             <!-- Left: Sticky Title -->
-            <div class="sticky-sidebar">
+            <div class="sticky-sidebar section-bordered">
                 <h2 class="section-title">ABOUT ME</h2>
                 <p class="sidebar-subtitle">EXPERIENCE & PROFICIENCY</p>
             </div>
 
             <!-- Right: Content -->
-            <div class="resume-content">
+            <div class="resume-content section-bordered">
 
                 <!-- Education Block -->
                 <div class="padded-bottom-8vh">
@@ -336,9 +346,10 @@
                 LET'S WORK
             </h2>
             <p class="contact-description">
-                Digital Blacksmith Studios is a Brand Identity development entity founded by Veetance Design since 2020.
-                Merging experimentation with creative adherence - while delivering precision engineered assets for
-                the modern digital landscape.
+                Digital Blacksmith Studios is a dedicated brand-identity forge founded by VEETANCE Design in 2020. We
+                illuminate the digital horizon by merging experimental vision with disciplined creative adherence. We
+                forge functional, precision-engineered assets designed to empower and aid your journey with pure visual
+                clarity.
             </p>
 
 
