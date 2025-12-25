@@ -119,9 +119,9 @@
 }
 
 .work-item.is-visible {
-    transform: translate(0, 0) !important;
-    opacity: 1 !important;
-    filter: blur(0) !important;
+    transform: translate(0, 0);
+    opacity: 1;
+    filter: blur(0);
 }
 
 .work-item.exit-left {
@@ -294,28 +294,28 @@
     border-bottom: 0px solid rgba(255, 255, 255, 0.1);
 }
 
-/* FOLIO Label - Force 100% Opacity Off-White (Solid) */
+/* FOLIO Label - High Specificity via Structure */
 #works .works-status-strip .status-label {
-    font-family: var(--font-display) !important;
-    font-size: 2rem !important;
-    color: var(--text-white) !important;
-    opacity: 1 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.1em !important;
-    font-weight: 300 !important;
-    text-decoration: none !important;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--text-white);
+    opacity: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 300;
+    text-decoration: none;
 }
 
-/* Page Number - Force 50% Opacity Off-White (Ghost) */
+/* Page Number - Ghost State via Structural Specificity */
 #works .works-status-strip .status-page,
 #works .works-status-strip #pagination-display {
-    font-family: var(--font-display) !important;
-    font-size: 2rem !important;
-    color: var(--text-white) !important;
-    opacity: 0.5 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.1em !important;
-    font-weight: 300 !important;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--text-white);
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 300;
 }
 
 /* --- SIDE PADDLES (Floating Nav) --- */

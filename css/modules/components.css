@@ -132,7 +132,6 @@
     border-color: var(--brand-pop);
     transform: scale(1.08);
     /* Pure Scale Expansion */
-    background: rgba(69, 97, 204, 0.05);
 }
 
 .tool-card span {
@@ -218,7 +217,6 @@
 .skill-chip:hover {
     border-color: var(--brand-pop);
     color: var(--text-white);
-    background: rgba(69, 97, 204, 0.05);
 }
 
 /* --- COMPONENT: CONTACT SECTION --- */

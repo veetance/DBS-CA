@@ -95,13 +95,16 @@
         <div class="nav-slab-controls">
             <!-- Nav Timeline Links (Left) -->
             <ul class="nav-links">
-                <li><a href="#hero" class="nav-link active" data-section="hero">HOME</a></li>
-                <li><a href="#works" class="nav-link" data-section="works">WORKS</a></li>
-                <li><a href="#about" class="nav-link" data-section="about">ABOUT</a></li>
+                <li><a href="#hero" class="nav-link active" data-section="hero"
+                        aria-label="Navigate to Home section">HOME</a></li>
+                <li><a href="#works" class="nav-link" data-section="works"
+                        aria-label="Navigate to Works portfolio section">WORKS</a></li>
+                <li><a href="#about" class="nav-link" data-section="about"
+                        aria-label="Navigate to About section">ABOUT</a></li>
             </ul>
 
             <!-- Contact Button (Right) -->
-            <button class="btn-contact">CONTACT</button>
+            <button class="btn-contact" aria-label="Open contact information">CONTACT</button>
 
         </div>
     </nav>
@@ -159,14 +162,14 @@
         </div>
 
         <!-- SIDE PADDLES (Direct Children) -->
-        <button class="deck-control prev side-paddle">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="deck-arrow">
+        <button class="deck-control prev side-paddle" aria-label="Previous portfolio page">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="deck-arrow" aria-hidden="true">
                 <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" />
             </svg>
         </button>
 
-        <button class="deck-control next side-paddle">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="deck-arrow">
+        <button class="deck-control next side-paddle" aria-label="Next portfolio page">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="deck-arrow" aria-hidden="true">
                 <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" />
             </svg>
         </button>

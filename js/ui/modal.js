@@ -20,11 +20,11 @@ const renderModalContent = (work) => {
             </button>
             
             <div class="modal-media-viewport">
-                <button class="modal-paddle prev" data-dir="prev">
-                    <span class="material-icons">chevron_left</span>
+                <button class="modal-paddle prev" data-dir="prev" aria-label="Previous work item">
+                    <span class="material-icons" aria-hidden="true">chevron_left</span>
                 </button>
-                <button class="modal-paddle next" data-dir="next">
-                    <span class="material-icons">chevron_right</span>
+                <button class="modal-paddle next" data-dir="next" aria-label="Next work item">
+                    <span class="material-icons" aria-hidden="true">chevron_right</span>
                 </button>
 
                 ${work.type === 'video'
