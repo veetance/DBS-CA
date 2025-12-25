@@ -69,28 +69,19 @@ export const renderWorksGrid = (data, direction = null) => {
 
         worksTarget.appendChild(article);
 
-        // KINETIC ACTIVATION:
-        if (direction) {
-            // Force Layout to ensure enterClass transform is registered
-            void article.offsetWidth;
+        // INTERSECTION OBSERVER BINDING:
+        // Every article is observed and will reveal only when crossing the trigger threshold
+        worksObserver.observe(article);
 
+        if (direction) {
+            // If we have a direction (pagination), force immediately start the cascade
+            // but the observer still tracks it for scroll safety.
+            void article.offsetWidth;
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     article.classList.add('is-visible');
-                    // Attach to observer for future tracking
-                    worksObserver.observe(article);
                 });
             });
-        } else {
-            // Standard Intersection Trigger for first load
-            worksObserver.observe(article);
-
-            // Fallback: If for some reason the observer misses it, reveal after a delay
-            setTimeout(() => {
-                if (!article.classList.contains('is-visible')) {
-                    article.classList.add('is-visible');
-                }
-            }, 1500 + (index * 200));
         }
     });
 
@@ -239,9 +230,13 @@ const triggerControlHint = () => {
 const worksObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
+            // Trigger Reveal Physical Protocol
             entry.target.classList.add('is-visible');
+
+            // Unobserve to prevent repeat animations unless intended
             worksObserver.unobserve(entry.target);
 
+            // Side-Effect: Reveal pagination controls once user sees content
             if (!hasHinted) {
                 hasHinted = true;
                 setTimeout(triggerControlHint, 500);
@@ -249,8 +244,8 @@ const worksObserver = new IntersectionObserver((entries) => {
         }
     });
 }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -20px 0px'
+    threshold: 0.15, // Slightly higher for more intentional trigger
+    rootMargin: '0px 0px -50px 0px' // Negative margin forces item to be further in view
 });
 
 export const setupPaginationControls = () => {

@@ -15,7 +15,15 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
     <script src="js/artifice.js" defer></script> <!-- Art Engine -->
     <script type="module" src="js/main.js" defer></script> <!-- App Logic -->
 </head>
@@ -89,7 +97,7 @@
             <ul class="nav-links">
                 <li><a href="#hero" class="nav-link active" data-section="hero">HOME</a></li>
                 <li><a href="#works" class="nav-link" data-section="works">WORKS</a></li>
-                <li><a href="#resume" class="nav-link" data-section="resume">ABOUT</a></li>
+                <li><a href="#about" class="nav-link" data-section="about">ABOUT</a></li>
             </ul>
 
             <!-- Contact Button (Right) -->
@@ -261,44 +269,61 @@
     <section id="about">
         <div class="about-bento-grid">
 
-            <!-- Tile 1: Identity (Biometric Hub) -->
+            <!-- Tile 1: Identity (Identification Hub) -->
             <div class="bento-tile bento-identity">
-                <div class="identity-header">
-                    <h2 class="section-title">ABOUT ME</h2>
-                    <p class="sidebar-subtitle">EXPERIENCE & PROFICIENCY</p>
+                <div class="identity-top-row">
+                    <div class="identity-card-badge">ABOUT ME</div>
+                    <div class="identity-header-right">
+                        <div class="identity-serial-number">#007</div>
+                    </div>
                 </div>
 
                 <div id="profile-3d-sidebar-wrap">
                     <div id="profile-3d-viewport">
                         <!-- Three.js Canvas Injected Here -->
                     </div>
+
                     <div class="biometric-readout">
-                        <span class="status-indicator">●</span> BIOMETRIC SCAN ACTIVE
+                        <span><span class="status-indicator">●</span> ONLINE</span>
+                        <span class="material-icons readout-icon">fingerprint</span>
                     </div>
+                </div>
+
+                <div class="identity-data-fields">
+                    <div class="data-field">
+                        <label>DESIGNER</label>
+                        <span>VEETANCE DESIGN</span>
+                    </div>
+                    <div class="data-field">
+                        <label>MISSION</label>
+                        <p class="mission-text-mini">
+                            Illuminating the digital horizon by merging experimental vision with disciplined creative
+                            adherence.
+                        </p>
+                    </div>
+                    <div class="data-field-row">
+                        <div class="data-field">
+                            <label>LOCATION</label>
+                            <span>REMOTE</span>
+                        </div>
+                        <div class="data-field">
+                            <label>FOCUS</label>
+                            <span>VISUAL ARTIST</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer-barcode">
+                    <div class="barcode-lines"></div>
+                    <span class="barcode-num">DEUS_CORE_v2.0</span>
                 </div>
             </div>
 
             <!-- RIGHT COLUMN: Scrollable Content Group -->
             <div class="about-content-column">
 
-                <!-- Tile 2: Bio / Mission Statement -->
-                <div class="bento-tile bento-bio reveal-item">
-                    <div class="resume-section-header">00 // MISSION</div>
-                    <p class="bio-text">
-                        Digital Blacksmithing is the art of fusing mathematical precision with organic creative
-                        intuition.
-                        I forge functional, high-fidelity interfaces designed to bridge the gap between human perception
-                        and synthetic intelligence.
-                    </p>
-                    <div class="bio-footer">
-                        <span class="bio-tag">#VEETANCE</span>
-                        <span class="bio-tag">#GEN-AI</span>
-                        <span class="bio-tag">#UI-PHYSICS</span>
-                    </div>
-                </div>
-
                 <!-- Tile 3: Education Hub -->
-                <div class="bento-tile bento-education resume-section-group">
+                <div class="bento-tile bento-education resume-section-group" id="about-details-content">
                     <div class="resume-section-header">01 // EDUCATION</div>
                     <div id="resume-education-target">
                         <!-- JS injected -->
@@ -310,6 +335,57 @@
                     <div class="resume-section-header">02 // EXPERIENCE</div>
                     <div id="resume-experience-target">
                         <!-- JS injected -->
+                    </div>
+                </div>
+
+                <!-- SIDE-MODAL SPECTRAL FORGE (Unified Autodesk Workstation) -->
+                <div class="bento-tile forge-workstation" id="sentinel-forge-modal">
+                    <div class="forge-header">
+                        <div class="forge-title-group">
+                            <span class="forge-code">RIG_v4.5</span>
+                            <h2 class="forge-title">SPECTRAL FORGE</h2>
+                        </div>
+                        <div class="view-modes">
+                            <button class="mode-btn active" id="mode-translate" title="Translate (W)">W</button>
+                            <button class="mode-btn" id="mode-rotate" title="Rotate (E)">E</button>
+                            <button class="mode-btn" id="mode-scale" title="Scale (R)">R</button>
+                        </div>
+                    </div>
+
+                    <div class="forge-inspector">
+                        <!-- SCENE GRAPH / OBJECT POOL -->
+                        <div class="inspector-section">
+                            <div class="section-label">SPECTRAL_RIG_NODES</div>
+                            <div class="object-list" id="forge-object-list">
+                                <div class="list-item active" data-id="sentinel">SENTINEL_UNIT</div>
+                            </div>
+                            <div class="forge-actions">
+                                <button class="action-btn" id="add-light-btn">+</button>
+                                <button class="action-btn" id="del-light-btn">×</button>
+                            </div>
+
+                            <!-- Factory Type Preset Selection -->
+                            <div class="type-selector hidden" id="forge-type-selector">
+                                <button data-type="point">POINT</button>
+                                <button data-type="ellipse">ELLIPSE</button>
+                                <button data-type="rect">RECT</button>
+                                <button data-type="dome">DOME</button>
+                            </div>
+                        </div>
+
+                        <!-- PROPERTY INSPECTOR -->
+                        <div class="inspector-section">
+                            <div class="section-label" id="selected-obj-type">PROPERTIES // SENTINEL</div>
+                            <div class="property-header" id="selected-obj-name">SENTINEL_UNIT</div>
+                            <div class="property-stack" id="property-inputs">
+                                <!-- Dynamic Sliders Injected Here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="forge-footer">
+                        <div class="forge-status">REAL-TIME_SYNC_ACTIVE</div>
+                        <button class="close-forge-btn" id="close-forge-trigger">EXIT_FORGE</button>
                     </div>
                 </div>
 
