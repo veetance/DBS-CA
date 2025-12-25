@@ -57,7 +57,8 @@ export const ACTIONS = {
     SET_PAGE: 'SET_PAGE',
     SET_LAST_DIRECTION: 'SET_LAST_DIRECTION',
     OPEN_MODAL: 'OPEN_MODAL',
-    CLOSE_MODAL: 'CLOSE_MODAL'
+    CLOSE_MODAL: 'CLOSE_MODAL',
+    SET_ITEMS_PER_PAGE: 'SET_ITEMS_PER_PAGE'
 };
 
 // --- REDUCER ---
@@ -96,6 +97,7 @@ const rootReducer = (state, action) => {
 
         case ACTIONS.NEXT_PAGE: {
             const totalPages = Math.ceil(state.works.length / state.pagination.itemsPerPage);
+            if (totalPages <= 1) return state; // Guard: No navigation if only 1 page
             let next = state.pagination.currentPage + 1;
             if (next > totalPages) next = 1;
             return {
@@ -106,6 +108,7 @@ const rootReducer = (state, action) => {
 
         case ACTIONS.PREV_PAGE: {
             const totalPages = Math.ceil(state.works.length / state.pagination.itemsPerPage);
+            if (totalPages <= 1) return state; // Guard: No navigation if only 1 page
             let prev = state.pagination.currentPage - 1;
             if (prev < 1) prev = totalPages;
             return {
@@ -131,6 +134,12 @@ const rootReducer = (state, action) => {
 
         case ACTIONS.CLOSE_MODAL:
             return { ...state, activeWorkId: null };
+
+        case ACTIONS.SET_ITEMS_PER_PAGE:
+            return {
+                ...state,
+                pagination: { ...state.pagination, itemsPerPage: action.payload }
+            };
 
         default:
             return state;

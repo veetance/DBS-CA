@@ -4,12 +4,14 @@
    ------------------------------------------------- */
 
 import { initSlabNav, initDBSLogoDelay, startLogoIntroSequence, initScrollSpy, initSmoothScroll } from './ui/navigation.js';
-import { renderContent, setupGlobalFilter } from './ui/works-grid.js';
+import { renderContent, setupGlobalFilter, observeAboutSection } from './ui/works-grid.js';
 import { initHeroTextReveal } from './ui/hero-fx.js';
 import { activateButtonEffects, initChipGlow, initScrollRevealSystem, initParallax } from './ui/interactions.js';
 import { initVirtualScrollbar } from './ui/virtual-scrollbar.js';
 import { initArtificeController } from './core/artifice-controller.js';
 import { initModalSystem } from './ui/modal.js';
+import { initToolsCarousel } from './ui/tools-carousel.js';
+import { initProfile3D } from './ui/profile-3d.js';
 
 (() => {
     // 0. Force Top Scroll (Strict Override)
@@ -34,6 +36,9 @@ import { initModalSystem } from './ui/modal.js';
     initScrollRevealSystem();
     initVirtualScrollbar();
     initModalSystem();
+    initToolsCarousel();
+    observeAboutSection();
+    initProfile3D();
 
     // 4. Logo Sequence & Artifice
     // Note: DBS Logo Delay needs to wait for intro

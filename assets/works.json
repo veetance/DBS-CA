@@ -56,15 +56,15 @@
   {
     "id": 7,
     "title": "Latent Games",
-    "role": "Game Designer & Developer",
-    "desc": "A 2D platformer game focusing on fluid mechanics and responsive controls, built with Unity and C#.",
+    "role": "Game Designer & Dev",
+    "desc": "2D platformer games focusing on fluid mechanics and responsive controls, built with WEBGL and Three.js.",
     "link": "#",
     "type": "video",
     "category": "platform_games"
   },
   {
     "id": 8,
-    "title": "Neural Landscapes",
+    "title": "Artifice",
     "role": "Generative AI Artist",
     "desc": "A series of generative landscapes created using custom Stable Diffusion models and detailed prompt engineering.",
     "link": "#",
@@ -73,7 +73,7 @@
   },
   {
     "id": 9,
-    "title": "HCI Research",
+    "title": "Design Thinking",
     "role": "UI/UX Researcher",
     "desc": "An in-depth study of Human-Computer Interaction patterns, focusing on accessibility and intuitive navigation.",
     "link": "#",

@@ -15,6 +15,7 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <script src="js/artifice.js" defer></script> <!-- Art Engine -->
     <script type="module" src="js/main.js" defer></script> <!-- App Logic -->
 </head>
@@ -167,100 +168,21 @@
             <!-- JS INJECTED FROM assets/works.json -->
         </div>
 
-
-
     </section>
 
-    <!-- Resume Section: Split View -->
-    <section id="resume">
-        <div class="split-grid-resume">
-
-            <!-- Left: Sticky Title -->
-            <div class="sticky-sidebar section-bordered">
-                <h2 class="section-title">ABOUT ME</h2>
-                <p class="sidebar-subtitle">EXPERIENCE & PROFICIENCY</p>
-            </div>
-
-            <!-- Right: Content -->
-            <div class="resume-content section-bordered">
-
-                <!-- Education Block -->
-                <div class="padded-bottom-8vh">
-                    <div class="resume-section-header">EDUCATION</div>
-                    <div id="resume-education-target">
-                        <!-- JS injected -->
-                    </div>
-                </div>
-
-                <!-- Experience Block -->
-                <div>
-                    <div class="resume-section-header">EXPERIENCE</div>
-                    <div id="resume-experience-target">
-                        <!-- JS injected -->
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-
-    <!-- TECH STACK SECTION -->
-    <section id="tech-stack" class="section-bordered">
-
-        <!-- Part 1: Proficiency Chips (Reordered to Top) -->
-        <div class="proficiency-container proficiency-container-top">
-            <h3 class="subsection-title">TECHNICAL PROFICIENCY</h3>
-
-            <div class="proficiency-grid">
-
-                <!-- Column 1: Fine Arts (Renamed from Software) -->
-                <div class="prof-column">
-                    <h4 class="prof-header">Fine Arts</h4>
-                    <div class="chip-group">
-                        <span class="skill-chip">Illustration</span>
-                        <span class="skill-chip">Sketching</span>
-                        <span class="skill-chip">Painting</span>
-                        <span class="skill-chip">Sculpting</span>
-                        <span class="skill-chip">Still Life</span>
-                        <span class="skill-chip">Drawing Tablet</span>
-                        <span class="skill-chip">Color Theory</span>
-                        <span class="skill-chip">Artistic Perception</span>
-                    </div>
-                </div>
-
-                <!-- Column 2: Design -->
-                <div class="prof-column">
-                    <h4 class="prof-header">Design</h4>
-                    <div class="chip-group">
-                        <span class="skill-chip">Concept Art</span>
-                        <span class="skill-chip">UI/UX</span>
-                        <span class="skill-chip">Motion Graphics</span>
-                        <span class="skill-chip">Logo Design</span>
-                        <span class="skill-chip">Visual Storytelling</span>
-                    </div>
-                </div>
-                <!-- Column 3: Technical -->
-                <div class="prof-column">
-                    <h4 class="prof-header">GenAI</h4>
-                    <div class="chip-group">
-                        <span class="skill-chip">Generative AI</span>
-                        <span class="skill-chip">ComfyUI</span>
-                        <span class="skill-chip">Stable Diffusion</span>
-                        <span class="skill-chip">Flux</span>
-                        <span class="skill-chip">Prompt Engineering</span>
-                        <span class="skill-chip">ControlNet</span>
-                        <span class="skill-chip">IP-ADAPTERS</span>
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
+    <section id="tools">
 
         <!-- Part 2: Square Tools Grid (Marquee, Moved Below) -->
         <div class="tools-section tools-section-spaced">
-            <h3 class="subsection-title">TOOLS</h3>
+            <h3 class="subsection-title">
+                <span>TOOLS</span>
+                <div class="subsection-composition">
+                    <span class="material-icons composition-icon">edit</span>
+                    <span class="material-icons composition-icon">straighten</span>
+                    <span class="material-icons composition-icon">architecture</span>
+                    <span class="material-icons composition-icon">palette</span>
+                </div>
+            </h3>
 
             <div class="tools-marquee-container">
                 <div class="tools-track">
@@ -330,6 +252,128 @@
                 </div>
             </div>
         </div>
+
+    </section>
+
+
+
+    <!-- About Section: Bento Grid Overhaul -->
+    <section id="about">
+        <div class="about-bento-grid">
+
+            <!-- Tile 1: Identity (Biometric Hub) -->
+            <div class="bento-tile bento-identity">
+                <div class="identity-header">
+                    <h2 class="section-title">ABOUT ME</h2>
+                    <p class="sidebar-subtitle">EXPERIENCE & PROFICIENCY</p>
+                </div>
+
+                <div id="profile-3d-sidebar-wrap">
+                    <div id="profile-3d-viewport">
+                        <!-- Three.js Canvas Injected Here -->
+                    </div>
+                    <div class="biometric-readout">
+                        <span class="status-indicator">●</span> BIOMETRIC SCAN ACTIVE
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Scrollable Content Group -->
+            <div class="about-content-column">
+
+                <!-- Tile 2: Bio / Mission Statement -->
+                <div class="bento-tile bento-bio reveal-item">
+                    <div class="resume-section-header">00 // MISSION</div>
+                    <p class="bio-text">
+                        Digital Blacksmithing is the art of fusing mathematical precision with organic creative
+                        intuition.
+                        I forge functional, high-fidelity interfaces designed to bridge the gap between human perception
+                        and synthetic intelligence.
+                    </p>
+                    <div class="bio-footer">
+                        <span class="bio-tag">#VEETANCE</span>
+                        <span class="bio-tag">#GEN-AI</span>
+                        <span class="bio-tag">#UI-PHYSICS</span>
+                    </div>
+                </div>
+
+                <!-- Tile 3: Education Hub -->
+                <div class="bento-tile bento-education resume-section-group">
+                    <div class="resume-section-header">01 // EDUCATION</div>
+                    <div id="resume-education-target">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+                <!-- Tile 4: Experience Hub -->
+                <div class="bento-tile bento-experience resume-section-group">
+                    <div class="resume-section-header">02 // EXPERIENCE</div>
+                    <div id="resume-experience-target">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+
+    <!-- TECH STACK SECTION -->
+    <section id="tech-stack" class="section-bordered">
+
+        <!-- Part 1: Proficiency Chips (Reordered to Top) -->
+        <div class="proficiency-container proficiency-container-top">
+            <h3 class="subsection-title">
+                <span>TECHNICAL PROFICIENCY</span>
+                <span class="material-icons prof-title-icon">school</span>
+            </h3>
+
+            <div class="proficiency-grid">
+
+                <!-- Column 1: Fine Arts -->
+                <div class="prof-column">
+                    <h4 class="prof-header">Fine Arts</h4>
+                    <div class="chip-group glow-container">
+                        <span class="skill-chip glow-item">Illustration</span>
+                        <span class="skill-chip glow-item">Sketching</span>
+                        <span class="skill-chip glow-item">Painting</span>
+                        <span class="skill-chip glow-item">Sculpting</span>
+                        <span class="skill-chip glow-item">Still Life</span>
+                        <span class="skill-chip glow-item">Drawing Tablet</span>
+                        <span class="skill-chip glow-item">Color Theory</span>
+                        <span class="skill-chip glow-item">Artistic Perception</span>
+                    </div>
+                </div>
+
+                <!-- Column 2: Design -->
+                <div class="prof-column">
+                    <h4 class="prof-header">Design</h4>
+                    <div class="chip-group glow-container">
+                        <span class="skill-chip glow-item">Concept Art</span>
+                        <span class="skill-chip glow-item">UI/UX</span>
+                        <span class="skill-chip glow-item">Motion Graphics</span>
+                        <span class="skill-chip glow-item">Logo Design</span>
+                        <span class="skill-chip glow-item">Visual Storytelling</span>
+                    </div>
+                </div>
+                <!-- Column 3: Technical -->
+                <div class="prof-column">
+                    <h4 class="prof-header">GenAI</h4>
+                    <div class="chip-group glow-container">
+                        <span class="skill-chip glow-item">Generative AI</span>
+                        <span class="skill-chip glow-item">ComfyUI</span>
+                        <span class="skill-chip glow-item">Stable Diffusion</span>
+                        <span class="skill-chip glow-item">Flux</span>
+                        <span class="skill-chip glow-item">Prompt Engineering</span>
+                        <span class="skill-chip glow-item">ControlNet</span>
+                        <span class="skill-chip glow-item">IP-ADAPTERS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </section>
 
     <!-- Contact Section: Split View -->

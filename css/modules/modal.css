@@ -188,3 +188,42 @@
         padding: 40px;
     }
 }
+
+/* Modal Nav Paddles */
+.modal-paddle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(10, 10, 10, 0.5);
+    border: 1px solid var(--brand-pop50);
+    color: var(--brand-pop);
+    width: 42px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+}
+
+.modal-paddle:hover {
+    background: var(--brand-pop);
+    color: var(--text-white);
+    box-shadow: 0 0 20px var(--brand-pop50);
+    width: 52px;
+}
+
+.modal-paddle.prev {
+    left: 20px;
+}
+
+.modal-paddle.next {
+    right: 20px;
+}
+
+.modal-paddle i {
+    font-size: 24px;
+}

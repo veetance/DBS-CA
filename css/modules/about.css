@@ -1,0 +1,208 @@
+/* --- ABOUT BENTO GRID SYSTEM --- */
+#about {
+    background-color: var(--bg-deepblack);
+    padding: var(--spacing-page);
+    padding-bottom: calc(var(--spacing-page) - 1.5rem);
+    position: relative;
+    z-index: 5;
+    border-top: 0px solid var(--brand-pop55);
+}
+
+.about-bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    align-items: start;
+    /* Crucial for sticky behavior */
+}
+
+/* Individual Tiles */
+.bento-tile {
+    padding: 0rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Tile Layout Assignments */
+.bento-identity {
+    grid-column: span 4;
+    position: sticky;
+    top: 100px;
+    /* Anchor point for scrolling 'static' feel */
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: rgba(102, 127, 228, 0.02);
+    border: 1px solid var(--brand-pop55);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.identity-header {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+#about .section-title {
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+/* Scrollable Content Column */
+.about-content-column {
+    grid-column: span 8;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Internal Tile Styles */
+.bento-bio,
+.bento-education,
+.bento-experience {
+    background: transparent;
+    border: none;
+}
+
+/* Bio Content */
+.bio-text {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.8vw, 1.4rem);
+    line-height: 1.4;
+    color: var(--text-white);
+    margin-top: 1rem;
+    font-weight: 300;
+}
+
+.bio-footer {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.bio-tag {
+    font-size: 0.65rem;
+    color: var(--brand-pop);
+    letter-spacing: 0.15em;
+    font-weight: 700;
+}
+
+/* Resume Cards as "Sub-Tiles" */
+.resume-card {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(102, 127, 228, 0.1);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s var(--ease-out);
+    position: relative;
+}
+
+.resume-card:hover {
+    border-color: rgba(102, 127, 228, 0.4);
+    background: rgba(102, 127, 228, 0.05);
+}
+
+.resume-section-header {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    margin-bottom: 2rem;
+    display: block;
+    border-bottom: 1px solid rgba(102, 127, 228, 0.2);
+    padding-bottom: 8px;
+}
+
+.resume-institution {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--text-white);
+    margin-bottom: 6px;
+}
+
+.resume-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+}
+
+.resume-role {
+    font-family: var(--font-body);
+    color: var(--brand-pop);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.resume-date {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--text-gray);
+    letter-spacing: 0.1em;
+}
+
+.resume-bullets {
+    margin: 1.25rem 0 0 0;
+    padding-left: 1rem;
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.resume-bullets li {
+    margin-bottom: 8px;
+}
+
+/* 3D IPC Integration */
+#profile-3d-sidebar-wrap {
+    margin-top: 2rem;
+    width: 100%;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+#profile-3d-viewport {
+    width: 100%;
+    height: 400px;
+    background: radial-gradient(circle at center, rgba(102, 127, 228, 0.05) 0%, transparent 80%);
+}
+
+.biometric-readout {
+    margin-top: -30px;
+    position: relative;
+    z-index: 10;
+    font-family: var(--font-body);
+    font-size: 0.55rem;
+    color: var(--brand-pop);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding-bottom: 20px;
+}
+
+/* Responsive Overrides */
+@media (max-width: 1024px) {
+    .about-bento-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bento-identity {
+        grid-column: span 12;
+        position: relative;
+        top: 0;
+        margin-bottom: 2rem;
+    }
+
+    .about-content-column {
+        grid-column: span 12;
+    }
+}

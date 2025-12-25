@@ -20,6 +20,13 @@ const renderModalContent = (work) => {
             </button>
             
             <div class="modal-media-viewport">
+                <button class="modal-paddle prev" data-dir="prev">
+                    <span class="material-icons">chevron_left</span>
+                </button>
+                <button class="modal-paddle next" data-dir="next">
+                    <span class="material-icons">chevron_right</span>
+                </button>
+
                 ${work.type === 'video'
             ? `<video src="${work.link}" autoplay loop muted playsinline></video>`
             : `<img src="assets/placeholder.svg" alt="${work.title}">`
@@ -47,9 +54,29 @@ const renderModalContent = (work) => {
  * Interaction Setup
  */
 const setupModalInteractions = () => {
+    const state = store.getState();
+    const works = state.works;
+    const currentId = state.activeWorkId;
+    const currentIndex = works.findIndex(w => w.id === currentId);
+
     const closeBtns = modalOverlay.querySelectorAll('.modal-close, .btn-close-modal');
     closeBtns.forEach(btn => {
         btn.onclick = () => store.dispatch({ type: ACTIONS.CLOSE_MODAL });
+    });
+
+    // Paddle Navigation Logic
+    const paddles = modalOverlay.querySelectorAll('.modal-paddle');
+    paddles.forEach(paddle => {
+        paddle.onclick = (e) => {
+            e.stopPropagation();
+            const dir = paddle.dataset.dir;
+            let nextIndex = dir === 'next' ? currentIndex + 1 : currentIndex - 1;
+
+            if (nextIndex < 0) nextIndex = works.length - 1;
+            if (nextIndex >= works.length) nextIndex = 0;
+
+            store.dispatch({ type: ACTIONS.OPEN_MODAL, payload: works[nextIndex].id });
+        };
     });
 
     // Close on backdrop click

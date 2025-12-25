@@ -15,7 +15,7 @@
 .nav-slab-controls {
     background: rgba(1, 5, 10, 0.74);
     backdrop-filter: blur(25px);
-    border-radius: calc(1vw + 10px);
+    border-radius: calc(1vw + 6px);
     /* Full Capsule Shape */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     /* Depth lift */
@@ -245,14 +245,15 @@
 
 .nav-link {
     text-decoration: none;
-    color: var(--text-gray);
+    color: var(--text-white);
     font-family: var(--font-body);
     font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.1em;
     position: relative;
     padding: 5px 1vw;
-    transition: color 0.3s, text-shadow 0.3s;
+    opacity: 0.6;
+    transition: color 0.3s, text-shadow 0.3s, opacity 0.3s;
     cursor: pointer;
 }
 
@@ -276,6 +277,7 @@
 .nav-link.active {
     color: var(--text-white);
     text-shadow: 0 0 8px rgba(255, 255, 255, 0);
+    opacity: 1;
 }
 
 .nav-link.active {

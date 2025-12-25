@@ -1,6 +1,6 @@
 import { store, ACTIONS } from '../state/store.js';
 import { loadInitialDataEffect, openExternalLinkEffect } from '../core/effects.js';
-import { selectPaginatedWorks, selectFormattedPageNumber } from '../state/selectors.js';
+import { selectPaginatedWorks, selectFormattedPageNumber, selectHasMultiplePages } from '../state/selectors.js';
 
 // --- RENDERING LOGIC ---
 
@@ -14,6 +14,11 @@ export const renderWorksGrid = (data, direction = null) => {
     // Force a "clean slate" for animations by removing items immediately
     worksTarget.innerHTML = '';
 
+    if (!data || data.length === 0) {
+        console.warn('[WORKS-GRID] No data provided to render grid.');
+        return;
+    }
+
     data.forEach((work, index) => {
         let delay = 0;
         let inertiaX = 0;
@@ -21,43 +26,21 @@ export const renderWorksGrid = (data, direction = null) => {
         let enterClass = '';
 
         if (direction === 'next') {
-            // DIRECTION: RIGHT (Next)
-            // VISUAL: Items enter from LEFT, moving RIGHT.
-            // UTMOST: Rightmost item (Index 2) is "pulled" first.
-
-            // Delay: Rightmost moves first (0s), Leftmost last.
-            delay = (data.length - 1 - index) * 0.12;
-
-            // Inertia: Rightmost pulled "harder" (comes from further left?) or just leads?
-            // "Breaks boundary" -> Start further left (-150px)
-            const pullFactor = (index === data.length - 1) ? 1.5 : 1;
-            inertiaX = (-100 + (index * 40)) * pullFactor;
-
-            sweepClass = 'sweep-ltr'; // Light follows move (Left -> Right)
-            enterClass = 'enter-left'; // Start at -100% (Left)
-
+            delay = index * 0.1;
+            inertiaX = 100 + (index * 20);
+            sweepClass = 'sweep-rtl';
+            enterClass = 'enter-right';
         } else if (direction === 'prev') {
-            // DIRECTION: LEFT (Prev)
-            // VISUAL: Items enter from RIGHT, moving LEFT.
-            // UTMOST: Leftmost item (Index 0) is "pulled" first.
-
-            // Delay: Leftmost moves first (0s), Rightmost last.
-            delay = index * 0.12;
-
-            // Inertia: Leftmost pulled "harder" (comes from further right)
-            const pullFactor = (index === 0) ? 1.5 : 1;
-            inertiaX = (100 - ((data.length - 1 - index) * 40)) * pullFactor;
-
-            sweepClass = 'sweep-rtl'; // Light follows move (Right -> Left)
-            enterClass = 'enter-right'; // Start at 100% (Right)
-
+            delay = (data.length - 1 - index) * 0.1;
+            inertiaX = -100 - ((data.length - 1 - index) * 20);
+            sweepClass = 'sweep-ltr';
+            enterClass = 'enter-left';
         } else {
-            // Default Radiant Reveal (Initial Load)
             const centerIndex = 1;
             const distance = Math.abs(index - centerIndex);
             delay = distance * 0.25;
             inertiaX = 0;
-            enterClass = 'initial-reveal'; // Trigger for CSS Override
+            enterClass = 'initial-reveal';
         }
 
         const article = document.createElement('article');
@@ -66,7 +49,11 @@ export const renderWorksGrid = (data, direction = null) => {
         article.style.setProperty('--reveal-delay', `${delay.toFixed(2)}s`);
         article.style.setProperty('--inertia-x', `${inertiaX}px`);
         article.style.transitionDelay = `${delay.toFixed(2)}s`;
-        article.onclick = () => store.dispatch({ type: ACTIONS.OPEN_MODAL, payload: work.id });
+
+        article.onclick = (e) => {
+            e.preventDefault();
+            store.dispatch({ type: ACTIONS.OPEN_MODAL, payload: work.id });
+        };
 
         article.innerHTML = `
             <div class="media-wrapper ${sweepClass}">
@@ -82,39 +69,51 @@ export const renderWorksGrid = (data, direction = null) => {
 
         worksTarget.appendChild(article);
 
-        // KINETIC FORK:
-        // 1. Pagination (Swipes): Force immediate playback via RAF to bypass observer delay.
-        // 2. Initial Load (Cascade): Rely on IntersectionObserver to trigger when visible.
+        // KINETIC ACTIVATION:
         if (direction) {
+            // Force Layout to ensure enterClass transform is registered
+            void article.offsetWidth;
+
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    article.classList.remove('enter-right', 'enter-left');
                     article.classList.add('is-visible');
+                    // Attach to observer for future tracking
+                    worksObserver.observe(article);
                 });
             });
-        }
+        } else {
+            // Standard Intersection Trigger for first load
+            worksObserver.observe(article);
 
-        worksObserver.observe(article);
+            // Fallback: If for some reason the observer misses it, reveal after a delay
+            setTimeout(() => {
+                if (!article.classList.contains('is-visible')) {
+                    article.classList.add('is-visible');
+                }
+            }, 1500 + (index * 200));
+        }
     });
 
-    // Re-bind Sensors after Grid Render (Persist across pagination)
+    // Re-bind Sensors after Grid Render
     requestAnimationFrame(() => {
         initProximitySensors();
     });
 };
 
 /**
- * Helper: Render Resume Data
+ * Helper: Render Resume Data with High-Fidelity Bento Cards
  */
 const renderResume = (resumeData) => {
     const eduTarget = document.getElementById('resume-education-target');
     if (eduTarget) {
         eduTarget.innerHTML = resumeData.education.map(edu => `
-            <div class="resume-entry">
-                <div class="resume-institution">${edu.institution}</div>
+            <div class="resume-card reveal-item">
+                <div class="resume-header-row">
+                    <div class="resume-institution">${edu.institution}</div>
+                    <span class="resume-date">${edu.date}</span>
+                </div>
                 <div class="resume-role">${edu.degree}</div>
-                <div style="font-size:0.8rem; color:#666; margin-bottom:10px;">${edu.date}</div>
-                <p style="font-size:0.9rem; color:#888;">${edu.description}</p>
+                <p class="resume-description" style="margin-top:10.5px; font-size:0.85rem; color:var(--text-gray); line-height:1.5;">${edu.description}</p>
             </div>
         `).join('');
     }
@@ -122,9 +121,11 @@ const renderResume = (resumeData) => {
     const expTarget = document.getElementById('resume-experience-target');
     if (expTarget) {
         expTarget.innerHTML = resumeData.experience.map(exp => `
-            <div class="resume-entry">
-                <span class="resume-date">${exp.date}</span>
-                <div class="resume-institution">${exp.company}</div>
+            <div class="resume-card reveal-item">
+                <div class="resume-header-row">
+                    <div class="resume-institution">${exp.company}</div>
+                    <span class="resume-date">${exp.date}</span>
+                </div>
                 <div class="resume-role">${exp.role}</div>
                 <ul class="resume-bullets">
                     ${exp.bullets.map(b => `<li>${b}</li>`).join('')}
@@ -132,17 +133,40 @@ const renderResume = (resumeData) => {
             </div>
         `).join('');
     }
+
+    // Observe new bento items
+    initialAboutObserver();
 };
+
+const initialAboutObserver = () => {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                // Stagger children
+                const items = entry.target.querySelectorAll('.reveal-item');
+                items.forEach((item, i) => {
+                    item.style.transitionDelay = `${i * 0.12}s`;
+                    item.classList.add('is-visible');
+                });
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.resume-section-group, .proficiency-container, .bento-tile').forEach(el => observer.observe(el));
+};
+
+export { initialAboutObserver as observeAboutSection };
 
 /**
  * Helper: Project State to UI via Selectors
  */
 const updateUIFromState = (state) => {
-    // Selectors are now memoized. 
-    // They will return cached references if nothing relevant changed.
     const paginatedWorks = selectPaginatedWorks(state);
     const pageString = selectFormattedPageNumber(state);
     const direction = state.pagination.lastDirection;
+    const hasMultiple = selectHasMultiplePages(state);
 
     // Update DOM with Directional Inertia
     renderWorksGrid(paginatedWorks, direction);
@@ -150,7 +174,16 @@ const updateUIFromState = (state) => {
     const display = document.getElementById('pagination-display');
     if (display) {
         display.innerText = pageString;
+        // Hide display if not multiple pages
+        display.parentElement.style.opacity = hasMultiple ? '1' : '0';
     }
+
+    // Hide/Show Paddles
+    const paddles = document.querySelectorAll('.deck-control');
+    paddles.forEach(p => {
+        p.style.display = hasMultiple ? '' : 'none';
+        p.style.pointerEvents = hasMultiple ? 'auto' : 'none';
+    });
 };
 
 // --- CORE ORCHESTRATION ---
@@ -158,11 +191,28 @@ const updateUIFromState = (state) => {
 export const renderContent = async () => {
     try {
         await loadInitialDataEffect();
+        syncDensityToViewport(); // Initial Density Sync
         setupPaginationControls();
     } catch (error) {
         console.error('[WORKS-GRID] Content Initialization Failed:', error);
     }
 };
+
+/**
+ * Monitors Viewport and Dispatches Layout Density
+ */
+const syncDensityToViewport = () => {
+    const isMobile = window.innerWidth <= 768;
+    const currentDensity = store.getState().pagination.itemsPerPage;
+    const targetDensity = isMobile ? 99 : 3; // 99 ensures all works are shown on mobile
+
+    if (currentDensity !== targetDensity) {
+        store.dispatch({ type: ACTIONS.SET_ITEMS_PER_PAGE, payload: targetDensity });
+    }
+};
+
+// Bind to Window Resize
+window.addEventListener('resize', syncDensityToViewport);
 
 // --- INTERACTIVE SYSTEMS ---
 
@@ -261,14 +311,14 @@ const alignPaddlesToSensors = () => {
 
     const firstItem = items[0];
     const lastItem = items[items.length - 1];
-    const sectionRect = worksSection.getBoundingClientRect();
 
     const updateBtn = (item, btnSelector) => {
         const btn = document.querySelector(btnSelector);
         if (!btn) return;
-        const itemRect = item.getBoundingClientRect();
-        const midpoint = (itemRect.top + itemRect.bottom) / 2 - sectionRect.top;
-        btn.style.top = `${midpoint}px`;
+
+        // Offset-based calculation to ignore transform interference
+        const itemMidpoint = item.offsetTop + (item.offsetHeight / 2);
+        btn.style.top = `${itemMidpoint}px`;
     };
 
     updateBtn(firstItem, '.deck-control.prev');
@@ -326,7 +376,7 @@ const initProximitySensors = () => {
                 hideTimer = setTimeout(() => {
                     btn.classList.remove('is-revealed');
                     btn.classList.remove('force-hover');
-                }, 100); // 100ms Buffer to allow crossing gap
+                }, 2000); // 2s Persistence: Matches Logo Delay Pattern
             };
 
             // Bind to Sensor
@@ -337,11 +387,12 @@ const initProximitySensors = () => {
             btn.addEventListener('mouseenter', handleEnter);
             btn.addEventListener('mouseleave', handleLeave);
 
-            // Click Logic
+            // Click Logic: Direct State Dispatch
             sensor.addEventListener('click', (e) => {
-                e.preventDefault(); // Stop Link
-                e.stopPropagation(); // Stop Modal
-                btn.click();
+                e.preventDefault();
+                e.stopPropagation();
+                const actionType = type === 'prev' ? ACTIONS.PREV_PAGE : ACTIONS.NEXT_PAGE;
+                store.dispatch({ type: actionType });
             });
         }
     };

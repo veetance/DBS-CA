@@ -3,7 +3,7 @@
     background: rgba(0, 0, 0, 0.1);
     border: 1px solid var(--brand-pop-dim);
     padding: 10px 20px;
-    color: var(--text-gray);
+    color: var(--text-white);
     font-family: var(--font-body);
     font-weight: 600;
     /* Match Nav Links */
@@ -14,9 +14,10 @@
     letter-spacing: 0.1em;
     position: relative;
     overflow: hidden;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s, opacity 0.3s;
     border-radius: 8px;
     z-index: 1;
+    opacity: 0.6;
 }
 
 /* Tap Effect */
@@ -28,6 +29,7 @@
 .btn-contact:hover {
     color: var(--text-white);
     border-color: var(--brand-pop);
+    opacity: 1;
     /* No solid background here, the .contact-glow handles the fill effect */
 }
 
@@ -52,7 +54,7 @@
 /* The Click Ripple (Injected by JS) */
 .rippling {
     animation: ripple-anim 0.6s ease-out forwards;
-    background: radial-gradient(circle, var(--text-white) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--brand-pop) 0%, transparent 70%);
     /* brighter white center */
     z-index: -1;
 }
@@ -73,6 +75,8 @@
 
 /* --- COMPONENT: TOOLS GRID --- */
 .tools-marquee-container {
+
+    display: flex;
     width: 100%;
     overflow: hidden;
     position: relative;
@@ -84,13 +88,18 @@
     display: flex;
     width: max-content;
     gap: 20px;
-    animation: scroll-tools 40s linear infinite;
     padding: 2vh;
+    margin: 1rem 0px;
+    cursor: grab;
+    user-select: none;
+    will-change: transform;
 }
 
-.tools-track:hover {
-    animation-play-state: paused;
+.tools-track:active {
+    cursor: grabbing;
 }
+
+
 
 @keyframes scroll-tools {
     0% {
@@ -115,20 +124,21 @@
     gap: 10px;
     transition: all 0.3s ease;
     cursor: pointer;
-    background: rgba(55, 52, 100, 0.11);
+    background: rgba(55, 52, 100, 0);
 }
 
-.tool-card:hover {
+.tool-card:hover,
+.tool-card.manual-hover {
     border-color: var(--brand-pop);
-    box-shadow: 0 0 15px rgba(69, 97, 204, 0.1);
-    transform: translateY(-5px) scale(1.05);
+    transform: scale(1.08);
+    /* Pure Scale Expansion */
     background: rgba(69, 97, 204, 0.05);
 }
 
 .tool-card span {
     font-family: var(--font-body);
     font-size: 0.7rem;
-    color: var(--text-gray);
+    color: var(--brand-pop);
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
@@ -136,7 +146,7 @@
 .tool-icon-placeholder {
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--brand-pop55);
     border-radius: 4px;
 }
 
@@ -152,7 +162,7 @@
 .skill-chip {
     font-family: var(--font-body);
     font-size: 0.8rem;
-    color: var(--text-gray);
+    color: #e0e6ff92;
     border: 1px solid var(--brand-pop60);
     padding: 6px 14px;
     border-radius: 8px;
@@ -316,13 +326,6 @@
     display: block;
 }
 
-/* FIX: Ripple Color to Brighter Purple */
-.rippling {
-    animation: ripple-anim 0.6s ease-out forwards;
-    background: radial-gradient(circle, #a3b1ff 0%, transparent 70%);
-    /* Brighter Purple */
-    z-index: -1;
-}
 
 .split-right-column {
 

@@ -75,3 +75,21 @@ The portfolio grid follows a "Crystallization" pattern, moving from latent state
   - Transform simplified to `translateY(20px)`.
   - Layer promotion via `will-change`.
 
+---
+
+## 6. PADDLE PHYSICS (CENTER-LOCK PROTOCOL)
+To ensure navigational controls remain ergonomically accessible and visually balanced, the system employs a "Center-Lock" alignment protocol for side paddles.
+
+### The Geometric Alignment Fault (Legacy)
+Previously, paddles were calculated using viewport-relative coordinates (`getBoundingClientRect`). This caused "positional drift" during the **Radiant Reveal** animation, as the paddles would anchor to the card's temporary position while it was still sliding into the viewport.
+
+### The Fix: Static Layout Synchronization
+-   **Mechanism**: Switch from viewport-relative to layout-relative coordinates.
+-   **Calculation**: `top = offsetTop + (offsetHeight / 2)`.
+-   **Benefit**: This locks the paddle to the card's final resting place from T=0, ignoring all active transforms, blurs, or inertia-based kinetics.
+-   **CSS Baseline**: Paddles are initialized at `top: 50%` with a `translateY(-50%)` corrective transform to guarantee mathematical centering on any container size.
+
+### Interaction Profile
+-   **Trigger**: Proximity Sensors on the lateral edges of the media viewport.
+-   **Feedback**: Radial glow materialize + scale transition (`1.05x`).
+-   **Constraint**: Paddles must follow the geometric center of the **active row**, adapting dynamically to viewport resizing.

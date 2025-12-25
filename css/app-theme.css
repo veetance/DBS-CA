@@ -18,11 +18,13 @@
     /* Deep Blue-Purple (Hue 229°) */
     --brand-pop-dark: #0a0a0bff;
     --brand-pop40: hsl(229, 30%, 44%);
-    --brand-pop40: hsl(229, 30%, 44%);
+    --brand-pop30: rgb(22, 32, 69);
     /* Darker blue-purple */
     --brand-pop50: #4561cc79;
+    --brand-pop55: #28367552;
     /* 50% transparent */
     --brand-pop60: #2f429952;
+    --brand-pop66: hsl(224, 30%, 3%);
     /* 60% transparent */
     --pop-offwhite: #e0e6ff;
     /* Deep Blue-Purple */
@@ -37,7 +39,7 @@
 
     /* Layout Variables */
     --spacing-page: 4vw;
-    --grid-gap: 2vw;
+    --grid-gap: 2rem;
 
     /* Animation Tokens */
     --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
