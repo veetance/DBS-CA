@@ -1,95 +1,63 @@
 # VEETANCE DESIGN SYSTEM - INTERFACE PHYSICS
 
 ## 1. TYPOGRAPHY PHYSICS (REVEAL PROTOCOLS)
-The system employs two distinct kinetic behaviors for text materialization, enforcing a hierarchy of "Information" vs. "Art".
+The system employs two kinetic behaviors for text materialization.
 
-### Variation A: The Standard Chunk (Kinetic Slide)
-Used for structural headers, preambles, and navigational elements.
-- **Physics:** Block-level reveal.
-- **Motion:** Vertical Slide (`translateY: 30px` -> `0px`).
-- **Opacity:** Linear fade (`0` -> `1`).
-- **Filter:** None (Crisp edge).
-- **Target:** "FORGING THE", "DIGITAL FUTURE OF", "PORTFOLIO", Section Headers.
-- **Class:** `.reveal-standard` (CSS Animation: `revealChunk`).
+### Variation A: The Standard Chunk (Slide)
+- **Physics**: Vertical Slide (`translateY: 30px` -> `0px`).
+- **Target**: Structural headers and preambles.
+- **Class**: `.reveal-standard`.
 
-### Variation B: The Quantum Flux (Character Cascade)
-Reserved for high-value subjects and emotive statements.
-- **Physics:** Character-level split.
-- **Motion:** Staggered entry (`30ms` delay per char).
-- **Opacity:** Compound fade.
-- **Filter:** Blur Transition (`blur(12px)` -> `clear`).
-- **Target:** "ART & DESIGN", Special Emphasis Text.
-- **Class:** `.reveal-fx-blur` (CSS Animation: `revealChar`).
+### Variation B: The Quantum Flux (Blur Cascade)
+- **Physics**: Character-level staggered entry with blur transition (`blur(12px)` -> `clear`).
+- **Target**: "ART & DESIGN" and high-value subject titles.
+- **Class**: `.reveal-fx-blur`.
 
 ---
 
-## 2. NAVIGATIONAL PHYSICS (GHOST SCROLLBAR)
-To mitigate visual noise, the browser's default scrollbar is suppressed.
+## 2. GRID PHYSICS (DIRECTIONAL INERTIA)
+The Portfolio Grid follows a "Crystallization" pattern with added directional physics.
 
-### Behavior Profile
-- **State:** `fixed`, right-aligned (`8px` inset).
-- **Visibility:** 
-  - **Rest:** `opacity: 0` (Invisible).
-  - **Active:** `opacity: 1` (Fades in when `window.scrollY > 10`).
-- **Responsive Geometry:**
-  - **Desktop:** Starts at `80px` from top.
-  - **Mobile:** Starts at `130px` from top (clears stacked nav).
-- **Interaction:**
-  - **Thumb:** Draggable (Standard).
-  - **Track:** Click-to-Jump (Teleportation).
+### Pagination Kinetics
+- **Inertia Logic**: Items are injected with a `--inertia-x` variable (`100px` for next, `-100px` for prev).
+- **Sweep Protocol**: Next page uses `.sweep-rtl`, Previous page uses `.sweep-ltr`.
+- **Eased Reveal**: Staggered opacity fade over 0.8s.
+
+### Proximity Sensors
+- **Mechanism**: Invisible lateral zones on the grid edges.
+- **Interaction**: Crossing a sensor triggers the **Materialization** of navigation paddles (`.side-paddle`) and adds a **Force-Hover** glow.
+- **Persistence**: Paddles remain visible for 2 seconds after the mouse leaves the sensor zone (Matches Logo Persistence).
 
 ---
 
-## 3. COLOR SYSTEM (THE VEETANCE SPECTRUM)
-- **Brand Pop:** `#667fe4` (Neon Blue-Purple).
-- **Background:** `#050508` (Deep Empty Void).
-- **Text Primary:** `#e0e6ff` (Luminous Frost).
-- **Text Secondary:** `#b4bce0` (Steel Lavender).
+## 3. NAVIGATIONAL PHYSICS (SLAB MORPHING)
+The header adapts to the user's scroll depth to minimize visual friction.
+
+### Slab Behavior
+- **Transition**: Two slabs collapse into a unified single-line bar.
+- **Logo Dimming**: The logo contracts and dims to `0.3` opacity automatically 5s after load or 0.8s after a scroll event.
+- **De-Delay**: Manual hover on the dimmed logo restarts the "Open" sequence with accelerated timing (1/3 speed factor).
 
 ---
 
-## 4. HERO SEQUENCE TIMELINE (ACCELERATED)
-The load sequence is compressed for rapid engagement.
-- **T=0.0s:** Void State.
-- **T=0.2s:** **Chunk 1**: "FORGING THE" (Slide Up).
-- **T=0.5s:** **Chunk 2**: "DIGITAL FUTURE OF" (Slide Up).
-- **T=1.0s:** **Flux**: "ART & DESIGN" (Blur Cascade).
-- **T=1.8s:** **Footer**: Taglines & Arrow (Fade In, 0.8s duration).
-- **T=3.0s:** **Brand**: DBS Logo Expansion.
+## 4. SPECTRAL DYNAMICS (THREE.JS PHYSICS)
+Used within the **Interactive Profile Component** viewport.
+
+- **Idle Bobbing**: Smooth sine-wave vertical oscillation (`Math.sin(time) * 0.08`).
+- **Eye Pulsing**: Rhythmic opacity modulation on emissive visor shaders.
+- **Center-Lock Alignment**: Side paddles in the Works section are mathematically centered to the midpoint of the active "Work Item" cards, ignoring active CSS transforms.
 
 ---
 
-## 5. GRID PHYSICS (THE RADIANT REVEAL)
-The portfolio grid follows a "Crystallization" pattern, moving from latent state to high-definition visibility.
-
-### Behavior Profile
-- **Stagger Pattern:** Geometric Ripple (Radial).
-- **Origin Point:** Center Item (Index 1 of row).
-- **Delay Logic:** `Math.abs(index - center) * 0.15s`.
-- **Motion:** 
-  - **Start:** `translateY(30px)`, `scale(0.97)`, `rotateX(2deg)`, `blur(4px)`.
-  - **End:** `translateY(0)`, `scale(1)`, `rotateX(0)`, `blur(0)`.
-- **Easing:** `cubic-bezier(0.16, 1, 0.3, 1)` (Quart Out).
-- **Optimization (Mobile):** 
-  - Blur removed.
-  - Transform simplified to `translateY(20px)`.
-  - Layer promotion via `will-change`.
+## 5. KINETIC CAROUSEL (YEET & DRIFT)
+- **Manual Control**: "Drag and Yeet" velocity inheritance.
+- **Auto-Drift**: Constant linear movement (`-0.8px/frame`) when manual input is zero.
+- **Kinetic Hover**: The system continuously polls the element under the stationary mouse coordinates, ensuring hover states trigger accurately as items drift past the cursor.
 
 ---
 
-## 6. PADDLE PHYSICS (CENTER-LOCK PROTOCOL)
-To ensure navigational controls remain ergonomically accessible and visually balanced, the system employs a "Center-Lock" alignment protocol for side paddles.
+## 6. SCANNER SCROLLBAR (LIGHT TRACKING)
+- **Behavior**: suppressor of default browser scrollbar.
+- **Glow Ball**: A radial light source that follows mouse `Y` position exclusively on the scroll track, illuminating the translucent thumb.
 
-### The Geometric Alignment Fault (Legacy)
-Previously, paddles were calculated using viewport-relative coordinates (`getBoundingClientRect`). This caused "positional drift" during the **Radiant Reveal** animation, as the paddles would anchor to the card's temporary position while it was still sliding into the viewport.
-
-### The Fix: Static Layout Synchronization
--   **Mechanism**: Switch from viewport-relative to layout-relative coordinates.
--   **Calculation**: `top = offsetTop + (offsetHeight / 2)`.
--   **Benefit**: This locks the paddle to the card's final resting place from T=0, ignoring all active transforms, blurs, or inertia-based kinetics.
--   **CSS Baseline**: Paddles are initialized at `top: 50%` with a `translateY(-50%)` corrective transform to guarantee mathematical centering on any container size.
-
-### Interaction Profile
--   **Trigger**: Proximity Sensors on the lateral edges of the media viewport.
--   **Feedback**: Radial glow materialize + scale transition (`1.05x`).
--   **Constraint**: Paddles must follow the geometric center of the **active row**, adapting dynamically to viewport resizing.
+*Verified by DEUS* 🦾

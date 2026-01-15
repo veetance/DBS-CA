@@ -5,7 +5,7 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
 
 /**
- * Autodesk Spectral Forge v4.5 - SIDE-MODAL Edition
+ * Interactive Profile Rig v4.5 - SIDE-MODAL Edition
  * Engineered by DEUS for MrVee.
  */
 
@@ -21,16 +21,17 @@ export const initProfile3D = () => {
             if (entry.isIntersecting && !hasInitialized) {
                 hasInitialized = true;
                 lazyObserver.disconnect();
+                console.log("DBS_CA: Sentinel Rig observer triggered.");
                 initThreeScene();
             }
         });
-    }, { threshold: 0.05, rootMargin: '200px 0px' }); // Pre-load slightly before visible
+    }, { threshold: 0.05, rootMargin: '200px 0px' });
 
     lazyObserver.observe(aboutSection);
 
-    const initThreeScene = () => {
+    function initThreeScene() {
         try {
-            // Initialize RectAreaLight supporting uniforms
+            console.log("DBS_CA: Initializing Interactive Profile Rig...");
             RectAreaLightUniformsLib.init();
 
             // --- SCENE & CORE ---
@@ -63,13 +64,12 @@ export const initProfile3D = () => {
             let selectedObject = null;
             let sentinelModel = null;
             let eyes = [];
-            let isForgeMode = false;
+            let isRigMode = false;
 
             // --- UI ELEMENTS ---
             const ui = {
-                gear: document.getElementById('dev-gear-trigger'),
+                gear: document.getElementById('sentinel-rig-trigger'),
                 modal: document.getElementById('sentinel-forge-modal'),
-                resume: document.getElementById('about-details-content'),
                 close: document.getElementById('close-forge-trigger'),
                 objList: document.getElementById('forge-object-list'),
                 propStack: document.getElementById('property-inputs'),
@@ -93,7 +93,7 @@ export const initProfile3D = () => {
 
             // --- INITIAL STAGE: 3-POINT LIGHTING ---
             const initStageLights = () => {
-                const key = new THREE.DirectionalLight(0x667fe4, 1.2); // Blue front light
+                const key = new THREE.DirectionalLight(0x667fe4, 1.2);
                 key.position.set(5, 5, 5);
                 key.userData = { id: 'key', name: 'KEY_LIGHT', type: 'directional' };
                 scene.add(key);
@@ -142,12 +142,16 @@ export const initProfile3D = () => {
                 selectObject(light);
             };
 
-            const toggleForgeMode = (force) => {
-                isForgeMode = force !== undefined ? force : !isForgeMode;
-                if (ui.modal) ui.modal.classList.toggle('is-active', isForgeMode);
-                if (ui.resume) ui.resume.classList.toggle('is-hidden', isForgeMode);
-                orbit.enabled = isForgeMode;
-                if (!isForgeMode) {
+            const toggleRigMode = (force) => {
+                isRigMode = force !== undefined ? force : !isRigMode;
+                if (ui.modal) ui.modal.classList.toggle('is-active', isRigMode);
+
+                // HIDE OTHER ELEMENTS IN CONTAINER (Focused Rig Mode)
+                const targets = aboutSection.querySelectorAll('.resume-section-group, .identity-data-fields, .card-footer-barcode, .identity-header-right');
+                targets.forEach(el => el.classList.toggle('is-hidden', isRigMode));
+
+                orbit.enabled = isRigMode;
+                if (!isRigMode) {
                     transform.detach();
                     selectedObject = null;
                 } else {
@@ -156,13 +160,13 @@ export const initProfile3D = () => {
                 }
             };
 
-            if (ui.gear) ui.gear.onclick = () => toggleForgeMode(true);
-            if (ui.close) ui.close.onclick = () => toggleForgeMode(false);
+            if (ui.gear) ui.gear.onclick = () => toggleRigMode(true);
+            if (ui.close) ui.close.onclick = () => toggleRigMode(false);
 
             const selectObject = (obj) => {
                 if (!obj) return;
                 selectedObject = obj;
-                if (isForgeMode) transform.attach(obj);
+                if (isRigMode) transform.attach(obj);
                 if (ui.nameDisp) ui.nameDisp.textContent = obj.userData?.name || 'SENTINEL_UNIT';
                 if (ui.typeDisp) ui.typeDisp.textContent = `PROPERTIES // ${obj.userData?.id === 'sentinel' ? 'SHADER' : 'LIGHT'}`;
                 syncObjectList();
@@ -225,26 +229,19 @@ export const initProfile3D = () => {
 
             const loader = new GLTFLoader();
             loader.load('assets/GLB/HELMET_02.glb', (gltf) => {
+                console.log("DBS_CA: Sentinel model file loaded.");
                 const mesh = gltf.scene;
-
-                // Calculate bounding box and center
                 const box = new THREE.Box3().setFromObject(mesh);
                 const center = box.getCenter(new THREE.Vector3());
                 const size = box.getSize(new THREE.Vector3());
                 const scale = 2.4 / Math.max(size.x, size.y, size.z);
-
-                // Scale the mesh
                 mesh.scale.set(scale, scale, scale);
-
-                // Offset the mesh so its center is at origin (0,0,0) relative to parent
                 mesh.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
 
-                // Create a pivot container - THIS is the object we rotate
                 sentinelModel = new THREE.Group();
                 sentinelModel.userData = { id: 'sentinel', name: 'SENTINEL_UNIT' };
                 sentinelModel.add(mesh);
 
-                // Apply materials
                 mesh.traverse((child) => {
                     if (child.isMesh) {
                         const name = child.name.toLowerCase();
@@ -252,11 +249,16 @@ export const initProfile3D = () => {
                             eyes.push(child);
                             child.material = new THREE.MeshBasicMaterial({ color: 0x667fe4, transparent: true, opacity: 0.9 });
                         } else if (child.material) {
-                            child.material.metalness = 1.0; child.material.roughness = 0.3; child.material.envMapIntensity = 2.2; child.material.color.setHex(0xcccccc);
+                            child.material.metalness = 1.0;
+                            child.material.roughness = 0.3;
+                            child.material.envMapIntensity = 2.2;
+                            child.material.color.setHex(0xcccccc);
                         }
                     }
                 });
                 scene.add(sentinelModel);
+            }, undefined, (err) => {
+                console.error("DBS_CA: Sentinel Loader Error.", err);
             });
 
             const syncModeBtns = () => {
@@ -283,7 +285,7 @@ export const initProfile3D = () => {
             }
 
             window.addEventListener('keydown', (e) => {
-                if (!isForgeMode) return;
+                if (!isRigMode) return;
                 switch (e.key.toLowerCase()) {
                     case 'w': transform.setMode('translate'); break;
                     case 'e': transform.setMode('rotate'); break;
@@ -296,34 +298,32 @@ export const initProfile3D = () => {
 
             // Animation Loop
             let targetX = 0, targetY = 0;
-            let baseY = 0.4; // The sentinel's base Y offset (moved up 20%)
-            const baseTiltX = 0.15; // Slight downward tilt - looking down vibe
+            let baseY = 0.4;
+            const baseTiltX = 0.15;
             const aboutZone = document.getElementById('about');
 
             if (aboutZone) {
                 aboutZone.addEventListener('mousemove', (e) => {
-                    if (isForgeMode) return;
+                    if (isRigMode) return;
                     const rect = container.getBoundingClientRect();
                     const x = ((e.clientX - rect.left) / container.clientWidth) * 2 - 1;
                     const y = -((e.clientY - rect.top) / container.clientHeight) * 2 + 1;
                     targetY = Math.max(-0.4, Math.min(0.4, x * 0.6));
                     targetX = Math.max(-0.2, Math.min(0.2, -y * 0.3));
                 });
-
                 aboutZone.addEventListener('mouseleave', () => {
-                    if (isForgeMode) return;
-                    targetX = 0;
-                    targetY = 0;
+                    if (isRigMode) return;
+                    targetX = 0; targetY = 0;
                 });
             }
 
             const animate = () => {
                 requestAnimationFrame(animate);
-                if (isForgeMode) orbit.update();
-                else if (sentinelModel) {
+                if (isRigMode) {
+                    orbit.update();
+                } else if (sentinelModel) {
                     sentinelModel.rotation.y += (targetY - sentinelModel.rotation.y) * 0.08;
                     sentinelModel.rotation.x += ((targetX + baseTiltX) - sentinelModel.rotation.x) * 0.08;
-                    // Idle bobbing animation
                     const bob = Math.sin(Date.now() * 0.0015) * 0.08;
                     sentinelModel.position.y = baseY + bob;
                 }
@@ -342,7 +342,7 @@ export const initProfile3D = () => {
             });
 
         } catch (error) {
-            console.error("DBS_CA: Spectral Engine Initialization Failure.", error);
+            console.error("DBS_CA: Interactive Profile Rig Initialization Failure.", error);
         }
-    }; // End initThreeScene
+    }
 };

@@ -458,7 +458,7 @@
     justify-content: space-between;
     font-family: var(--font-display);
     font-size: clamp(.9rem, 2vw, 1.2rem);
-    color: var(--brand-pop-dim);
+    color: var(--brand-pop);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -473,7 +473,7 @@
     font-size: 1.4rem !important;
     color: var(--brand-pop);
     padding-right: calc(var(--spacing-page) / 4);
-    opacity: 0.8;
+    opacity: 1;
 }
 
 .proficiency-container,
@@ -547,11 +547,16 @@ span {
     font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 700;
-    color: var(--brand-pop);
+    color: var(--brand-pop-dim);
     margin-bottom: 15px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     padding-left: 16px;
+    transition: color 0.3s ease;
+}
+
+.prof-column:hover .prof-header {
+    color: var(--brand-pop);
 }
 
 .tools-section-spaced {

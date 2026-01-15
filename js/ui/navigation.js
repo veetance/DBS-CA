@@ -14,6 +14,16 @@ export const initSlabNav = () => {
         // Check current store state to avoid duplicate dispatches (optimization)
         const isCollapsed = store.getState().ui.navCollapsed;
 
+        // Construction chip fade on scroll
+        const chip = document.querySelector('.construction-chip');
+        if (chip) {
+            if (currentScroll > 50) {
+                chip.classList.add('scrolled');
+            } else {
+                chip.classList.remove('scrolled');
+            }
+        }
+
         if (currentScroll > 50 && !isCollapsed) {
             nav.classList.add('nav-collapsed');
             store.dispatch({ type: ACTIONS.NAV_COLLAPSE });

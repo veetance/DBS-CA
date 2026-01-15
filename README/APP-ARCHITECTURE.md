@@ -3,45 +3,44 @@
 ## 1. High-Level Overview
 Type: Single Page Application (SPA) / One-Page Scroll
 Theme: Cyber-Industrial, Dark Mode, High Contrast ("MOMA" Aesthetic)
-Core Features: Custom State Store, Modular Architecture, Generative Hero FX.
+Core Features: Custom State Store, Modular Architecture, Generative Hero FX, Interactive Profile Rig.
 
 ## 2. Navigation Structure (Anchors)
 The application flows vertically through the following sections:
 
 1.  **Home / Hero Section** (`#hero`)
-    *   **Interactive Background**: p5.js generative "Molten Lattice" (Integrated).
-    *   **Branding**: "DIGITAL BLACKSMITH" (Mega Typography).
-    *   **Hero FX**: Cascading Text Reveal + Dim-to-Outline Animation ("Art & Design").
-    *   **Nav**: Two-Slab Morphing Navigation (Brand / Controls).
+    *   **Interactive Background**: p5.js generative "Dimension 6" (Themed).
+    *   **Branding**: "DIGITAL BLACKSMITH STUDIOS" (Mega Typography).
+    *   **Hero FX**: Cascading Blur Reveal + Slab Morphing Navigation.
 
 2.  **Work / Portfolio** (`#works`)
-    *   **Header**: "PORTFOLIO".
-    *   **Grid Layout**: Strict 3-Col Grid (Sharp Edges).
-    *   **Content**: Driven by `assets/works.json`.
-    *   **Sub-Points**: Role Labels in Blue Theme.
+    *   **Status Strip**: "FOLIO" + Paginated Indicator.
+    *   **Grid Layout**: State-driven 3-Col Grid (Sharp Edges).
+    *   **Paddles**: Lateral Proximity Sensors with Center-Lock synchronization.
+    *   **Modal**: "Work Detail Viewport" for deep dives.
 
-3.  **Resume** (`#resume`)
-    *   **Layout**: Split view / Sticky Header.
-    *   **Theme**: `job-application-card` aesthetic.
-    *   **Assets**: Defined in `assets/resume.json` (Consumed by Store).
+3.  **Tools** (`#tools`)
+    *   **Kinetic Carousel**: Infinite "Drag and Yeet" marquee with Kinetic Hover Tracking.
 
-4.  **Contact** (`#contact`)
-    *   **Layout**: Split Grid.
-    *   **Buttons**: Glow/Ripple Interaction Model.
+4.  **About / Identity** (`#about`)
+    *   **Bento Grid**: Modular layout for ID card and Resume content.
+    *   **Interactive Profile Component**: Integrated Three.js viewport (Helmet model) with manual visual rig.
+    *   **Resume Hubs**: Education and Experience data injected via Store.
+
+5.  **Contact** (`#contact-footer`)
+    *   **Layout**: Split Grid with Floating Glow Buttons.
 
 ## 3. Technical Components Map
 
-### UI Components
-*   **Virtual Scrollbar**: Custom JS-driven scrollbar with Glow Ball tracking and Translucent Thumb.
-*   **Navigation**:
-    *   **Slab System**: Two independent slabs that collapse into a single bar on scroll.
-    *   **Logo**: "D B S" with Star Glyph, expands on interaction.
-*   **Buttons**: `.btn-contact`, `.social-button` with Mouse Glow & Ripple.
+### UI Core
+*   **Virtual Scrollbar**: JS-driven overlay with mouse-tracking glow ball.
+*   **Slab Navigation**: Two-slab system (Brand/Controls) that auto-collapses and dims logo on scroll.
+*   **Modal System**: State-driven viewport for work items with paddle navigation.
+*   **Interactive Profile Rig (v4.5)**: Three.js rig with real-time property editing (Metalness, Roughness, Lights).
 
-### Visual Assets
-*   **Fonts**:
-    *   Display: 'Zen Dots' (Techno/Industrial)
-    *   Body: 'Hubot Sans' (Robotic/Clean)
+### Logical Hubs
+*   **Artifice Engine v2**: Host-Sandbox system with Synthetic Cortex logic.
+*   **Audit Console**: Curation widget for flagging/keeping generative sketches.
 
 ## 4. File Structure (Implemented Architecture)
 ```text
@@ -51,48 +50,41 @@ root/
 │   ├── main.css      (Import Hub)
 │   ├── app-theme.css (Variables: Colors, Fonts)
 │   └── modules/
-│       ├── base.css
-│       ├── hero.css
-│       ├── nav.css
-│       ├── works.css
-│       ├── components.css
-│       ├── scrollbar.css
-│       └── utilities.css
+│       ├── modal.css, nav.css, works.css, etc.
 ├── js/
 │   ├── main.js       (Entry Point)
+│   ├── artifice.js   (Engine Core)
 │   ├── core/
-│   │   └── artifice-controller.js (Init Logic)
+│   │   ├── artifice-controller.js (Host logic)
+│   │   └── effects.js (Data Fetchers)
 │   ├── state/
-│   │   └── store.js  (Redux-Lite Engine)
+│   │   ├── store.js (VSE Core)
+│   │   └── selectors.js (Memoized Views)
 │   └── ui/
-│       ├── hero-fx.js
-│       ├── navigation.js
-│       ├── works-grid.js
-│       ├── interactions.js
-│       └── virtual-scrollbar.js
-└── assets/           (JSON Data & Images)
+│       ├── hero-fx.js, navigation.js, works-grid.js,
+│       ├── modal.js, tools-carousel.js, profile-3d.js,
+│       └── interactions.js
+└── assets/           (JSON Data & GLB Models)
 ```
 
 ## 5. Design System & Theming
 *   **Color Palette**:
-    *   **Background**: `var(--bg-black)` / `var(--bg-deepblack)`
-    *   **Text (Primary)**: `var(--text-white)` (#e0e6ff - Pop-Offwhite)
-    *   **Text (Secondary)**: `var(--text-gray)` (#888888)
-    *   **Brand Pop**: `var(--brand-pop)` (#667fe4 - Blue/Purple)
-    *   **Glows**: Radial Gradients using Brand Pop.
+    *   **Background**: `#050508` (Deep Void)
+    *   **Brand Pop**: `#667fe4` (Neon Blue-Purple)
+    *   **Text Primary**: `#e0e6ff` (Luminous Frost)
 
 ## 6. Interaction Mechanics
-### Hero Text ("Art & Design")
-*   **Cascade**: Individual characters reveal (`0.8s` duration) with stagger.
-*   **Phase Shift**: After `1.2s`, characters transition to **0.05px Outline** (Solid fill fades to transparent).
+### Directional Inertia
+*   Pagination in the Works Grid applies `--inertia-x` transforms based on the scroll direction (`next` vs `prev`).
 
-### Navigation
-*   **Auto-Collapse**: Triggers at `4.2s` (Aligned with Hero sequence).
-*   **Scroll Logic**: Collapses on scroll > 50px.
+### Proximity Sensors
+*   Floating lateral zones that detect hover to reveal navigation paddles before the mouse reaches the button edge.
 
-### Virtual Scrollbar
-*   **State**: Fixed `8px` width.
-*   **Thumb**: `50%` Translucent Blue. No Border.
-*   **Hover**: Blue Border (`2px`).
-*   **Active**: Solid Brand-Pop (`#667fe4`) fill.
-*   **Glow**: Track Glow follows mouse Y-position.
+### Kinetic Hover
+*   The Tools Carousel calculates elements passing under a stationary cursor to maintain active hover states during auto-drift.
+
+### Slab Auto-Collapse
+*   Triggers at `scrollY > 50`, collapsing two nav slabs into a single bar and dimming the logo opacity to reduce visual noise.
+
+
+*Verified by DEUS* 🦾

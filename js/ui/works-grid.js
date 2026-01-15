@@ -111,18 +111,23 @@ const renderResume = (resumeData) => {
 
     const expTarget = document.getElementById('resume-experience-target');
     if (expTarget) {
-        expTarget.innerHTML = resumeData.experience.map(exp => `
-            <div class="resume-card reveal-item">
-                <div class="resume-header-row">
-                    <div class="resume-institution">${exp.company}</div>
-                    <span class="resume-date">${exp.date}</span>
+        expTarget.innerHTML = resumeData.experience.map(exp => {
+            const isSpacer = exp.company === "";
+            return `
+                <div class="resume-card reveal-item ${isSpacer ? 'is-spacer' : ''}">
+                    ${isSpacer ? '' : `
+                    <div class="resume-header-row">
+                        <div class="resume-institution">${exp.company}</div>
+                        <span class="resume-date">${exp.date}</span>
+                    </div>
+                    <div class="resume-role">${exp.role}</div>
+                    <ul class="resume-bullets">
+                        ${exp.bullets.map(b => `<li>${b}</li>`).join('')}
+                    </ul>
+                    `}
                 </div>
-                <div class="resume-role">${exp.role}</div>
-                <ul class="resume-bullets">
-                    ${exp.bullets.map(b => `<li>${b}</li>`).join('')}
-                </ul>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     // Observe new bento items

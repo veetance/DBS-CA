@@ -358,3 +358,43 @@
         padding-left: 3vw !important;
     }
 }
+
+/* --- CONSTRUCTION CHIP --- */
+.construction-chip {
+    position: fixed;
+    top: calc(3vw + 50px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+
+    padding: 6px 18px;
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: #f5a623;
+
+    background: rgba(10, 12, 8, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 166, 35, 0.5);
+    border-radius: 4px;
+    transition: opacity 0.4s ease;
+}
+
+.construction-chip.scrolled {
+    opacity: 0.2;
+}
+
+@media (max-width: 1028px) {
+    .construction-chip {
+        top: calc(4vw + 80px);
+    }
+}
+
+@media (max-width: 768px) {
+    .construction-chip {
+        top: calc(5vw + 70px);
+        font-size: 0.55rem;
+        padding: 5px 14px;
+    }
+}
